@@ -80,6 +80,7 @@ FROM track
     JOIN album ON track.album_id = album.id 
     JOIN artist ON album.artist_id = artist.id;
  
+DELETE FROM genre WHERE name='Metal';
 
 Many-Many Relationship
 
