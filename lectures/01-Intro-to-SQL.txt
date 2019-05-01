@@ -6,10 +6,10 @@ Setup - Making a Database / User:
 
 Note:  --- is the start of a comment - do not include these
 
-psql –U postgres
+sudo -u postgres psql postgres
 \l       -- list databases
 CREATE USER pg4e WITH PASSWORD 'secret';
-CREATE DATABASE people WITH OWNER 'pg4e';
+CREATE DATABASE people WITH OWNER 'pg4e' ENCODING 'UTF8';
 \q       -- quit
 
 Running SQL Commands:

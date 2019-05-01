@@ -2,7 +2,13 @@ Python for Everybody Database Handout
 
 https://www.pg4e.com/lectures/02-Database-Design-Many-to-Many.txt
 
-psql people pg4e
+sudo -u postgres psql postgres
+\l       -- list databases
+-- Should already be done: CREATE USER pg4e WITH PASSWORD 'secret';
+CREATE DATABASE music WITH OWNER 'pg4e' ENCODING 'UTF8';
+\q       -- quit
+
+psql music pg4e
 
 \dt      -- List relations (tables)
 
@@ -31,17 +37,21 @@ CREATE TABLE track (
     len INTEGER, rating INTEGER, count INTEGER,
     album_id INTEGER REFERENCES album(id) ON DELETE CASCADE,
     genre_id INTEGER REFERENCES genre(id) ON DELETE CASCADE,
-    UNIQUE(title, album_id)
+    UNIQUE(title, album_id),
+    PRIMARY KEY(id)
 );
 
-INSERT INTO artist (name) VALUES ('Led Zepplin');
-INSERT INTO artist (name) VALUES ('AC/DC');
+-- Describe table
+\d track
 
-INSERT INTO genre (name) VALUES ('Rock');
-INSERT INTO genre (name) VALUES ('Metal');
+INSERT INTO artist (name) VALUES ('Led Zeppelin');
+INSERT INTO artist (name) VALUES ('AC/DC');
 
 INSERT INTO album (title, artist_id) VALUES ('Who Made Who', 2);
 INSERT INTO album (title, artist_id) VALUES ('IV', 1);
+
+INSERT INTO genre (name) VALUES ('Rock');
+INSERT INTO genre (name) VALUES ('Metal');
 
 INSERT INTO track (title, rating, len, count, album_id, genre_id) 
     VALUES ('Black Dog', 5, 297, 0, 2, 1) ;
