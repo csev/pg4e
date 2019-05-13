@@ -1,0 +1,129 @@
+SQL TOPICS
+----------
+
+Sub Selects
+
+insert into table selecting from another table
+IN Operator
+In UPDATE Statements
+
+DISTINCT / DISTINCT ON
+
+Group By
+GROUPING SETS (i.e. subtotals)
+
+INSERT ON CONFLICT UPDATE
+
+Views
+
+IMPORT FROM CSV
+---------------
+
+\copy and CSV
+
+Manipulating Strings
+--------------------
+
+LIKE, SIMILAR TO, and ~, ~~, !~, !~~, ~* (case), !~*
+String functions - Split_part
+Regular Expressions in WHERE clauses ~ (i.e. like LIKE)
+https://www.postgresql.org/docs/8.1/functions-matching.html
+
+REGEXP POSIX Variant
+https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-POSIX-REGEXP
+
+REGEXP_MATCHES()
+regexp_replace()
+
+JSON Fields
+-----------
+
+Casting using :: or CAST(value AS type)
+https://stackoverflow.com/questions/15537709/what-does-do-in-postgresql
+https://stackoverflow.com/questions/5758499/double-colon-notation-in-sql
+
+
+Operators @>
+https://www.postgresql.org/docs/9.5/functions-json.html
+
+Contain
+
+'{"a":1, "b":2}'::jsonb @> '{"b":2}'::jsonb
+
+JSON
+JSONB
+
+https://blog.hagander.net/json-field-constraints-228/
+https://www.postgresql.org/docs/9.5/datatype-json.html#JSON-INDEXING
+
+CREATE TABLE jsontable (j jsonb NOT NULL);
+-- All of the keys - a bit of overkill
+CREATE INDEX j_idx ON jsontable USING gin(j jsonb_path_ops);
+-- Just one key
+CREATE UNIQUE INDEX j_uuid_idx ON jsontable(((j->>'uuid')::uuid));
+CREATE INDEX idxgintags ON api USING gin ((jdoc -> 'tags'));
+ALTER TABLE jsontable ADD CONSTRAINT uuid_must_exist CHECK (j ? 'uuid');
+
+SELECT count(*) FROM cards WHERE data->>'finished' = 'true';
+
+-> and --> operators
+
+jsonb_path_ops means index can only handle @>
+The technical difference between a jsonb_ops and a jsonb_path_ops GIN index is that
+jsonb_ops creates independent index items for each key and value in the data,
+while jsonb_path_ops creates index items only for each value in the data. 
+Basically, each jsonb_path_ops index item is a hash of the value and the
+key(s) leading to it.
+
+DUMP / RESTORE
+--------------
+
+https://www.postgresql.org/docs/9.1/backup-dump.html
+
+pg_dump dbname > outfile
+
+psql dbname < infile
+
+PERFORMANCE
+-----------
+
+Explain Queries
+
+Index Types
+B-Tree versus BRIN (Range) Indexes
+GIN - Words not LIKE
+GiST - Words not LIKE
+https://en.wikipedia.org/wiki/Block_Range_Index
+
+
+PROCEDURES
+---------
+
+Stored Procedures
+
+Before, After, or Instead of INSERT, UPDATE, or DELETE
+
+http://www.postgresqltutorial.com/postgresql-create-procedure/
+
+Triggers
+
+CREATE  TRIGGER trigger_name [BEFORE|AFTER|INSTEAD OF] [INSERT|UPDATE|DELETE] OF column_name
+ON table_name
+[
+];
+
+
+FULL TEXT SEARCHES
+------------------
+
+ts_vector
+GIN  - Generalized inverted - Perfect - Slow update, fast select
+GiST - Generalized Search Tree - Lossy - Hash - Fast update, slow select
+
+SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impossible');
+
+TODO
+----
+
+WITH / Common Table Expressions
+

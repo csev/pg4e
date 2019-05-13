@@ -1,0 +1,26 @@
+
+CREATE TABLE y (id serial, primary key(id), email text);
+
+INSERT INTO y (email) VALUES ('csev@umich.edu');
+INSERT INTO y (email) VALUES ('coleen@umich.edu');
+INSERT INTO y (email) VALUES ('sally@uiuc.edu');
+INSERT INTO y (email) VALUES ('ted@umuc.edu');
+INSERT INTO y (email) VALUES ('glenn@apple.com');
+INSERT INTO y (email) VALUES ('nbody@apple.com');
+
+SELECT substring(email FROM '.+@(.*)$') FROM y;
+
+SELECT DISTINCT substring(email FROM '.+@(.*)$') FROM y;
+
+SELECT * FROM y where substring(email FROM '.+@(.*)$') = 'umich.edu';
+
+CREATE TABLE t (id serial, primary key(id), tweet text);
+
+INSERT INTO t (tweet) VALUES ('This is #SQL and #FUN stuff');
+INSERT INTO t (tweet) VALUES ('More people should learn #SQL from #UMSI');
+INSERT INTO t (tweet) VALUES ('#UMSI also teaches #PYTHON');
+
+SELECT REGEXP_MATCHES(tweet,'#([A-Za-z0-9_]+)', 'g') FROM t;
+
+SELECT id, REGEXP_MATCHES(tweet,'#([A-Za-z0-9_]+)', 'g') FROM t;
+
