@@ -1,18 +1,29 @@
 SQL TOOLS AND TECHNIQUES (3)
 ========================
 
-Where to put this...
-INSERT ON CONFLICT UPDATE
-Likes / votes
+ALTER TABLE
 
 DATES
+  Time Zones / UTC
+  Casting
+  DATE_TRUNC
+  Differences
 
-Casting
+Stored Procedures
 
-VIEWS
------ 
+Concurrency 
 
-You can “hide” complexity with a view.   You can create a view with computed columns, which can prove quite handy. You can limit access by use of views as well restrict certain dB users to read-only views.  
+INSERT ON CONFLICT UPDATE
+
+Likes / votes
+
+
+GROUPING
+--------
+
+DISTINCT / DISTINCT ON
+Group By
+GROUPING SETS (i.e. subtotals)
 
 SUBQUERY
 --------
@@ -22,12 +33,12 @@ SUBQUERY
 3. Correlated subquery (subquery references the enclosing query)
 4. insert into table selecting from another table
 
-GROUPING
---------
+VIEWS
+----- 
 
-DISTINCT / DISTINCT ON
-Group By
-GROUPING SETS (i.e. subtotals)
+You can “hide” complexity with a view.   You can create a view with computed columns, which can prove quite handy. You can limit access by use of views as well restrict certain dB users to read-only views.  
+
+
 
 WORKING WITH FILES AND STRINGS (4)
 ==============================

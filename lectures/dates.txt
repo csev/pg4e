@@ -1,0 +1,32 @@
+
+SELECT NOW();
+
+SELECT NOW() AT TIME ZONE 'utc';
+SELECT NOW() AT TIME ZONE 'HST';
+
+SELECT * FROM pg_timezone_names;
+SELECT * FROM pg_timezone_names WHERE name LIKE '%Hawaii%';
+
+SELECT NOW()::DATE;
+
+SELECT NOW()::TIME;
+
+SELECT NOW() - INTERVAL '2 days';
+SELECT CAST (NOW() - INTERVAL '2 days' AS DATE);
+SELECT (NOW() - INTERVAL '2 days')::DATE;
+
+SELECT DATE_TRUNC('day', NOW());
+
+-- From string to timestamp
+SELECT '2012-01-01 04:23:55'::TIMESTAMP;
+SELECT CAST('2012-01-01 04:23:55' AS TIMESTAMP);
+
+-- How long since...
+
+SELECT NOW() - '2012-01-01'::TIMESTAMP;
+SELECT DATE_PART('days', NOW() - '2012-01-01'::TIMESTAMP);
+
+SELECT DATE_PART('years',NOW());
+SELECT DATE_PART('years',NOW()) - DATE_PART('years', '2012-01-01'::DATE);
+
+
