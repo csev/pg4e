@@ -1,20 +1,36 @@
-SQL TOPICS
-----------
+SQL TOOLS AND TECHNIQUES (3)
+========================
 
-Sub Selects
+Where to put this...
+INSERT ON CONFLICT UPDATE
+Likes / votes
 
-insert into table selecting from another table
-IN Operator
-In UPDATE Statements
+DATES
+
+Casting
+
+VIEWS
+----- 
+
+You can “hide” complexity with a view.   You can create a view with computed columns, which can prove quite handy. You can limit access by use of views as well restrict certain dB users to read-only views.  
+
+SUBQUERY
+--------
+
+1. INSERT / UPDATE WHERE clause subquery (WHERE x IN (SELECT . . . )
+2. JOIN on a subquery (e.g., joining on a virtual table)
+3. Correlated subquery (subquery references the enclosing query)
+4. insert into table selecting from another table
+
+GROUPING
+--------
 
 DISTINCT / DISTINCT ON
-
 Group By
 GROUPING SETS (i.e. subtotals)
 
-INSERT ON CONFLICT UPDATE
-
-Views
+WORKING WITH FILES AND STRINGS (4)
+==============================
 
 IMPORT FROM CSV
 ---------------
@@ -24,7 +40,7 @@ IMPORT FROM CSV
 Manipulating Strings
 --------------------
 
-LIKE, SIMILAR TO, and ~, ~~, !~, !~~, ~* (case), !~*
+LIKE, SIMILAR TO, and ~, ~~, !~, !~~, ~* (cast), !~*
 String functions - Split_part
 Regular Expressions in WHERE clauses ~ (i.e. like LIKE)
 https://www.postgresql.org/docs/8.1/functions-matching.html
@@ -35,8 +51,11 @@ https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-POSIX-
 REGEXP_MATCHES()
 regexp_replace()
 
-JSON Fields
------------
+COURSE 2
+========
+
+JSON FIELDS
+===========
 
 Casting using :: or CAST(value AS type)
 https://stackoverflow.com/questions/15537709/what-does-do-in-postgresql
