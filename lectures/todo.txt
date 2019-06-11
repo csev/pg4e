@@ -9,21 +9,19 @@ DATES
   DATE_TRUNC
   Differences
 
-Stored Procedures
 
 Concurrency 
+-----------
 
 INSERT ON CONFLICT UPDATE
 
 Likes / votes
 
+Transactions
+------------
 
-GROUPING
---------
-
-DISTINCT / DISTINCT ON
-Group By
-GROUPING SETS (i.e. subtotals)
+Stored Procedures
+-----------------
 
 SUBQUERY
 --------
@@ -38,6 +36,13 @@ VIEWS
 
 You can “hide” complexity with a view.   You can create a view with computed columns, which can prove quite handy. You can limit access by use of views as well restrict certain dB users to read-only views.  
 
+
+GROUPING
+--------
+
+DISTINCT / DISTINCT ON
+Group By
+GROUPING SETS (i.e. subtotals)
 
 
 WORKING WITH FILES AND STRINGS (4)

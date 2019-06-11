@@ -30,3 +30,13 @@ SELECT DATE_PART('years',NOW());
 SELECT DATE_PART('years',NOW()) - DATE_PART('years', '2012-01-01'::DATE);
 
 
+-- Inefficient - full table scan
+SELECT id, content, created_at FROM comment 
+  WHERE created_at::DATE = NOW()::DATE;
+
+-- A range query evaluated inside the database
+SELECT id, content, created_at FROM comment 
+    WHERE created_at >= DATE_TRUNC('day',NOW()) 
+    AND created_at < DATE_TRUNC('day',NOW() + INTERVAL '1 day');
+
+

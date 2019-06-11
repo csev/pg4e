@@ -22,7 +22,7 @@ CREATE TABLE account (
 
 CREATE TABLE post (
   id SERIAL,
-  title VARCHAR(128) UNIQUE NOT NULL,
+  title VARCHAR(128) UNIQUE NOT NULL, -- Will extend with ALTER
   content VARCHAR(1024),
   account_id INTEGER REFERENCES account(id) ON DELETE CASCADE,
   created_at TIMESTAMPZ NOT NULL DEFAULT NOW(),
@@ -43,9 +43,11 @@ CREATE TABLE comment (
 
 CREATE TABLE fav (
   id SERIAL,
-  oops TEXT,
+  oops TEXT,  -- Will remove later with ALTER
   post_id INTEGER REFERENCES post(id) ON DELETE CASCADE,
   account_id INTEGER REFERENCES account(id) ON DELETE CASCADE,
+  created_at TIMESTAMPZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPZ NOT NULL DEFAULT NOW(),
   UNIQUE(post_id, account_id),
   PRIMARY KEY(id)
 );
@@ -55,6 +57,42 @@ ALTER TABLE post ALTER COLUMN content TYPE TEXT;
 ALTER TABLE fav DROP COLUMN oops;
 
 ALTER TABLE fav ADD COLUMN howmuch INTEGER;
+
+-- Include a file
+\i 03-SQL-Tools-Load.sql
+
+-- Sub-selects
+SELECT * FROM account 
+WHERE email='ed@umich.edu';
+
+SELECT content FROM comment WHERE account_id = 1;
+
+SELECT content FROM comment 
+WHERE account_id = (SELECT id FROM account WHERE email='ed@umich.edu');
+
+-- Insert / Update
+
+-- Do this twice
+INSERT INTO fav (post_id, account_id, howmuch)
+  VALUES (1,1,1)
+RETURNING *;
+
+UPDATE fav SET howmuch=howmuch+1
+  WHERE post_id = 1 AND account_id = 1
+RETURNING *;
+
+INSERT INTO fav (post_id, account_id, howmuch)
+  VALUES (1,1,1)
+  ON CONFLICT (post_id, account_id) 
+  DO UPDATE SET howmuch = fav.howmuch + 1;
+
+INSERT INTO fav (post_id, account_id, howmuch)
+  VALUES (1,1,1)
+  ON CONFLICT (post_id, account_id) 
+  DO UPDATE SET howmuch = fav.howmuch + 1
+RETURNING *;
+
+-- Stored Procedures
 
 -- https://x-team.com/blog/automatic-timestamps-with-postgresql/
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
@@ -79,97 +117,5 @@ CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON comment
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
-
-
--- Include a file
-\i 03-SQL-Tools-Load.sql
-
--- Describe table
-\d track
-
-INSERT INTO artist (name) VALUES ('Led Zeppelin');
-INSERT INTO artist (name) VALUES ('AC/DC');
-
-INSERT INTO album (title, artist_id) VALUES ('Who Made Who', 2);
-INSERT INTO album (title, artist_id) VALUES ('IV', 1);
-
-INSERT INTO genre (name) VALUES ('Rock');
-INSERT INTO genre (name) VALUES ('Metal');
-
-INSERT INTO track (title, rating, len, count, album_id, genre_id) 
-    VALUES ('Black Dog', 5, 297, 0, 2, 1) ;
-INSERT INTO track (title, rating, len, count, album_id, genre_id) 
-    VALUES ('Stairway', 5, 482, 0, 2, 1) ;
-INSERT INTO track (title, rating, len, count, album_id, genre_id) 
-    VALUES ('About to Rock', 5, 313, 0, 1, 2) ;
-INSERT INTO track (title, rating, len, count, album_id, genre_id) 
-    VALUES ('Who Made Who', 5, 207, 0, 1, 2) ;
-
-SELECT album.title, artist.name FROM album JOIN artist 
-    ON album.artist_id = artist.id;
-
-SELECT album.title, album.artist_id, artist.id, artist.name 
-    FROM album INNER JOIN artist ON album.artist_id = artist.id;
-
-SELECT track.title, track.genre_id, genre.id, genre.name 
-    FROM track CROSS JOIN genre;
-
-SELECT track.title, genre.name FROM track JOIN genre 
-    ON track.genre_id = genre.id;
-
-SELECT track.title, artist.name, album.title, genre.name 
-FROM track 
-    JOIN genre ON track.genre_id = genre.id 
-    JOIN album ON track.album_id = album.id 
-    JOIN artist ON album.artist_id = artist.id;
- 
-DELETE FROM genre WHERE name='Metal';
-
-Many-Many Relationship
-
-CREATE TABLE student (
-  id SERIAL,
-  name VARCHAR(128),
-  email VARCHAR(128) UNIQUE,
-  PRIMARY KEY(id)
-) ;
-
-CREATE TABLE course (
-  id SERIAL,
-  title VARCHAR(128) UNIQUE,
-  PRIMARY KEY(id)
-) ;
-
--- We could put 'id SERIAL' in this table, but it is not essential
-CREATE TABLE member (
-    student_id INTEGER REFERENCES student(id) ON DELETE CASCADE,
-    course_id INTEGER REFERENCES course(id) ON DELETE CASCADE,
-	role        INTEGER,
-    PRIMARY KEY (student_id, course_id)
-) ;
-
-INSERT INTO student (name, email) VALUES ('Jane', 'jane@tsugi.org');
-INSERT INTO student (name, email) VALUES ('Ed', 'ed@tsugi.org');
-INSERT INTO student (name, email) VALUES ('Sue', 'sue@tsugi.org');
-
-INSERT INTO course (title) VALUES ('Python');
-INSERT INTO course (title) VALUES ('SQL');
-INSERT INTO course (title) VALUES ('PHP');
-
-INSERT INTO member (student_id, course_id, role) VALUES (1, 1, 1);
-INSERT INTO member (student_id, course_id, role) VALUES (2, 1, 0);
-INSERT INTO member (student_id, course_id, role) VALUES (3, 1, 0);
-
-INSERT INTO member (student_id, course_id, role) VALUES (1, 2, 0);
-INSERT INTO member (student_id, course_id, role) VALUES (2, 2, 1);
-
-INSERT INTO member (student_id, course_id, role) VALUES (2, 3, 1);
-INSERT INTO member (student_id, course_id, role) VALUES (3, 3, 0);
-
-SELECT student.name, member.role, course.title
-  FROM student 
-  JOIN member ON member.student_id = student.id 
-  JOIN course ON member.course_id = course.id
-  ORDER BY course.title, member.role DESC, student.name;
 
 
