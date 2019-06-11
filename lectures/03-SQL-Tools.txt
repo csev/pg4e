@@ -52,6 +52,8 @@ CREATE TABLE fav (
   PRIMARY KEY(id)
 );
 
+\d+ fav
+
 ALTER TABLE post ALTER COLUMN content TYPE TEXT;
 
 ALTER TABLE fav DROP COLUMN oops;
@@ -92,7 +94,28 @@ INSERT INTO fav (post_id, account_id, howmuch)
   DO UPDATE SET howmuch = fav.howmuch + 1
 RETURNING *;
 
+-- TRANSACTIONS (try in two windows)
+
+BEGIN;
+SELECT howmuch FROM fav WHERE account_id=1 AND post_id=1 FOR UPDATE OF fav;
+-- Time passes... 
+UPDATE SET howmuch=999 WHERE account_id=1 AND post_id=1;
+ROLLBACK;
+SELECT howmuch FROM fav WHERE account_id=1 AND post_id=1;
+
+BEGIN;
+SELECT howmuch FROM fav WHERE account_id=1 AND post_id=1 FOR UPDATE OF fav;
+-- Time passes... 
+UPDATE SET howmuch=999 WHERE account_id=1 AND post_id=1;
+COMMIT;
+SELECT howmuch FROM fav WHERE account_id=1 AND post_id=1;
+
+
 -- Stored Procedures
+
+UPDATE fav SET howmuch=howmuch+1
+  WHERE post_id = 1 AND account_id = 1
+RETURNING *;
 
 -- https://x-team.com/blog/automatic-timestamps-with-postgresql/
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
