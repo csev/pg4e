@@ -135,38 +135,38 @@ VALUES
 ('Opel', 'Cadet', 1973, 500)
 ;
 
-select distinct model from racing;
+SELECT DISTINCT model FROM racing;
 
-select distinct on (model) make,model from racing;
+SELECT DISTINCT ON (model) make,model FROM racing;
 
-select distinct on (model) make,model,year from racing;
+SELECT DISTINCT ON (model) make,model,year FROM racing;
 
--- Must include the distinct column in ORDER BY
-select distinct on (model) make,model,year from racing order by model, year;
+-- Must include the DISTINCT column in ORDER BY
+SELECT DISTINCT ON (model) make,model,year FROM racing ORDER BY model, year;
 
-select distinct on (model) make,model,year from racing order by model, year desc;
+SELECT DISTINCT ON (model) make,model,year FROM racing ORDER BY model, year DESC;
 
-select distinct on (model) make,model,year from racing order by model, year desc LIMIT 2;
+SELECT DISTINCT ON (model) make,model,year FROM racing ORDER BY model, year DESC LIMIT 2;
 
 -- GROUP BY
 
 SELECT * FROM pg_timezone_names;
 
-select count(*) from pg_timezone_names;
+SELECT COUNT(*) FROM pg_timezone_names;
 
-select distinct is_dst from pg_timezone_names;
+SELECT DISTINCT is_dst FROM pg_timezone_names;
 
-select count(is_dst), is_dst from  pg_timezone_names group by is_dst;
+SELECT COUNT(is_dst), is_dst FROM pg_timezone_names GROUP BY is_dst;
 
-select count(abbrev), abbrev from  pg_timezone_names group by abbrev;
+SELECT COUNT(abbrev), abbrev FROM pg_timezone_names GROUP BY abbrev;
 
 -- WHERE is before GROUP BY, HAVING is after GROUP BY
 
-select ct, abbrev from (select count(abbrev) as ct, abbrev from  pg_timezone_names group by abbrev) as zap where ct > 10;
+SELECT ct, abbrev FROM (SELECT COUNT(abbrev) AS ct, abbrev FROM  pg_timezone_names GROUP BY abbrev) AS zap where ct > 10;
 
-select count(abbrev) as ct, abbrev from  pg_timezone_names group by abbrev having count(abbrev) > 10;
+SELECT COUNT(abbrev) AS ct, abbrev FROM  pg_timezone_names GROUP BY abbrev HAVING COUNT(abbrev) > 10;
 
-select count(abbrev) as ct, abbrev from  pg_timezone_names group by abbrev having count(abbrev) > 10 order by count(abbrev) desc;
+SELECT COUNT(abbrev) AS ct, abbrev FROM  pg_timezone_names GROUP BY abbrev HAVING COUNT(abbrev) > 10 ORDER BY COUNT(abbrev) DESC;
 
 
 
