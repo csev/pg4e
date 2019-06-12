@@ -249,4 +249,42 @@ BEFORE UPDATE ON comment
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
+--- Example Use
+
+
+CREATE TABLE xy_raw(x TEXT, y TEXT, y_id INTEGER);
+CREATE TABLE y (id SERIAL, PRIMARY KEY(id), y TEXT);
+CREATE TABLE xy(id SERIAL, PRIMARY KEY(id), x TEXT, y_id INTEGER, UNIQUE(x,y_id));
+
+COPY xy_raw(x,y) FROM stdin DELIMITER ',' CSV;
+Zap,A
+Zip,A
+One,B
+Zap,B
+\.
+
+-- Or
+
+INSERT INTO xy_raw (x, y) VALUES
+('Zap', 'A'), ('Zip', 'A'), ('One', 'B'), ('Zap', 'B');
+
+
+SELECT DISTINCT y from xy_raw;
+
+\d xy_raw
+\d+ y
+
+INSERT INTO y (y) SELECT DISTINCT y FROM xy_raw;
+
+UPDATE xy_raw SET y_id = (SELECT y.id FROM y WHERE y.y = xy_raw.y);
+
+SELECT * FROM xy_raw;
+
+INSERT INTO xy (x, y_id) SELECT x, y_id FROM xy_raw;
+
+SELECT * FROM xy JOIN y ON xy.y_id = y.id;
+
+ALTER TABLE xy_raw DROP COLUMN y;
+
+DROP TABLE xy_raw;
 
