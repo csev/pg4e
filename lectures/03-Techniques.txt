@@ -1,6 +1,6 @@
 Python for Everybody Database Handout
 
-https://www.pg4e.com/lectures/03-SQL-Tools.txt
+https://www.pg4e.com/lectures/03-Techniques.txt
 
 sudo -u postgres psql postgres
 \l       -- list databases
@@ -62,7 +62,10 @@ ALTER TABLE fav DROP COLUMN oops;
 
 ALTER TABLE fav ADD COLUMN howmuch INTEGER;
 
--- Include a file
+-- Read SQL Commands fom a script
+
+-- Download https://www.pg4e.com/lectures/03-Techniques.sql
+
 \i 03-SQL-Tools-Load.sql
 
 -- Dates
@@ -249,30 +252,29 @@ BEFORE UPDATE ON comment
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
---- Example Use
+--- Example Use - Load a CSV file and normalize
 
+DROP TABLE IF EXISTS xy_raw;
+DROP TABLE IF EXISTS y;
+DROP TABLE IF EXISTS xy;
 
 CREATE TABLE xy_raw(x TEXT, y TEXT, y_id INTEGER);
 CREATE TABLE y (id SERIAL, PRIMARY KEY(id), y TEXT);
 CREATE TABLE xy(id SERIAL, PRIMARY KEY(id), x TEXT, y_id INTEGER, UNIQUE(x,y_id));
 
-COPY xy_raw(x,y) FROM stdin DELIMITER ',' CSV;
-Zap,A
-Zip,A
-One,B
-Zap,B
-\.
-
--- Or
-
-INSERT INTO xy_raw (x, y) VALUES
-('Zap', 'A'), ('Zip', 'A'), ('One', 'B'), ('Zap', 'B');
-
-
-SELECT DISTINCT y from xy_raw;
-
 \d xy_raw
 \d+ y
+
+-- Download https://www.pg4e.com/lectures/03-Techniques.csv
+
+-- Zap,A
+-- Zip,A
+-- One,B
+-- Two,B
+
+\copy xy_raw(x,y) FROM '03-Techniques.csv' WITH DELIMITER ',' CSV;
+
+SELECT DISTINCT y from xy_raw;
 
 INSERT INTO y (y) SELECT DISTINCT y FROM xy_raw;
 

@@ -1,4 +1,6 @@
 
+-- https://www.pg4e.com/lectures/03-Teqhniques.sql
+
 -- Start fresh - Cascade deletes it all
 
 DELETE FROM account;
