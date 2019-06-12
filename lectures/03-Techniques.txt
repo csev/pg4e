@@ -54,6 +54,8 @@ CREATE TABLE fav (
 
 \d+ fav
 
+-- ALTER TABLE
+
 ALTER TABLE post ALTER COLUMN content TYPE TEXT;
 
 ALTER TABLE fav DROP COLUMN oops;
@@ -63,7 +65,113 @@ ALTER TABLE fav ADD COLUMN howmuch INTEGER;
 -- Include a file
 \i 03-SQL-Tools-Load.sql
 
--- Sub-selects
+-- Dates
+
+SELECT NOW();
+
+SELECT NOW() AT TIME ZONE 'utc';
+SELECT NOW() AT TIME ZONE 'HST';
+
+SELECT * FROM pg_timezone_names;
+SELECT * FROM pg_timezone_names WHERE name LIKE '%Hawaii%';
+
+SELECT NOW()::DATE;
+
+SELECT NOW()::TIME;
+
+SELECT NOW() - INTERVAL '2 days';
+SELECT CAST (NOW() - INTERVAL '2 days' AS DATE);
+SELECT (NOW() - INTERVAL '2 days')::DATE;
+
+SELECT DATE_TRUNC('day', NOW());
+
+-- From string to timestamp
+SELECT '2012-01-01 04:23:55'::TIMESTAMP;
+SELECT CAST('2012-01-01 04:23:55' AS TIMESTAMP);
+
+-- How long since...
+
+SELECT NOW() - '2012-01-01'::TIMESTAMP;
+SELECT DATE_PART('days', NOW() - '2012-01-01'::TIMESTAMP);
+
+SELECT DATE_PART('years',NOW());
+SELECT DATE_PART('years',NOW()) - DATE_PART('years', '2012-01-01'::DATE);
+
+-- Inefficient - full table scan
+SELECT id, content, created_at FROM comment 
+  WHERE created_at::DATE = NOW()::DATE;
+
+-- A range query evaluated inside the database
+SELECT id, content, created_at FROM comment 
+    WHERE created_at >= DATE_TRUNC('day',NOW()) 
+    AND created_at < DATE_TRUNC('day',NOW() + INTERVAL '1 day');
+
+-- DISTINCT
+
+DROP TABLE IF EXISTS racing;
+
+CREATE TABLE racing (
+   make VARCHAR,
+   model VARCHAR,
+   year INTEGER,
+   price INTEGER
+);
+
+INSERT INTO racing (make, model, year, price)
+VALUES
+('Nissan', 'Stanza', 1990, 2000),
+('Dodge', 'Neon', 1995, 800),
+('Dodge', 'Neon', 1998, 2500),
+('Dodge', 'Neon', 1999, 3000),
+('Ford', 'Mustang', 2001, 1000),
+('Ford', 'Mustang', 2005, 2000),
+('Subaru', 'Impreza', 1997, 1000),
+('Mazda', 'Miata', 2001, 5000),
+('Mazda', 'Miata', 2001, 3000),
+('Mazda', 'Miata', 2001, 2500),
+('Mazda', 'Miata', 2002, 5500),
+('Opel', 'GT', 1972, 1500),
+('Opel', 'GT', 1969, 7500),
+('Opel', 'Cadet', 1973, 500)
+;
+
+select distinct model from racing;
+
+select distinct on (model) make,model from racing;
+
+select distinct on (model) make,model,year from racing;
+
+-- Must include the distinct column in ORDER BY
+select distinct on (model) make,model,year from racing order by model, year;
+
+select distinct on (model) make,model,year from racing order by model, year desc;
+
+select distinct on (model) make,model,year from racing order by model, year desc LIMIT 2;
+
+-- GROUP BY
+
+SELECT * FROM pg_timezone_names;
+
+select count(*) from pg_timezone_names;
+
+select distinct is_dst from pg_timezone_names;
+
+select count(is_dst), is_dst from  pg_timezone_names group by is_dst;
+
+select count(abbrev), abbrev from  pg_timezone_names group by abbrev;
+
+-- WHERE is before GROUP BY, HAVING is after GROUP BY
+
+select ct, abbrev from (select count(abbrev) as ct, abbrev from  pg_timezone_names group by abbrev) as zap where ct > 10;
+
+select count(abbrev) as ct, abbrev from  pg_timezone_names group by abbrev having count(abbrev) > 10;
+
+select count(abbrev) as ct, abbrev from  pg_timezone_names group by abbrev having count(abbrev) > 10 order by count(abbrev) desc;
+
+
+
+-- Subquery
+
 SELECT * FROM account 
 WHERE email='ed@umich.edu';
 
@@ -72,7 +180,7 @@ SELECT content FROM comment WHERE account_id = 1;
 SELECT content FROM comment 
 WHERE account_id = (SELECT id FROM account WHERE email='ed@umich.edu');
 
--- Insert / Update
+-- Concurrency
 
 -- Do this twice
 INSERT INTO fav (post_id, account_id, howmuch)
