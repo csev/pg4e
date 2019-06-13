@@ -66,7 +66,7 @@ ALTER TABLE fav ADD COLUMN howmuch INTEGER;
 
 -- Download https://www.pg4e.com/lectures/03-Techniques-Load.sql
 
-\i 03-Tecniques-Load.sql
+\i 03-Techniques-Load.sql
 
 -- Dates
 
