@@ -31,12 +31,6 @@ SUBQUERY
 3. Correlated subquery (subquery references the enclosing query)
 4. insert into table selecting from another table
 
-VIEWS
------ 
-
-You can “hide” complexity with a view.   You can create a view with computed columns, which can prove quite handy. You can limit access by use of views as well restrict certain dB users to read-only views.  
-
-
 GROUPING
 --------
 
@@ -56,16 +50,33 @@ IMPORT FROM CSV
 Manipulating Strings
 --------------------
 
-LIKE, SIMILAR TO, and ~, ~~, !~, !~~, ~* (cast), !~*
 String functions - Split_part
-Regular Expressions in WHERE clauses ~ (i.e. like LIKE)
+  || Concatenate also CONCAT('a', 'b') concat_ws(',', 'a', 'b') (separators)
+https://www.postgresql.org/docs/9.1/functions-string.html
+
+LIKE / SIMILAR TO
+
 https://www.postgresql.org/docs/8.1/functions-matching.html
+
+LIKE ~~ / NOT LIKE   !~~ % many chars, _ one char
+ILIKE ~~* / NOT ILIKE !~~*
+SIMILAR TO / NOT SIMILAR TO   Hybrid SQL / Regex matching
+
+REGEX:
+  ~ Matches
+  ~* Matches case insensitive
+  !~ Does not match
+  !~* Does not match case insensitive
+
 
 REGEXP POSIX Variant
 https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-POSIX-REGEXP
 
-REGEXP_MATCHES()
-regexp_replace()
+substring(string from pattern) - Extracts first regex match or null
+REGEXP_MATCHES() - Returns an array of matches
+
+regexp_replace(source, pattern, replacement [, 'gi'])
+
 
 COURSE 2
 ========
@@ -162,3 +173,9 @@ TODO
 
 WITH / Common Table Expressions
 
+VIEWS
+----- 
+
+You can “hide” complexity with a view.   You can create a view with computed columns, which can prove quite handy. You can limit access by use of views as well restrict certain dB users to read-only views.  
+
+PERCENT_RANK
