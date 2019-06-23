@@ -1,54 +1,27 @@
-SQL TOOLS AND TECHNIQUES (3)
-========================
 
-ALTER TABLE
+STRINGS (4)
+===========
 
-DATES
-  Time Zones / UTC
-  Casting
-  DATE_TRUNC
-  Differences
+Index review email unique 
 
+EXPLAIN
 
-Concurrency 
------------
+INDEX Strings with long lengths
 
-INSERT ON CONFLICT UPDATE
+HASH Functions - String of any length -> string of fixed length
+   One way
+   MD5
+   Rainbow tables
+   SHA256
+   Collision
 
-Likes / votes
+Field length
 
-Transactions
-------------
+CHECK CONSTRAINT !
 
-Stored Procedures
------------------
+Character Sets - UTF-8 - Grab slides from PY4E
 
-SUBQUERY
---------
-
-1. INSERT / UPDATE WHERE clause subquery (WHERE x IN (SELECT . . . )
-2. JOIN on a subquery (e.g., joining on a virtual table)
-3. Correlated subquery (subquery references the enclosing query)
-4. insert into table selecting from another table
-
-GROUPING
---------
-
-DISTINCT / DISTINCT ON
-Group By
-GROUPING SETS (i.e. subtotals)
-
-
-WORKING WITH FILES AND STRINGS (4)
-==============================
-
-IMPORT FROM CSV
----------------
-
-\copy and CSV
-
-Manipulating Strings
---------------------
+HASH Functions
 
 String functions - Split_part
   || Concatenate also CONCAT('a', 'b') concat_ws(',', 'a', 'b') (separators)
