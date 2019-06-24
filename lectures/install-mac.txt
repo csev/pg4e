@@ -14,5 +14,7 @@ postgres=# CREATE USER pg4e WITH PASSWORD 'secret';
 CREATE ROLE
 postgres=# CREATE DATABASE people WITH OWNER 'pg4e';
 CREATE DATABASE
+postgres=# CREATE DATABASE discuss WITH OWNER 'pg4e';
+CREATE DATABASE
 postgres=# \q
 
