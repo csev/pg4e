@@ -4,7 +4,9 @@ STRINGS (4)
 
 Generating data in a database
 
-Index review email unique 
+Index review Text with and without unique 
+
+trunc()
 
 EXPLAIN
 
