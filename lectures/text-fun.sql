@@ -3,6 +3,8 @@
 
 psql discuss pg4e
 
+discuss=> SHOW SERVER_ENCODING;
+
 CREATE TABLE cr1 (
   id SERIAL,
   url VARCHAR(128) UNIQUE,
