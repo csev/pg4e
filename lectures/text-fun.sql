@@ -20,6 +20,12 @@ CREATE TABLE cr2 (
 insert into cr2 (url)
 select random() || repeat('Neon', 1000) || generate_series(1,100);
 
+select 'http://example.com/' || repeat('blah/', 10) || generate_series(1,5);
+
+select concat('http://example.com/', repeat('blah/', 10), '?random=', random(), '&x=', generate_series(1,5));
+
+select (random()*10)::int;
+
 select pg_relation_size('cr2'), pg_indexes_size('cr2');
 
 create unique index cr2_unique on cr2 (url);
