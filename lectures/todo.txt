@@ -150,6 +150,8 @@ TODO
 
 WITH / Common Table Expressions
 
+Doing it in Python
+
 VIEWS
 ----- 
 
