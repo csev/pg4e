@@ -4,6 +4,23 @@ STRINGS (4)
 
 Generating data in a database
 
+String functions - Split_part
+  || Concatenate also CONCAT('a', 'b') concat_ws(',', 'a', 'b') (separators)
+https://www.postgresql.org/docs/9.1/functions-string.html
+
+LIKE / SIMILAR TO
+
+https://www.postgresql.org/docs/8.1/functions-matching.html
+
+LIKE ~~ / NOT LIKE   !~~ % many chars, _ one char
+ILIKE ~~* / NOT ILIKE !~~*
+SIMILAR TO / NOT SIMILAR TO   Hybrid SQL / Regex matching
+REGEX:
+  ~ Matches
+  ~* Matches case insensitive
+  !~ Does not match
+  !~* Does not match case insensitive
+
 Index review Text with and without unique 
 
 trunc()
@@ -26,24 +43,6 @@ CHECK CONSTRAINT !
 Character Sets - UTF-8 - Grab slides from PY4E
 
 HASH Functions
-
-String functions - Split_part
-  || Concatenate also CONCAT('a', 'b') concat_ws(',', 'a', 'b') (separators)
-https://www.postgresql.org/docs/9.1/functions-string.html
-
-LIKE / SIMILAR TO
-
-https://www.postgresql.org/docs/8.1/functions-matching.html
-
-LIKE ~~ / NOT LIKE   !~~ % many chars, _ one char
-ILIKE ~~* / NOT ILIKE !~~*
-SIMILAR TO / NOT SIMILAR TO   Hybrid SQL / Regex matching
-
-REGEX:
-  ~ Matches
-  ~* Matches case insensitive
-  !~ Does not match
-  !~* Does not match case insensitive
 
 
 REGEXP POSIX Variant
