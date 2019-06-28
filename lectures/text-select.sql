@@ -22,14 +22,24 @@ SELECT (CASE WHEN (random() < 0.5)
 SELECT pg_relation_size('textfun'), pg_indexes_size('textfun');
 
 SELECT content FROM textfun WHERE content LIKE '%150000%';
+--  https://www.pg4e.com/neon/150000
 SELECT upper(content) FROM textfun WHERE content LIKE '%150000%';
+--  HTTPS://WWW.PG4E.COM/NEON/150000
 SELECT lower(content) FROM textfun WHERE content LIKE '%150000%';
+--  https://www.pg4e.com/neon/150000
 SELECT right(content, 4) FROM textfun WHERE content LIKE '%150000%';
+-- 0000
 SELECT left(content, 4) FROM textfun WHERE content LIKE '%150000%';
+-- http
 SELECT strpos(content, 'ttps://') FROM textfun WHERE content LIKE '%150000%';
+-- 2
 SELECT substr(content, 2, 4) FROM textfun WHERE content LIKE '%150000%';
+-- ttps
 SELECT split_part(content, '/', 4) FROM textfun WHERE content LIKE '%150000%';
+-- neon
 SELECT translate(content, 'th.p/', 'TH!P_') FROM textfun WHERE content LIKE '%150000%';
+--  HTTPs:__www!Pg4e!com_neon_150000
+
 
 SELECT content FROM textfun WHERE content LIKE '%150000%';
 SELECT content FROM textfun WHERE content LIKE '%15__00%' LIMIT 3;
