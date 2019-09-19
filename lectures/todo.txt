@@ -1,61 +1,9 @@
 
-STRINGS (4)
-===========
-
-Generating data in a database
-
-String functions - Split_part
-  || Concatenate also CONCAT('a', 'b') concat_ws(',', 'a', 'b') (separators)
-https://www.postgresql.org/docs/9.1/functions-string.html
-
-LIKE / SIMILAR TO
-
-https://www.postgresql.org/docs/8.1/functions-matching.html
-
-LIKE ~~ / NOT LIKE   !~~ % many chars, _ one char
-ILIKE ~~* / NOT ILIKE !~~*
-SIMILAR TO / NOT SIMILAR TO   Hybrid SQL / Regex matching
-REGEX:
-  ~ Matches
-  ~* Matches case insensitive
-  !~ Does not match
-  !~* Does not match case insensitive
-
-Index review Text with and without unique 
-
-trunc()
-
-EXPLAIN
-
-INDEX Strings with long lengths
-
-HASH Functions - String of any length -> string of fixed length
-   One way
-   MD5
-   Rainbow tables
-   SHA256
-   Collision
-
-Field length
-
-CHECK CONSTRAINT !
-
-Character Sets - UTF-8 - Grab slides from PY4E
-
-HASH Functions
-
-
-REGEXP POSIX Variant
-https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-POSIX-REGEXP
-
-substring(string from pattern) - Extracts first regex match or null
-REGEXP_MATCHES() - Returns an array of matches
-
-regexp_replace(source, pattern, replacement [, 'gi'])
-
-
 COURSE 2
 ========
+
+WEEK 1
+======
 
 JSON FIELDS
 ===========
@@ -97,6 +45,22 @@ while jsonb_path_ops creates index items only for each value in the data.
 Basically, each jsonb_path_ops index item is a hash of the value and the
 key(s) leading to it.
 
+WEEK 2
+======
+
+FULL TEXT SEARCHES
+------------------
+
+ts_vector
+GIN  - Generalized inverted - Perfect - Slow update, fast select
+GiST - Generalized Search Tree - Lossy - Hash - Fast update, slow select
+
+SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impossible');
+
+
+WEEK 3
+======
+
 DUMP / RESTORE
 --------------
 
@@ -106,8 +70,8 @@ pg_dump dbname > outfile
 
 psql dbname < infile
 
-PERFORMANCE
------------
+INDEXES AND PERFORMANCE
+-----------------------
 
 Explain Queries
 
@@ -117,9 +81,14 @@ GIN - Words not LIKE
 GiST - Words not LIKE
 https://en.wikipedia.org/wiki/Block_Range_Index
 
+VIEWS
+----- 
+
+You can “hide” complexity with a view.   You can create a view with computed columns, which can prove quite handy. You can limit access by use of views as well restrict certain dB users to read-only views.  
+
 
 PROCEDURES
----------
+----------
 
 Stored Procedures
 
@@ -134,16 +103,6 @@ ON table_name
 [
 ];
 
-
-FULL TEXT SEARCHES
-------------------
-
-ts_vector
-GIN  - Generalized inverted - Perfect - Slow update, fast select
-GiST - Generalized Search Tree - Lossy - Hash - Fast update, slow select
-
-SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impossible');
-
 TODO
 ----
 
@@ -151,9 +110,6 @@ WITH / Common Table Expressions
 
 Doing it in Python
 
-VIEWS
------ 
-
-You can “hide” complexity with a view.   You can create a view with computed columns, which can prove quite handy. You can limit access by use of views as well restrict certain dB users to read-only views.  
-
 PERCENT_RANK
+
+HSTORE :)
