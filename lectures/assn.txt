@@ -1,0 +1,25 @@
+
+01-Basic SQL
+
+- MD5
+- Parse CSV => One Table
+
+03- Model / Many-Many
+
+- Design model One-Many unesco
+- Insert normalized data
+- Parse CSV => five one-to-many tables
+
+03 - Alter / Distincy / Group / Trasactions / Stored Procs
+
+- Design model Many-to-One unesco
+- Alter Table
+- CSV -> 6 tables many-to-many
+- Stored procedure updated_at
+
+04 - Text / test data / index perf / character setc / hashing / regex
+
+- Email -> data one tbale
+- Normalize / filter / clean like PY4E#5
+- Bunch-O-Queries
+
