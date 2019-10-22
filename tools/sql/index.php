@@ -16,8 +16,12 @@ if ( SettingsForm::handleSettingsPost() ) {
 
 // All the assignments we support
 $assignments = array(
+    'single_psql.php' => 'Single Table PostgreSQL (Users)',
+    'many_one_psql.php' => 'Many-to-One PostgreSQL (Tracks)',
+
     'single_mysql.php' => 'Single Table MySQL (Users)',
     'many_many_mysql.php' => 'Many-to-Many MySQL (Courses)',
+
     'single_lite.php' => 'Single Table SQLITE (Users)',
     'count_lite.php' => 'Email Counter SQLITE',
     'many_one_lite.php' => 'Many-to-One SQLITE (Tracks)',
