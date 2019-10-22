@@ -13,8 +13,9 @@ require_once "sql_util.php";
 // $myPDO = new PDO('pgsql:host=localhost;dbname=DBNAME', 'USERNAME', 'PASSWORD');
 // %sql postgres://pg4e:secret@167.71.95.37:5432/people
 
-
-$pdo_connection = 'pgsql:host=167.71.95.37;dbname=people';
+$pdo_host = '167.71.95.37';
+$pdo_database = 'people';
+$pdo_connection = "pgsql:host=$pdo_host;dbname=$pdo_database";
 $pdo_user = 'pg4e';
 $pdo_pass = 'secret';
 
@@ -28,31 +29,23 @@ die();
 
 $answer = array(
   array(
-    "Chase the Ace",
-    "AC/DC",
-    "Who Made Who",
-    "Rock"
+    "Circles",
+    "Blues Is",
   ),
   array(
-    "D.T.",
-    "AC/DC",
-    "Who Made Who",
-    "Rock"
+    "Gelle",
+    "Blues Is",
   ),
   array(
-    "For Those About To Rock (We Salute You)",
-    "AC/DC",
-    "Who Made Who",
-    "Rock"
+    "I Worry",
+    "Blues Is",
   )
 );
 
-$sql = "SELECT Track.title, Artist.name, Album.title, Genre.name
+$sql = "SELECT Track.title, Album.title
     FROM Track 
-    JOIN Genre ON Track.genre_id = Genre.id
     JOIN Album ON Track.album_id = Album.id
-    JOIN Artist ON Album.artist_id = Artist.id
-    ORDER BY Artist.name LIMIT 3";
+    ORDER BY Album.title LIMIT 3;";
 
 $oldgrade = $RESULT->grade;
 
@@ -69,14 +62,18 @@ if ( U::get($_POST,'check') ) {
 
     $good = 0;
     $pos = 0;
+    $error = false;
     while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
         $ans = $answer[$pos];
         foreach($ans as $i => $txt ) {
             if ($row[$i] != $txt ) {
+                $pos++; $i++;
                 $_SESSION['error'] = "Row $pos column $i expected $txt, got ".$row[$i];
+                $error = true;
                 break;
             }
         }
+        if ( $error ) break;
         $good++;
         $pos++;
     }
@@ -126,39 +123,34 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<p>
-<form name="myform" enctype="multipart/form-data" method="post" >
-To get credit for this assignment, perform the instructions below and 
-upload your SQLite3 database here: <br/>
-<input type="submit" name="check" value="Check Answer">
-<p>
-You do not need to export or convert the database -  simply upload 
-the <b>.sqlite</b> file that your program creates.  See the example code for
-the use of the <b>connect()</b> statement.
-</p>
-</form>
-</p>
 <h1>Musical Track Database</h1>
 <p>
-This application will read an iTunes export file in XML and produce a properly
-normalized database with this structure:
+This application will read an iTunes library in comma-separated-values (CSV)
+and produce a properly normalized database here:
 <pre>
-CREATE TABLE artist (
-  id SERIAL,
-  name VARCHAR(128) UNIQUE,
-  PRIMARY KEY(id)
-);
+Host: <?= $pdo_host ?>
 
+Database: <?= $pdo_database ?>
+
+Account: <?= $pdo_user ?>
+
+Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a>)
+</pre>
+</p>
+<p>
+Once you have placed the proper data in the database, press the button below to
+check your answer.
+<form name="myform" enctype="multipart/form-data" method="post" >
+<input type="submit" name="check" value="Check Answer">
+</form>
+</p>
+<p>
+Here is the structure of your database:
+<pre>
 CREATE TABLE album (
   id SERIAL,
   title VARCHAR(128) UNIQUE,
   artist_id INTEGER REFERENCES artist(id) ON DELETE CASCADE,
-  PRIMARY KEY(id)
-);
-
-CREATE TABLE genre (
-  id SERIAL,
-  name VARCHAR(128) UNIQUE,
   PRIMARY KEY(id)
 );
 
@@ -167,7 +159,6 @@ CREATE TABLE track (
     title VARCHAR(128),
     len INTEGER, rating INTEGER, count INTEGER,
     album_id INTEGER REFERENCES album(id) ON DELETE CASCADE,
-    genre_id INTEGER REFERENCES genre(id) ON DELETE CASCADE,
     UNIQUE(title, album_id),
     PRIMARY KEY(id)
 );
@@ -177,24 +168,22 @@ CREATE TABLE track (
 If you run the program multiple times in testing or with different files, 
 make sure to empty out the data before each run.
 <p>
-You can use this code as a starting point for your application:
-<a href="http://www.pythonlearn.com/code/tracks.zip" target="_blank">
-http://www.pythonlearn.com/code/tracks.zip</a>.  
-The ZIP file contains the <b>Library.xml</b> file to be used for this assignment.
-You can export your own tracks from iTunes and create a database, but
-for the database that you turn in for this assignment, only use the 
-<b>Library.xml</b> data that is provided.
+Here is the 
+<a href=library.csv" target="_blank">
+CSV data 
+</a>
+for the application.
 </p>
 <p>
 To grade this assignment, the program will run a query like this on
-your uploaded database and look for the data it expects to see:
+your database and look for the data it expects to see:
 <pre>
 <?= htmlentities($sql) ?>
 </pre>
 The expected result of this query on your database is:
 <table border="2">
 <tr>
-<th>Track</th><th>Artist</th><th>Album</th><th>Genre</th>
+<th>Track</th><th>Album</th>
 </tr>
 <?php
 foreach($answer as $ans) {
