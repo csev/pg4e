@@ -2,12 +2,29 @@
 
 use \Tsugi\Core\LTIX;
 use \Tsugi\Util\LTI;
+use \Tsugi\Util\PDOX;
+use \Tsugi\Util\U;
 use \Tsugi\Util\Mersenne_Twister;
 
 $MAX_UPLOAD_FILE_SIZE = 1024*1024;
 
 require_once "sql_util.php";
 
+// $myPDO = new PDO('pgsql:host=localhost;dbname=DBNAME', 'USERNAME', 'PASSWORD');
+// %sql postgres://pg4e:secret@167.71.95.37:5432/people
+
+
+$pdo_connection = 'pgsql:host=167.71.95.37;dbname=people';
+$pdo_user = 'pg4e';
+$pdo_pass = 'secret';
+
+// $PDO = new PDOX('pgsql:host=167.71.95.37;dbname=people', 'pg4e', 'secret');
+/*
+$pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass);
+$row = $pg_PDO->rowDie("SELECT 1 As Test");
+var_dump($row);
+die();
+ */
 
 $answer = array(
   array(
@@ -32,56 +49,20 @@ $answer = array(
 
 $oldgrade = $RESULT->grade;
 
-if ( isset($_FILES['database']) ) {
-    $fdes = $_FILES['database'];
+if ( U::get($_POST,'check') ) {
 
-    // Check to see if they left off the file
-    if( $fdes['error'] == 4) {
-        $_SESSION['error'] = 'Missing file, make sure to select a file before pressing submit';
-        header( 'Location: '.addSession('index.php') ) ;
-        return;
-    }
+    $pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass);
+    $sql = "SELECT Track.title, Artist.name, Album.title, Genre.name
+                FROM Track 
+                JOIN Genre ON Track.genre_id = Genre.id
+                JOIN Album ON Track.album_id = Album.id
+                JOIN Artist ON Album.artist_id = Artist.id
+                ORDER BY Artist.name LIMIT 3";
 
-    if ( $fdes['size'] > $MAX_UPLOAD_FILE_SIZE ) {
-        $_SESSION['error'] = "Uploaded file must be < ".$OUTPUT->displaySize($MAX_UPLOAD_FILE_SIZE);
-        header( 'Location: '.addSession('index.php') ) ;
-        return;
-    }
-
-    if ( ! endsWith($fdes['name'],'.sqlite') ) {
-        $_SESSION['error'] = "Uploaded file must have .sqlite suffix: ".$fdes['name'];
-        header( 'Location: '.addSession('index.php') ) ;
-        return;
-    }
-    $file = $fdes['tmp_name'];
-
-
-    $fh = fopen($file,'r');
-    $prefix = fread($fh, 100);
-    fclose($fh);
-    if ( ! startsWith($prefix,'SQLite format 3') ) {
-        $_SESSION['error'] = "Uploaded file is not SQLite3 format: ".$fdes['name'];
-        header( 'Location: '.addSession('index.php') ) ;
-        return;
-    }
-
-    $results = false;
-    try {
-        $db = new SQLite3($file, SQLITE3_OPEN_READONLY);
-        $results = @$db->query("
-            SELECT Track.title, Artist.name, Album.title, Genre.name
-                FROM Track JOIN Genre JOIN Album JOIN Artist
-                ON Track.genre_id = Genre.ID and Track.album_id = Album.id
-                    AND Album.artist_id = Artist.id
-                ORDER BY Artist.name LIMIT 3");
-    } catch(Exception $ex) { 
-        $_SESSION['error'] = "SQL Error: ".$ex->getMessage();
-        header( 'Location: '.addSession('index.php') ) ;
-        return;
-    }
-
-    if ( $results === false ) {
-        $_SESSION['error'] = "SQL Query Error: ".$db->lastErrorMsg();
+    $stmt = $pg_PDO->queryReturnError($sql);
+    if ( ! $stmt->success ) {
+        error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
+        $_SESSION['error'] = "SQL Query Error: ".$stmt->errorImplode;
         header( 'Location: '.addSession('index.php') ) ;
         return;
     }
@@ -147,9 +128,7 @@ if ( $dueDate->message ) {
 <form name="myform" enctype="multipart/form-data" method="post" >
 To get credit for this assignment, perform the instructions below and 
 upload your SQLite3 database here: <br/>
-<input name="database" type="file"> 
-(Must have a .sqlite suffix)<br/>
-<input type="submit">
+<input type="submit" name="check" value="Check Answer">
 <p>
 You do not need to export or convert the database -  simply upload 
 the <b>.sqlite</b> file that your program creates.  See the example code for
