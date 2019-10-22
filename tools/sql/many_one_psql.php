@@ -27,6 +27,15 @@ var_dump($row);
 die();
  */
 
+$file = fopen("library.csv","r");
+$titles = "";
+while ( $pieces = fgetcsv($file) ) {
+    if ( strlen($titles) > 0 ) $titles .= ',';
+    $titles .= $pieces[0];
+}
+fclose($file);
+$title_md5 = md5($titles);
+
 $answer = array(
   array(
     "Circles",
@@ -194,4 +203,12 @@ foreach($answer as $ans) {
     echo("<tr>\n");
 }
 ?>
+</table>
 </p>
+<p>
+Also run the following query on your table:
+<pre>
+select md5(string_agg(title, ',')) from track;
+
+Result: <?= $title_md5 ?>
+</pre>
