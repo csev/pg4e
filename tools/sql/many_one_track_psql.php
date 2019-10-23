@@ -29,32 +29,24 @@ die();
 
 $file = fopen("library.csv","r");
 $titles = "";
+$library = array();
+$answer = array();
 while ( $pieces = fgetcsv($file) ) {
     if ( strlen($titles) > 0 ) $titles .= ',';
     $titles .= $pieces[0];
+    $library[] = $pieces;
+    $answer[] = array($pieces[0], $pieces[2]); 
 }
 fclose($file);
 $title_md5 = md5($titles);
 
-$answer = array(
-  array(
-    "Circles",
-    "Blues Is",
-  ),
-  array(
-    "Gelle",
-    "Blues Is",
-  ),
-  array(
-    "I Worry",
-    "Blues Is",
-  )
-);
+sort($library);
+sort($answer);
 
 $sql = "SELECT Track.title, Album.title
-    FROM Track 
+    FROM Track
     JOIN Album ON Track.album_id = Album.id
-    ORDER BY Album.title LIMIT 3;";
+    ORDER BY Track.title LIMIT 3;";
 
 $oldgrade = $RESULT->grade;
 
@@ -72,12 +64,13 @@ if ( U::get($_POST,'check') ) {
     $good = 0;
     $pos = 0;
     $error = false;
+    $found = false;
     while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
         $ans = $answer[$pos];
         foreach($ans as $i => $txt ) {
             if ($row[$i] != $txt ) {
-                $pos++; $i++;
-                $_SESSION['error'] = "Row $pos column $i expected $txt, got ".$row[$i];
+                $pos++; $col = $i + 1;
+                $_SESSION['error'] = "Row $pos column $col expected $txt, got ".$row[$i];
                 $error = true;
                 break;
             }
@@ -85,6 +78,11 @@ if ( U::get($_POST,'check') ) {
         if ( $error ) break;
         $good++;
         $pos++;
+    }
+
+    if ( $pos == 0 ) {
+        $_SESSION['error'] = "No records found in tracks table";
+        $error = true;
     }
 
     if ( $good < 3 ) {
@@ -195,12 +193,15 @@ The expected result of this query on your database is:
 <th>Track</th><th>Album</th>
 </tr>
 <?php
+$pos=0;
 foreach($answer as $ans) {
     echo("<tr>");
     foreach($ans as $i => $txt ) {
         echo("<td>".htmlentities($txt)."</td>");
     }
     echo("<tr>\n");
+    $pos++;
+    if ( $pos >= 3 ) break;
 }
 ?>
 </table>
