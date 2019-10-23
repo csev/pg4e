@@ -147,7 +147,7 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> (<a href=
 <p>
 Once you have placed the proper data in the database, press the button below to
 check your answer.
-<form name="myform" enctype="multipart/form-data" method="post" >
+<form name="myform" method="post" >
 <input type="submit" name="check" value="Check Answer">
 </form>
 </p>
@@ -170,6 +170,8 @@ CREATE TABLE track (
     PRIMARY KEY(id)
 );
 </pre>
+We will ignore the artist field for this assignment and focus on the many-to-onr replationship
+between tracks and albums.
 </p>
 <p>
 If you run the program multiple times in testing or with different files, 
