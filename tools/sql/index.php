@@ -18,8 +18,6 @@ if ( SettingsForm::handleSettingsPost() ) {
 $assignments = array(
     'single_psql.php' => 'Single Table PostgreSQL (Users)',
     'many_one_track_psql.php' => 'Many-to-One PostgreSQL (Tracks)',
-
-    'count_lite.php' => 'Email Counter SQLITE',
 );
 
 $oldsettings = Settings::linkGetAll();
