@@ -23,6 +23,7 @@ if ( $LAUNCH->user->instructor ) {
     $pdo_user = U::get($_POST, 'pdo_user', $pdo_user);
     $pdo_pass = U::get($_POST, 'pdo_pass', $pdo_pass);
 }
+
 $pdo_connection = "pgsql:host=$pdo_host;dbname=$pdo_database";
 
 $file = fopen("library.csv","r");
@@ -187,19 +188,33 @@ CREATE TABLE track (
     UNIQUE(title, album_id),
     PRIMARY KEY(id)
 );
+
+CREATE TABLE track_raw
+ (title TEXT, artist TEXT, album TEXT, album_id INTEGER,
+  count INTEGER, rating INTEGER, len INTEGER);
 </pre>
-We will ignore the artist field for this assignment and focus on the many-to-onr replationship
+We will ignore the artist field for this assignment and focus on the many-to-one replationship
 between tracks and albums.
 </p>
 <p>
 If you run the program multiple times in testing or with different files, 
 make sure to empty out the data before each run.
 <p>
-Here is the 
+Load this 
 <a href=library.csv" target="_blank">
 CSV data 
 </a>
-for the application.
+data file into the <b>track_raw</b> table using the <b>\copy</b> command.  
+Then write SQL commands to insert all of the distinct albums into the <b>album</b> table
+(creating their primary keys) and then set the <b>album_id</b> in the <b>track_raw</b>
+table using an SQL query like:
+<pre>
+UPDATE track_raw SET album_id = (SELECT album.id FROM album WHERE album.title = track_raw.album);
+</pre>
+</p>
+<p>
+Then copy the corresponding data from the <b>album</b> (text field) from <b>album_raw</b>
+to <b>album</b>.
 </p>
 <p>
 To grade this assignment, the program will run a query like this on
