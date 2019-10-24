@@ -10,22 +10,20 @@ $MAX_UPLOAD_FILE_SIZE = 1024*1024;
 
 require_once "sql_util.php";
 
-// $myPDO = new PDO('pgsql:host=localhost;dbname=DBNAME', 'USERNAME', 'PASSWORD');
-// %sql postgres://pg4e:secret@167.71.95.37:5432/people
+// TODO:  Call Michael's API
 
 $pdo_host = '167.71.95.37';
 $pdo_database = 'people';
-$pdo_connection = "pgsql:host=$pdo_host;dbname=$pdo_database";
 $pdo_user = 'pg4e';
 $pdo_pass = 'secret';
 
-// $PDO = new PDOX('pgsql:host=167.71.95.37;dbname=people', 'pg4e', 'secret');
-/*
-$pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass);
-$row = $pg_PDO->rowDie("SELECT 1 As Test");
-var_dump($row);
-die();
- */
+if ( $LAUNCH->user->instructor ) {
+    $pdo_host = U::get($_POST, 'pdo_host', $pdo_host);
+    $pdo_database = U::get($_POST, 'pdo_database', $pdo_database);
+    $pdo_user = U::get($_POST, 'pdo_user', $pdo_user);
+    $pdo_pass = U::get($_POST, 'pdo_pass', $pdo_pass);
+}
+$pdo_connection = "pgsql:host=$pdo_host;dbname=$pdo_database";
 
 $file = fopen("library.csv","r");
 $titles = "";
@@ -52,7 +50,16 @@ $oldgrade = $RESULT->grade;
 
 if ( U::get($_POST,'check') ) {
 
-    $pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass);
+    try {
+        $pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass);
+    } catch(Exception $e) {
+        // echo("<pre>\n");var_dump($e);die();
+        $_SESSION['error'] = "Could not make database connection to ".$pdo_host." / ".$pdo_user
+            ." | ".$e->getMessage();
+        header( 'Location: '.addSession('index.php') ) ;
+        return;
+    }
+
     $stmt = $pg_PDO->queryReturnError($sql);
     if ( ! $stmt->success ) {
         error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
@@ -133,7 +140,20 @@ if ( $dueDate->message ) {
 <h1>Musical Track Database</h1>
 <p>
 This application will read an iTunes library in comma-separated-values (CSV)
-and produce a properly normalized database here:
+and produce a properly normalized database as specified below.
+Once you have placed the proper data in the database, press the button below to
+check your answer.
+</p>
+<form name="myform" method="post" >
+<p>
+<?php if ( $LAUNCH->user->instructor ) { ?>
+Host: <input type="text" name="pdo_host" value="<?= htmlentities($pdo_host) ?>"><br/>
+Database: <input type="text" name="pdo_database" value="<?= htmlentities($pdo_database) ?>"><br/>
+User: <input type="text" name="pdo_user" value="<?= htmlentities($pdo_user) ?>"><br/>
+Password: <span id="pass" style="display:none"><input type="text" name="pdo_pass" value="<?= htmlentities($pdo_pass) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a>) <br/>
+</pre>
+<?php } else { ?>
+<p>
 <pre>
 Host: <?= $pdo_host ?>
 
@@ -144,11 +164,9 @@ Account: <?= $pdo_user ?>
 Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a>)
 </pre>
 </p>
-<p>
-Once you have placed the proper data in the database, press the button below to
-check your answer.
-<form name="myform" method="post" >
-<input type="submit" name="check" value="Check Answer">
+<?php } ?>
+<input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
+<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
 </form>
 </p>
 <p>
