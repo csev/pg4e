@@ -29,14 +29,21 @@ function makeRoster($code,$course_count=false,$name_count=false) {
 
 // Unique to user + course
 function getUnique($LAUNCH) {
-    return md5($LAUNCH->user->key.'::'.$LAUNCH->context->key.'::'.$LAUNCH->user->id.'::'.$LAUNCH->context->id);
+    return md5($LAUNCH->user->key.'::'.$LAUNCH->context->key.
+        '::'.$LAUNCH->user->id.'::'.$LAUNCH->context->id);
 }
 
-function pg4e_info($dbname) { 
-    global $CFG;
+/**
+ * Returns
+ * Object if good JSON was recceived.
+ * String if something went wrong
+ * Number if something went wrong and all we have is the http code
+ */
+function pg4e_request($dbname, $path='info') { 
+    global $CFG, $pg4e_request_result;
 
-    $dbname = 'zap123';
-    $endpoint = $CFG->pg4e_api_url.'/info/'.$dbname;
+    $pg4e_request_result = false;
+    $endpoint = $CFG->pg4e_api_url.'/'.$path.'/'.$dbname;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $endpoint);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
@@ -45,23 +52,23 @@ function pg4e_info($dbname) {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
-    $result = curl_exec($ch);
-    if($result === false)
+    $pg4e_request_result = curl_exec($ch);
+    if($pg4e_request_result === false)
     {
         return 'Curl error: ' . curl_error($ch);
     }                                                                                                      
     $returnCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    echo $returnCode."</br>";
     if ( $returnCode == 401 ) return "401: Not Authorized";
     if ( $returnCode == 500 || $returnCode == 404 ) return 404;
     if ( $returnCode != 200 ) return $returnCode . ": HTTP Error";
 
     // Lets parse the JSON
-    $retval = json_decode($result, false);  // As stdClass
+// $pg4e_request_result .="}}";
+    $retval = json_decode($pg4e_request_result, false);  // As stdClass
     if ( $retval == null ) {
         error_log("JSON Error: ".json_last_error_msg());
-        error_log($result);
+        error_log($pg4e_request_result);
         return "JSON Error: ".json_last_error_msg();
     }
     return $retval;
@@ -75,7 +82,7 @@ function pg4e_extract_info($info) {
 	$retval = new \stdClass();
  	$retval->user = base64_decode($info->auth->data->POSTGRES_USER);
  	$retval->password = base64_decode($info->auth->data->POSTGRES_PASSWORD);
- 	$retval->ip = $info->svc->status->loadBalancer->ingress[0]->ip;
+ 	$retval->ip = $info->svc->status->loadBalancer->ingress[0]->ip ?? null;
 	return $retval;
     } catch(Exception $e) {
 	return null;
