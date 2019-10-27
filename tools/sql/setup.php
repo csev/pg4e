@@ -11,7 +11,6 @@ $MAX_UPLOAD_FILE_SIZE = 1024*1024;
 require_once "sql_util.php";
 
 $dbname = "pg4e_".$unique;
-$dbname = "pg4e42";
 if ( $LAUNCH->user->instructor && U::get($_GET, 'dbname') ) {
     $dbname = U::get($_GET, 'dbname');
 }
@@ -52,8 +51,15 @@ if ( ! $info ) {
 <?php } ?>
 <p>
 <?php
-if ( is_int($retval) && $retval == 404 ) {
-    echo("<p>Environment ".htmlentities($dbname)." not found.</p>\n");
+if ( $try_create == 404 ) {
+    $spinner = '<img src="'.$OUTPUT->getSpinnerUrl().'">';
+    echo("<p>Details for ".htmlentities($dbname)." (being created...):</p>\n");
+    echo("<pre>\n");
+    echo('Server: <span id="server">'.$spinner."</span>\n");
+    echo('User: <span id="user">'.$spinner."</span>\n");
+    echo("Password: ");
+    echo('<span id="pass" style="display:none">'.$spinner.'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show</a>)'."\n");
+    echo("</pre>\n");
 } else if ( is_string($retval) ) {
     echo("<p>Error retrieving environment: ".htmlentities($dbname)."<br/>".htmlentities($retval)."</p>\n");
 } else if ( is_object($info) ) {

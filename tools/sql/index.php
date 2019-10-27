@@ -11,8 +11,6 @@ $LAUNCH = LTIX::requireData();
 $p = $CFG->dbprefix;
 $unique = getUnique($LAUNCH);
 
-$unique = "zap42";
-
 if ( SettingsForm::handleSettingsPost() ) {
     header( 'Location: '.addSession('index.php') ) ;
     return;
