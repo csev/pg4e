@@ -1,0 +1,38 @@
+
+01-Basic SQL
+
+- Setup - insert a signature - Add py4e_debug
+- Make a role
+- MD5 Users
+- Create a table per some specification - naming convention
+- Auto increment
+- On delete cascade
+- Parse CSV => One Table - tracks_raw
+- Parse CSV => One Table - unesco_raw
+
+03- Model / Many-Many
+
+- Key types - primary, logical, foreign
+- Hand construct one-to-many table
+- Create a table per some specification - naming convention
+- Design model One-Many unesco
+- Insert normalized data
+- Parse CSV => five one-to-many tables
+
+03 - Alter / Distinct / Group / Trasactions / Stored Procs
+
+- Make a table - alter the table to add a field
+- Read sql commands from a file??
+- Hand construct many-to-many table - roster
+- Design model Many-to-One unesco
+- Alter Table - tracks_raw (add the foreign key fields)
+- CSV -> tracks_many_to_many
+- CSV -> unesco_many_to_many
+- Stored procedure updated_at
+
+04 - Text / test data / index perf / character setc / hashing / regex
+
+- Email -> data one table
+- Normalize / filter / clean like PY4E#5
+- Bunch-O-Queries
+
