@@ -18,6 +18,7 @@ if ( SettingsForm::handleSettingsPost() ) {
 
 // All the assignments we support
 $assignments = array(
+    'info.php' => 'Get database info',
     'setup_psql.php' => 'Setup PostgresSQL (Users)',
     'single_psql.php' => 'Single Table PostgreSQL (Users)',
     'many_one_track_psql.php' => 'Many-to-One PostgreSQL (Tracks)',
