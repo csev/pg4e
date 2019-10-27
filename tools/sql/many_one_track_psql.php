@@ -52,7 +52,12 @@ $oldgrade = $RESULT->grade;
 if ( U::get($_POST,'check') ) {
 
     try {
-        $pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass);
+        $pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass,
+        array(
+            PDO::ATTR_TIMEOUT => 5, // in seconds
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        )
+    );
     } catch(Exception $e) {
         // echo("<pre>\n");var_dump($e);die();
         $_SESSION['error'] = "Could not make database connection to ".$pdo_host." / ".$pdo_user
