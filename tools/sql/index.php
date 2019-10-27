@@ -1,5 +1,6 @@
 <?php
 require_once "../config.php";
+require_once "sql_util.php";
 
 use \Tsugi\Core\Settings;
 use \Tsugi\Core\LTIX;
@@ -8,6 +9,7 @@ use \Tsugi\UI\Lessons;
 
 $LAUNCH = LTIX::requireData();
 $p = $CFG->dbprefix;
+$unique = getUnique($LAUNCH);
 
 if ( SettingsForm::handleSettingsPost() ) {
     header( 'Location: '.addSession('index.php') ) ;
@@ -16,6 +18,7 @@ if ( SettingsForm::handleSettingsPost() ) {
 
 // All the assignments we support
 $assignments = array(
+    'setup_psql.php' => 'Setup PostgresSQL (Users)',
     'single_psql.php' => 'Single Table PostgreSQL (Users)',
     'many_one_track_psql.php' => 'Many-to-One PostgreSQL (Tracks)',
 );

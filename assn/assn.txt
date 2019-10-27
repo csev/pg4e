@@ -19,7 +19,7 @@
 - Insert normalized data
 - Parse CSV => five one-to-many tables
 
-03 - Alter / Distinct / Group / Trasactions / Stored Procs
+03 - Alter / Distinct / Group / Transactions / Stored Procs
 
 - Make a table - alter the table to add a field
 - Read sql commands from a file??
@@ -32,6 +32,8 @@
 
 04 - Text / test data / index perf / character setc / hashing / regex
 
+- Fill up a lot of rows in a table
+- Character sets
 - Email -> data one table
 - Normalize / filter / clean like PY4E#5
 - Bunch-O-Queries
