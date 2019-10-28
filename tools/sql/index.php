@@ -94,6 +94,7 @@ $OUTPUT->flashMessages();
 $OUTPUT->welcomeUserCourse();
 
 if ( $assn && isset($assignments[$assn]) ) {
+$FOOTER_DONE = false;
     include($assn);
 } else {
     if ( $USER->instructor ) {
@@ -103,6 +104,5 @@ if ( $assn && isset($assignments[$assn]) ) {
     }
 }
         
-
-$OUTPUT->footer();
+if ( ! $FOOTER_DONE ) $OUTPUT->footer();
 

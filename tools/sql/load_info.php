@@ -13,7 +13,7 @@ $LAUNCH = LTIX::requireData();
 $p = $CFG->dbprefix;
 $unique = getUnique($LAUNCH);
 
-$dbname = "pg4e_".$unique;
+$dbname = getDbName($unique);
 if ( $LAUNCH->user->instructor && U::get($_GET, 'dbname') ) {
     $dbname = U::get($_GET, 'dbname');
 }

@@ -33,6 +33,10 @@ function getUnique($LAUNCH) {
         '::'.$LAUNCH->user->id.'::'.$LAUNCH->context->id);
 }
 
+function getDBName($unique) {
+    return "zap124";
+}
+
 /**
  * Returns
  * Object if good JSON was recceived.
@@ -59,9 +63,7 @@ function pg4e_request($dbname, $path='info') {
     }                                                                                                      
     $returnCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    if ( $returnCode == 401 ) return "401: Not Authorized";
-    if ( $returnCode == 500 || $returnCode == 404 ) return 404;
-    if ( $returnCode != 200 ) return $returnCode . ": HTTP Error";
+    if ( $returnCode != 200 ) return $returnCode;
 
     // Lets parse the JSON
 // $pg4e_request_result .="}}";
