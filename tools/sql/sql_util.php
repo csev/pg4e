@@ -65,8 +65,10 @@ function pg4e_request($dbname, $path='info') {
     curl_close($ch);
     if ( $returnCode != 200 ) return $returnCode;
 
+    // It seems as though create success returns '"" '
+    if ( $returnCode == 200 && trim($pg4e_request_result) == '""' ) return 200;
+
     // Lets parse the JSON
-// $pg4e_request_result .="}}";
     $retval = json_decode($pg4e_request_result, false);  // As stdClass
     if ( $retval == null ) {
         error_log("JSON Error: ".json_last_error_msg());
