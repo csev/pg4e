@@ -10,6 +10,11 @@ $MAX_UPLOAD_FILE_SIZE = 1024*1024;
 
 require_once "sql_util.php";
 
+if ( ! pg4e_unlock($LAUNCH) ) {
+    $FOOTER_DONE = true;
+    return false;
+}
+
 $dbname = getDbName($unique);
 if ( $LAUNCH->user->instructor && U::get($_GET, 'dbname') ) {
     $dbname = U::get($_GET, 'dbname');

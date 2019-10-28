@@ -15,7 +15,7 @@ $unique = getUnique($LAUNCH);
 
 if ( ! $LAUNCH->user->instructor ) die('Must be instructor');
 
-$dbname = substr("pg4e".$unique, 0, 19);
+$dbname = getDbName($unique);
 $dbname = U::get($_REQUEST, 'dbname', $dbname);
 
 $url = addSession("info.php?dbname=".urlencode($dbname));

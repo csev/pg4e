@@ -1,5 +1,6 @@
 <?php
 
+use \Tsugi\Util\U;
 use \Tsugi\Util\Mersenne_Twister;
 
 require_once "names.php";
@@ -34,7 +35,7 @@ function getUnique($LAUNCH) {
 }
 
 function getDBName($unique) {
-    return "zap124";
+    return substr("pg4e".$unique,0,19);
 }
 
 /**
@@ -91,7 +92,30 @@ function pg4e_extract_info($info) {
     } catch(Exception $e) {
 	return null;
     }
-        
-
 }
+
+function pg4e_unlock($LAUNCH) {
+    global $CFG, $OUTPUT;
+    if ( $LAUNCH->context->key != '12345' ) return true;
+    $unlock_code = md5(getUnique($LAUNCH) . $CFG->pg4e_unlock) ;
+    if ( U::get($_COOKIE, 'unlock_code') == $unlock_code ) return true;
+    if ( U::get($_POST, 'unlock_code') == $CFG->pg4e_unlock ) {
+	setcookie('unlock_code', $unlock_code);
+	header("Location: ".addSession($_SERVER['REQUEST_URI']));
+	return false;
+    }
+    $OUTPUT->header();
+    $OUTPUT->bodyStart(false);
+    $OUTPUT->topNav();
+    ?>
+<form method="post">
+<p>Unlock code:
+<input type="password" name="unlock_code">
+<input type="submit">
+</form>
+<?php
+    $OUTPUT->footer();
+    return false;
+}
+
 
