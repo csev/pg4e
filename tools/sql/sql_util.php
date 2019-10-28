@@ -94,11 +94,18 @@ function pg4e_extract_info($info) {
     }
 }
 
-function pg4e_unlock($LAUNCH) {
-    global $CFG, $OUTPUT;
+function pg4e_unlock_check($LAUNCH) {
+    global $CFG;
     if ( $LAUNCH->context->key != '12345' ) return true;
     $unlock_code = md5(getUnique($LAUNCH) . $CFG->pg4e_unlock) ;
     if ( U::get($_COOKIE, 'unlock_code') == $unlock_code ) return true;
+    return false;
+}
+
+function pg4e_unlock($LAUNCH) {
+    global $CFG, $OUTPUT;
+    if ( pg4e_unlock_check($LAUNCH) ) return true;
+
     if ( U::get($_POST, 'unlock_code') == $CFG->pg4e_unlock ) {
 	setcookie('unlock_code', $unlock_code);
 	header("Location: ".addSession($_SERVER['REQUEST_URI']));

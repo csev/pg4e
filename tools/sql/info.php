@@ -15,6 +15,8 @@ $unique = getUnique($LAUNCH);
 
 if ( ! $LAUNCH->user->instructor ) die('Must be instructor');
 
+if ( ! pg4e_unlock_check($LAUNCH) ) die('not unlocked');
+
 $dbname = getDbName($unique);
 $dbname = U::get($_REQUEST, 'dbname', $dbname);
 
@@ -66,6 +68,7 @@ Value to check:
 <input type="submit" name="create" value="Create">
 <input type="submit" name="info" value="Retrieve Info">
 <input type="submit" name="delete" value="Delete">
+<a href="index.php?dbname=<?= urlencode($dbname) ?>" class="btn btn-normal">Cancel</a>
 </form>
 <?php } ?>
 <p>
