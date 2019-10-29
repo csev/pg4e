@@ -19,8 +19,8 @@ if ( SettingsForm::handleSettingsPost() ) {
 // All the assignments we support
 $assignments = array(
     'setup.php' => 'Setup database environment',
-    'single_psql.php' => 'Single Table PostgreSQL (Users)',
-    'many_one_track_psql.php' => 'Many-to-One PostgreSQL (Tracks)',
+    'single.php' => 'Single Table PostgreSQL (Users)',
+    'many_one_track.php' => 'Many-to-One PostgreSQL (Tracks)',
 );
 
 $oldsettings = Settings::linkGetAll();
@@ -92,8 +92,8 @@ $OUTPUT->flashMessages();
 
 $OUTPUT->welcomeUserCourse();
 
-if ( $assn && isset($assignments[$assn]) ) {
 $FOOTER_DONE = false;
+if ( $assn && isset($assignments[$assn]) ) {
     include($assn);
 } else {
     if ( $USER->instructor ) {
