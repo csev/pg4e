@@ -37,28 +37,12 @@ $oldgrade = $RESULT->grade;
 
 if ( U::get($_POST,'check') ) {
 
-    try {
-        $pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass,
-        array(
-            PDO::ATTR_TIMEOUT => 5, // in seconds
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        )
-    );
-    } catch(Exception $e) {
-        // echo("<pre>\n");var_dump($e);die();
-        $_SESSION['error'] = "Could not make database connection to ".$pdo_host." / ".$pdo_user
-            ." | ".$e->getMessage();
-        header( 'Location: '.addSession('index.php') ) ;
-        return;
-    }
+    $pg_PDO = pg4e_get_user_connection($pdo_connection, $pdo_user, $pdo_pass);
+    if ( ! $pg_PDO ) return;
+    if ( ! pg4e_check_debug_table($pg_PDO) ) return;
 
-    $stmt = $pg_PDO->queryReturnError($sql);
-    if ( ! $stmt->success ) {
-        error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
-        $_SESSION['error'] = "SQL Query Error: ".$stmt->errorImplode;
-        header( 'Location: '.addSession('index.php') ) ;
-        return;
-    }
+    $stmt = pg4e_query_return_error($pg_PDO, $sql);
+    if ( ! $stmt ) return;
 
     $good = 0;
     $pos = 0;
@@ -160,7 +144,7 @@ CREATE TABLE track_raw
  (title TEXT, artist TEXT, album TEXT, album_id INTEGER,
   count INTEGER, rating INTEGER, len INTEGER);
 </pre>
-We will ignore the artist field for this assignment and focus on the many-to-one replationship
+We will ignore the artist field for this assignment and focus on the many-to-one relationship
 between tracks and albums.
 </p>
 <p>

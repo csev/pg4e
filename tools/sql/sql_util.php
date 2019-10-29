@@ -1,6 +1,7 @@
 <?php
 
 use \Tsugi\Util\U;
+use \Tsugi\Util\PDOX;
 use \Tsugi\Util\Mersenne_Twister;
 
 require_once "names.php";
@@ -215,4 +216,57 @@ Python Notebook:
 </pre>
 </p>
 <?php
+}
+
+function pg4e_get_user_connection($pdo_connection, $pdo_user, $pdo_pass) {
+    try {
+        $pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass,
+        array(
+            PDO::ATTR_TIMEOUT => 5, // in seconds
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        )
+    );
+    } catch(Exception $e) {
+        $_SESSION['error'] = "Could not make database connection to ".$pdo_host." / ".$pdo_user
+            ." | ".$e->getMessage();
+        header( 'Location: '.addSession('index.php') ) ;
+        return false;
+    }
+	return $pg_PDO;
+}
+
+function pg4e_check_debug_table($pg_PDO) {
+    $sql = "SELECT id, query, result, created_at FROM pg4e_debug";
+    $stmt = $pg_PDO->queryReturnError($sql);
+    if ( ! $stmt->success ) {
+        error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
+        $_SESSION['error'] = "SQL Query Error: ".$stmt->errorImplode;
+        header( 'Location: '.addSession('index.php') ) ;
+        return false;
+    }
+    $stmt = $pg_PDO->queryReturnError("DELETE FROM pg4e_debug");
+	$stmt = $pg_PDO->queryReturnError(
+		"INSERT INTO pg4e_debug (query, result) VALUES (:query, 'Success')",
+		array(":query" => $sql)
+	);
+	return true;
+}
+function pg4e_query_return_error($pg_PDO, $sql, $arr=false) {
+    $stmt = $pg_PDO->queryReturnError($sql, $arr);
+    if ( ! $stmt->success ) {
+		$pg_PDO->queryReturnError(
+			"INSERT INTO pg4e_debug (query, result) VALUES (:query, :result)",
+			array(":query" => $sql, ':result' => $stmt->errorImplode)
+		);
+        error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
+        $_SESSION['error'] = "SQL Query Error: ".$stmt->errorImplode;
+        header( 'Location: '.addSession('index.php') ) ;
+        return false;
+    }
+	$pg_PDO->queryReturnError(
+		"INSERT INTO pg4e_debug (query, result) VALUES (:query, 'Success')",
+		array(":query" => $sql)
+	);
+	return $stmt;
+
 }

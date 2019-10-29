@@ -19,6 +19,7 @@ if ( SettingsForm::handleSettingsPost() ) {
 // All the assignments we support
 $assignments = array(
     'setup.php' => 'Setup database environment',
+    'first.php' => 'Add some housekeeping tables',
     'single.php' => 'Single Table PostgreSQL (Users)',
     'many_one_track.php' => 'Many-to-One PostgreSQL (Tracks)',
 );
