@@ -20,7 +20,7 @@ while ( $pieces = fgetcsv($file) ) {
     if ( strlen($titles) > 0 ) $titles .= ',';
     $titles .= $pieces[0];
     $library[] = $pieces;
-    $answer[] = array($pieces[0], $pieces[2]); 
+    $answer[] = array($pieces[0], $pieces[2]);
 }
 fclose($file);
 $title_md5 = md5($titles);
@@ -124,14 +124,14 @@ We will ignore the artist field for this assignment and focus on the many-to-one
 between tracks and albums.
 </p>
 <p>
-If you run the program multiple times in testing or with different files, 
+If you run the program multiple times in testing or with different files,
 make sure to empty out the data before each run.
 <p>
-Load this 
+Load this
 <a href=library.csv" target="_blank">
-CSV data 
+CSV data
 </a>
-data file into the <b>track_raw</b> table using the <b>\copy</b> command.  
+data file into the <b>track_raw</b> table using the <b>\copy</b> command.
 Then write SQL commands to insert all of the distinct albums into the <b>album</b> table
 (creating their primary keys) and then set the <b>album_id</b> in the <b>track_raw</b>
 table using an SQL query like:
@@ -169,9 +169,11 @@ foreach($answer as $ans) {
 </table>
 </p>
 <p>
-Also run the following query on your table:
+Also run the following query on your table and check the result below:
 <pre>
-select md5(string_agg(title, ',')) from track;
-
-Result: <?= $title_md5 ?>
+pg4e=&gt; select md5(string_agg(title, ',')) from track;
+               md5
+----------------------------------
+ 43344dbf706a6cb78093eb8264083bca
+(1 row)
 </pre>
