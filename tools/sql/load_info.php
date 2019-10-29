@@ -22,6 +22,9 @@ $retval = pg4e_request($dbname);
 $info = false;
 if ( is_object($retval) ) {
   $info = pg4e_extract_info($retval);
+  if ( $info && isset($info->ip) && strlen($info->ip) > 1 ) {
+    $retval = LTIX::gradeSend(1.0, false, $debug_log);
+  }
 } else {
   $info = new \stdClass();
   $info->error = $retval;
