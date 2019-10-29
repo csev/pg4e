@@ -1,13 +1,14 @@
 <?php
 
-use \Tsugi\Core\LTIX;
-use \Tsugi\Util\LTI;
+use \Tsugi\Util\U;
 use \Tsugi\Util\Mersenne_Twister;
 
 require_once "names.php";
 
+if ( ! pg4e_user_db_load($LAUNCH) ) return;
+
 // Compute the stuff for the output
-$code = $USER->id+$LINK->id+$CONTEXT->id;
+$code = $LAUNCH->user->id*42+$LAUNCH->context->id;
 $MT = new Mersenne_Twister($code);
 $my_names = array();
 $my_age = array();
@@ -15,63 +16,45 @@ $howmany = $MT->getNext(4,6);
 for($i=0; $i < $howmany; $i ++ ) {
     $name = $names[$MT->getNext(0,count($names)-1)];
     $age = $MT->getNext(13,40);
-    $sha = strtoupper(bin2hex($name.$age));
-    // http://stackoverflow.com/questions/4100488/a-numeric-string-as-array-key-in-php
-    $database[$sha.'!'] = array($sha,$name,$age);
+    $database[] = array($name, $age);
 }
-$sorted = $database;
-ksort($sorted);
-reset($sorted);
-$row = reset($sorted);
-$goodsha = $row[0];
-$oldgrade = $RESULT->grade;
-// die($goodsha);
+sort($database);
 
-if ( isset($_POST['sha1']) ) {
-    if ( $_POST['sha1'] == '42' ) {
-        $_SESSION['debug'] = '42';
-    }
-    if ( $_POST['sha1'] != $goodsha ) {
-        $_SESSION['error'] = "Your code did not match";
+$oldgrade = $RESULT->grade;
+
+if ( U::get($_POST,'check') ) {
+    $pg_PDO = pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass);
+    if ( ! $pg_PDO ) return;
+    if ( ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
+
+    $sql = "SELECT * FROM ages;";
+    $stmt = pg4e_query_return_error($pg_PDO, $sql);
+    if ( ! $stmt ) return;
+
+    $rows = $stmt->fetchAll(\PDO::FETCH_NUM);
+    if ( count($rows) != count($database) ) {
+        $_SESSION['error'] = "Expecting ".count($database)." rows, retrieved ".count($rows);
         header('Location: '.addSession('index.php'));
         return;
     }
 
+	for($pos=0; $pos< count($rows); $pos++) {
+        $good = $database[$pos];
+        $row = $rows[$pos];
+        if ( $good[0] == $row[0] && $good[1] == $row[1] ) continue;
+        $_SESSION['error'] = "Error on row ". ($pos+1) .
+           " expected (".htmlentities($good[0]).', '.htmlentities($good[1]).')'.
+           " found (".htmlentities($row[0]).', '.htmlentities($row[1]).')';
+         header('Location: '.addSession('index.php'));
+        return;
+    }
+
     $gradetosend = 1.0;
-    $scorestr = "Your answer is correct, score saved.";
-    if ( $dueDate->penalty > 0 ) {
-        $gradetosend = $gradetosend * (1.0 - $dueDate->penalty);
-        $scorestr = "Effective Score = $gradetosend after ".$dueDate->penalty*100.0." percent late penalty";
-    }
-    if ( $oldgrade > $gradetosend ) {
-        $scorestr = "New score of $gradetosend is < than previous grade of $oldgrade, previous grade kept";
-        $gradetosend = $oldgrade;
-    }
-
-    // Use LTIX to send the grade back to the LMS.
-    $debug_log = array();
-    $retval = LTIX::gradeSend($gradetosend, false, $debug_log);
-    $_SESSION['debug_log'] = $debug_log;
-
-    if ( $retval === true ) {
-        $_SESSION['success'] = $scorestr;
-    } else if ( is_string($retval) ) {
-        $_SESSION['error'] = "Grade not sent: ".$retval;
-    } else {
-        echo("<pre>\n");
-        var_dump($retval);
-        echo("</pre>\n");
-        die();
-    }
+    pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);
 
     // Redirect to ourself
     header('Location: '.addSession('index.php'));
     return;
-}
-
-// echo($goodsha);
-if ( $RESULT->grade > 0 ) {
-    echo('<p class="alert alert-info">Your current grade on this assignment is: '.($RESULT->grade*100.0).'%</p>'."\n");
 }
 
 if ( $dueDate->message ) {
@@ -86,30 +69,15 @@ if ( isset($_SESSION['debug']) ) {
     unset($_SESSION['debug']);
 }
 ?>
-<p>
-<form method="post">
-To get credit for this assignment, perform the instructions below and 
-enter the code you get here: <br/>
-<input type="text" size="80" name="sha1">
-<input type="submit">
-</form>
-(Hint: starts with <?= substr($goodsha,0,3) ?>)<br/>
-</p>
 <h1>Instructions</h1>
-<p>
-If you don't already have it, install the SQLite Browser from
-<a href="http://sqlitebrowser.org/" target="_blank">
-http://sqlitebrowser.org/</a>.
-<p>
-Then, create a SQLITE database or use an existing 
-database and create a table 
-in the database called "Ages":
-
+<p>In this assignment you will create a table, and insert a few rows.
+<?php pg4e_user_db_form($LAUNCH); ?>
+Create this table:
 <pre>
-CREATE TABLE Ages ( 
+CREATE TABLE ages ( 
   name VARCHAR(128), 
   age INTEGER
-)
+);
 </pre>
 <p>
 Then make sure the table is empty by deleting any rows that 
@@ -117,21 +85,10 @@ you previously inserted, and insert these rows and only these rows
 with the following commands:
 <pre>
 <?php
-echo("DELETE FROM Ages;\n");
+echo("DELETE FROM ages;\n");
 foreach($database as $row) {
-   echo("INSERT INTO Ages (name, age) VALUES ('".$row[1]."', ".$row[2].");\n");
+   echo("INSERT INTO ages (name, age) VALUES ('".$row[0]."', ".$row[1].");\n");
 }
 ?>
 </pre>
-Once the inserts are done, run the following SQL command:
-<pre>
-SELECT hex(name || age) AS X FROM Ages ORDER BY X
-</pre>
-Find the <b>first</b> row in the resulting record set and enter the long string that looks like 
-<b>53656C696E613333</b>.
-</p>
-<p>
-<b>Note:</b> This assignment must be done using SQLite - in particular, the 
-<code>SELECT</code> query above will not work in any other database.  So 
-you cannot use MySQL or Oracle for this assignment.
-</p>
+Once the inserts are done, check your answer.

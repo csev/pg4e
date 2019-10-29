@@ -262,7 +262,7 @@ function pg4e_check_debug_table($LAUNCH, $pg_PDO) {
 	pg4e_insert_meta($pg_PDO, "user_id", $LAUNCH->user->id);
 	pg4e_insert_meta($pg_PDO, "context_id", $LAUNCH->context->id);
 	pg4e_insert_meta($pg_PDO, "key", $LAUNCH->context->key);
-    $valstr = md5($LAUNCH->context->key+'::'+$CFG->pg4e_unlock).'::42::'.
+    $valstr = md5($LAUNCH->context->key.'::'.$CFG->pg4e_unlock).'::42::'.
 		($LAUNCH->user->id*42).'::'.($LAUNCH->context->id*42);
     $pg_PDO->queryDie(
         "INSERT INTO pg4e_meta (keystr, valstr) VALUES (:keystr, :valstr)
