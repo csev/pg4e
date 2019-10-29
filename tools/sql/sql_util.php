@@ -34,8 +34,16 @@ function getUnique($LAUNCH) {
         '::'.$LAUNCH->user->id.'::'.$LAUNCH->context->id);
 }
 
-function getDBName($unique) {
-    return substr("pg4e".$unique,0,19);
+function getDbName($unique) {
+    return substr("pg4e".$unique,0,15);
+}
+
+function getDbUser($unique) {
+    return "pg4e_user_".substr($unique,15,5);
+}
+
+function getDbPass($unique) {
+    return "pg4e_pass_".substr($unique,20,5);
 }
 
 /**

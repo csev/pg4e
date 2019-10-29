@@ -16,6 +16,9 @@ if ( ! pg4e_unlock($LAUNCH) ) {
 }
 
 $dbname = getDbName($unique);
+$dbuser = getDbUser($unique);
+$dbpass = getDbPass($unique);
+
 if ( $LAUNCH->user->instructor && U::get($_GET, 'dbname') ) {
     $dbname = U::get($_GET, 'dbname');
 }
@@ -30,7 +33,7 @@ if ( is_object($retval) ) {
   $info = pg4e_extract_info($retval);
 }
 
-$try_create = false;
+$info = false;
 if ( ! $info ) {
    $try_create = true;
    $retval = pg4e_request($dbname, 'create');
@@ -46,35 +49,57 @@ if ( ! $info ) {
 <h1>Postgres Setup</h1>
 <?php if ( $LAUNCH->user->instructor ) { ?>
 <p>
-<a href="info.php" class="btn btn-normal">Debug</a>
+<a href="info.php" class="btn btn-normal">Test Harness</a>
 <a href="load_info.php?dbname=<?= $dbname ?>" target="_blank" class="btn btn-normal">JSON</a>
 </p>
 <?php } ?>
 <p>
 <?php
-if ( $try_create == 404 ) {
-    $spinner = '<img src="'.$OUTPUT->getSpinnerUrl().'">';
-    echo("<p>Details for ".htmlentities($dbname).":</p>\n");
-    echo("<pre>\n");
-    echo('Server: <span id="server">'.$spinner."</span>\n");
-    echo('User: <span id="user">'.$spinner."</span>\n");
-    echo("Password: ");
-    echo('<span id="pass" style="display:none">'.$spinner.'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show</a>)'."\n");
-    echo('Status: <span id="status">'.$spinner.'</span>');
-    echo("</pre>\n");
-} else if ( is_string($retval) ) {
+if ( is_string($retval) ) {
     echo("<p>Error retrieving environment: ".htmlentities($dbname)."<br/>".htmlentities($retval)."</p>\n");
-} else if ( is_object($info) ) {
-    echo("<p>Details for ".htmlentities($dbname).":</p>\n");
-    echo("<pre>\n");
-    echo("Server: ".$info->ip."\n");
-    echo("User: ".$info->user."\n");
-    echo("Password: ");
-    echo('<span id="pass" style="display:none">'.htmlentities($info->password).'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show</a>)'."\n");
-    echo("psql -h ".htmlentities($info->ip)." -U ".htmlentities($info->user)."\n");
-    echo("</pre>\n");
+    return;
 }
 
+$spinner = '<img src="'.$OUTPUT->getSpinnerUrl().'">';
+echo("<p>Postgres superuser details for project: ".htmlentities($dbname)."</p>\n");
+echo("<pre>\n");
+echo('Server: <span id="server">'.$spinner."</span>\n");
+echo('User: <span id="user">'.$spinner."</span>\n");
+echo("Password: ");
+echo('<span id="pass" style="display:none">'.$spinner.'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show</a>)'."\n");
+echo('Status: <span id="status">'.$spinner.'</span>');
+echo("</pre>\n");
+echo("<p>To access this in a command line / terminal use:</p>\n");
+echo("<pre>\n");
+echo('psql -h <span id="server2">'.$spinner.'</span> -U <span id="user2">'.$spinner."</span>\n");
+echo("</pre>\n");
+echo("<p>To access this in a Python notebook use:</p>\n");
+echo("<pre>\n");
+echo('%load_ext sql'."\n");
+echo('%config SqlMagic.autocommit=False'."\n");
+echo('%sql postgres://<span id="user3">'.$spinner.'</span>:replacewithsecret@<span id="server3">'.$spinner.'</span>/'."\n");
+echo("</pre>\n");
+?>
+<p>Your Python notebook may need 
+<a href="https://towardsdatascience.com/jupyter-magics-with-sql-921370099589" target="_blank">some extensions</a> installed.</p>
+<p>Before going on to the next step, use your super user credentials to create a role
+with the following details:
+<pre>
+User: <?= htmlentities($dbuser) ?>
+
+Password: <span id="dbpass" style="display:none"><?= htmlentities($dbpass) ?></span> (<a href="#" onclick="$('#dbpass').toggle();return false;">hide/show</a>)
+</pre>
+And create a database named <b>pg4e</b> and give the new role access to that database.  This database and role
+will be used to complete and grade the rest of your assignments in this class.
+</p>
+<pre>
+postgres=# CREATE USER <?= htmlentities($dbuser) ?> WITH PASSWORD 'replacewithsecret';
+CREATE ROLE
+postgres=# CREATE DATABASE pg4e WITH OWNER '<?= htmlentities($dbuser) ?>';
+CREATE DATABASE
+postgres=# \q
+</pre>
+<?php
 $OUTPUT->footerStart();
 
 $ajax_url = "load_info.php";
@@ -85,8 +110,11 @@ $ajax_url = addSession($ajax_url);
 load_tries = 0;
 function clearFields() {
   $("#user").html('');
+  $("#user2").html('(tbd)');
+  $("#user3").html('(tbd)');
   $("#pass").html('');
   $("#server").html('');
+  $("#server").html('(tbd)');
 }
 
 function updateMsg() {
@@ -118,11 +146,17 @@ function updateMsg() {
           return;
       }
       $("#user").html(retval.user);
+      $("#user2").html(retval.user);
+      $("#user3").html(retval.user);
       $("#pass").html(retval.password);
 
       if ( retval.ip && retval.ip.length > 0 ) {
           $("#status").html("Environment created");
-          if ( retval.ip ) $("#server").html(retval.ip);
+          if ( retval.ip ) {
+              $("#server").html(retval.ip);
+              $("#server2").html(retval.ip);
+              $("#server3").html(retval.ip);
+          }
       } else { 
           $("#status").html("Waiting on environment creation ("+load_tries+")");
           setTimeout('updateMsg()', 5000);
@@ -138,5 +172,4 @@ $(document).ready(function() {
 </script>
 <?php
 $OUTPUT->footerEnd();
-// global $FOOTER_DONE;
 $FOOTER_DONE = true;

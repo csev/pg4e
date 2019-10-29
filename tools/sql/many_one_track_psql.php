@@ -10,12 +10,28 @@ $MAX_UPLOAD_FILE_SIZE = 1024*1024;
 
 require_once "sql_util.php";
 
-// TODO:  Call Michael's API
+// Common code
+$pdo_database = 'pg4e';
+$pdo_host = false;
+$pdo_user = false;
+$pdo_pass = false;
 
-$pdo_host = '167.71.95.37';
-$pdo_database = 'people';
-$pdo_user = 'pg4e';
-$pdo_pass = 'secret';
+$unique = getUnique($LAUNCH);
+$project = getDbName($unique);
+$pdo_user = getDbUser($unique);
+$pdo_pass = getDbPass($unique);
+
+$pdo_host = U::get($_SESSION,'pdo_host');
+
+if ( ! $pdo_host ) {
+    $retval = pg4e_request($project, 'info');
+    $info = false;
+    if ( is_object($retval) ) {
+       $info = pg4e_extract_info($retval);
+       if ( isset($info->ip) ) $pdo_host = $info->ip;
+       $_SESSION['pdo_host'] = $pdo_host;
+    }
+}
 
 if ( $LAUNCH->user->instructor ) {
     $pdo_host = U::get($_POST, 'pdo_host', $pdo_host);
@@ -25,6 +41,13 @@ if ( $LAUNCH->user->instructor ) {
 }
 
 $pdo_connection = "pgsql:host=$pdo_host;dbname=$pdo_database";
+
+if ( ! $pdo_host && ! $LAUNCH->user->instructor ) {
+    echo("<p>You have not yet set up your database server for project <b>".htmlentities($unique)."</b></p>\n");
+    echo("<p>Make sure to run the setup process before attempting this assignment..</p>\n");
+    return;
+}
+// End common code
 
 $file = fopen("library.csv","r");
 $titles = "";
@@ -150,6 +173,7 @@ and produce a properly normalized database as specified below.
 Once you have placed the proper data in the database, press the button below to
 check your answer.
 </p>
+<!-- begin -->
 <form name="myform" method="post" >
 <p>
 <?php if ( $LAUNCH->user->instructor ) { ?>
@@ -176,7 +200,19 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> (<a href=
 </form>
 </p>
 <p>
-Here is the structure of your database:
+Access commands:
+<pre>
+Command line:
+psql -h <?= htmlentities($pdo_host) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
+
+
+Python Notebook:
+%sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@<?= htmlentities($pdo_host) ?>/<?= htmlentities($pdo_database) ?>
+</pre>
+</p>
+<!-- End -->
+<p>
+Here is the structure of the tables you will need for this assignment:
 <pre>
 CREATE TABLE album (
   id SERIAL,
