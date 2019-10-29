@@ -37,9 +37,9 @@ $oldgrade = $RESULT->grade;
 
 if ( U::get($_POST,'check') ) {
 
-    $pg_PDO = pg4e_get_user_connection($pdo_connection, $pdo_user, $pdo_pass);
+    $pg_PDO = pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass);
     if ( ! $pg_PDO ) return;
-    if ( ! pg4e_check_debug_table($pg_PDO) ) return;
+    if ( ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
 
     $stmt = pg4e_query_return_error($pg_PDO, $sql);
     if ( ! $stmt ) return;

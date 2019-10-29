@@ -3,6 +3,7 @@
 use \Tsugi\Util\U;
 use \Tsugi\Util\PDOX;
 use \Tsugi\Util\Mersenne_Twister;
+use \Tsugi\Core\LTIX;
 
 require_once "names.php";
 require_once "courses.php";
@@ -53,7 +54,7 @@ function getDbPass($unique) {
  * String if something went wrong
  * Number if something went wrong and all we have is the http code
  */
-function pg4e_request($dbname, $path='info') { 
+function pg4e_request($dbname, $path='info') {
     global $CFG, $pg4e_request_result;
 
     $pg4e_request_result = false;
@@ -70,7 +71,7 @@ function pg4e_request($dbname, $path='info') {
     if($pg4e_request_result === false)
     {
         return 'Curl error: ' . curl_error($ch);
-    }                                                                                                      
+    }
     $returnCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     if ( $returnCode != 200 ) return $returnCode;
@@ -218,7 +219,15 @@ Python Notebook:
 <?php
 }
 
-function pg4e_get_user_connection($pdo_connection, $pdo_user, $pdo_pass) {
+function pg4e_insert_meta($pg_PDO, $keystr, $valstr) {
+    $pg_PDO->queryReturnError(
+        "INSERT INTO pg4e_meta (keystr, valstr) VALUES (:keystr, :valstr)
+		ON CONFLICT (keystr) DO UPDATE SET keystr=:keystr, updated_at=now();",
+        array(":keystr" => $keystr, ":valstr" => $valstr)
+    );
+}
+
+function pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass) {
     try {
         $pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass,
         array(
@@ -235,7 +244,7 @@ function pg4e_get_user_connection($pdo_connection, $pdo_user, $pdo_pass) {
 	return $pg_PDO;
 }
 
-function pg4e_check_debug_table($pg_PDO) {
+function pg4e_check_debug_table($LAUNCH, $pg_PDO) {
     $sql = "SELECT id, query, result, created_at FROM pg4e_debug";
     $stmt = $pg_PDO->queryReturnError($sql);
     if ( ! $stmt->success ) {
@@ -249,6 +258,15 @@ function pg4e_check_debug_table($pg_PDO) {
 		"INSERT INTO pg4e_debug (query, result) VALUES (:query, 'Success')",
 		array(":query" => $sql)
 	);
+	pg4e_insert_meta($pg_PDO, "user_id", $LAUNCH->user->id);
+	pg4e_insert_meta($pg_PDO, "context_id", $LAUNCH->context->id);
+	pg4e_insert_meta($pg_PDO, "key", $LAUNCH->context->key);
+    $valstr = md5($LAUNCH->context->title).'::42'.($LAUNCH->user->id*42).'::42'.($LAUNCH->context->id*42);
+    $pg_PDO->queryDie(
+        "INSERT INTO pg4e_meta (keystr, valstr) VALUES (:keystr, :valstr)
+		ON CONFLICT (keystr) DO NOTHING;",
+        array(":keystr" => "code", ":valstr" => $valstr)
+    );
 	return true;
 }
 function pg4e_query_return_error($pg_PDO, $sql, $arr=false) {
@@ -268,5 +286,40 @@ function pg4e_query_return_error($pg_PDO, $sql, $arr=false) {
 		array(":query" => $sql)
 	);
 	return $stmt;
-
 }
+
+function pg4e_grade_send($LAUNCH, $pg_PDO, $gradetosend, $oldgrade, $dueDate) {
+    $scorestr = "Your answer is correct, score saved.";
+    if ( $dueDate->penalty > 0 ) {
+        $gradetosend = $gradetosend * (1.0 - $dueDate->penalty);
+        $scorestr = "Effective Score = $gradetosend after ".$dueDate->penalty*100.0." percent late penalty";
+    }
+    if ( $oldgrade > $gradetosend ) {
+        $scorestr = "New score of $gradetosend is < than previous grade of $oldgrade, previous grade kept";
+        $gradetosend = $oldgrade;
+    }
+
+    // Use LTIX to send the grade back to the LMS.
+    $debug_log = array();
+    $retval = LTIX::gradeSend($gradetosend, false, $debug_log);
+    $_SESSION['debug_log'] = $debug_log;
+
+    if ( $retval === true ) {
+        $_SESSION['success'] = $scorestr;
+    } else if ( is_string($retval) ) {
+        $scorestr = "Grade not sent: ".$retval;
+        $_SESSION['error'] = $scorestr;
+    } else {
+		$scorestr = "Unexpected return: ".json_encode($retval);
+		$_SESSION['error'] = "Unexpected return, see pg4e_result for detail";
+    }
+	$pg_PDO->queryReturnError(
+        "INSERT INTO pg4e_result (link_id, score, note, title, debug_log)
+		    VALUES (:link_id, :score, :note, :title, :debug_log)",
+        array(":link_id" => $LAUNCH->link->id, ":score" => $gradetosend,
+			":note" => $scorestr, ":title" => $LAUNCH->link->title,
+			":debug_log" => json_encode($debug_log)
+		)
+    );
+}
+
