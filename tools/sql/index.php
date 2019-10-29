@@ -20,8 +20,9 @@ if ( SettingsForm::handleSettingsPost() ) {
 $assignments = array(
     'setup.php' => 'Setup database environment',
     'first.php' => 'Add some housekeeping tables',
-    'single.php' => 'Single Table PostgreSQL (Users)',
-    'many_one_track.php' => 'Many-to-One PostgreSQL (Tracks)',
+    'single.php' => 'Single Table PostgreSQL (ages)',
+    'many_one_track.php' => 'Many-to-One PostgreSQL (tracks)',
+    'many_one_unesco.php' => 'Many-to-One PostgreSQL (unesco)',
 );
 
 $oldsettings = Settings::linkGetAll();
