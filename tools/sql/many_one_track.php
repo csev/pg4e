@@ -74,31 +74,7 @@ if ( U::get($_POST,'check') ) {
     }
 
     $gradetosend = 1.0;
-    $scorestr = "Your answer is correct, score saved.";
-    if ( $dueDate->penalty > 0 ) {
-        $gradetosend = $gradetosend * (1.0 - $dueDate->penalty);
-        $scorestr = "Effective Score = $gradetosend after ".$dueDate->penalty*100.0." percent late penalty";
-    }
-    if ( $oldgrade > $gradetosend ) {
-        $scorestr = "New score of $gradetosend is < than previous grade of $oldgrade, previous grade kept";
-        $gradetosend = $oldgrade;
-    }
-
-    // Use LTIX to send the grade back to the LMS.
-    $debug_log = array();
-    $retval = LTIX::gradeSend($gradetosend, false, $debug_log);
-    $_SESSION['debug_log'] = $debug_log;
-
-    if ( $retval === true ) {
-        $_SESSION['success'] = $scorestr;
-    } else if ( is_string($retval) ) {
-        $_SESSION['error'] = "Grade not sent: ".$retval;
-    } else {
-        echo("<pre>\n");
-        var_dump($retval);
-        echo("</pre>\n");
-        die();
-    }
+    pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);
 
     // Redirect to ourself
     header('Location: '.addSession('index.php'));
