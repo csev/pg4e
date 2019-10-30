@@ -104,10 +104,16 @@ function pg4e_extract_info($info) {
     }
 }
 
+function pg4e_unlock_code($LAUNCH) {
+    global $CFG;
+    $unlock_code = md5(getUnique($LAUNCH) . $CFG->pg4e_unlock) ;
+	return $unlock_code;
+}
+
 function pg4e_unlock_check($LAUNCH) {
     global $CFG;
     if ( $LAUNCH->context->key != '12345' ) return true;
-    $unlock_code = md5(getUnique($LAUNCH) . $CFG->pg4e_unlock) ;
+    $unlock_code = pg4e_unlock_code($LAUNCH);
     if ( U::get($_COOKIE, 'unlock_code') == $unlock_code ) return true;
     return false;
 }
@@ -116,6 +122,7 @@ function pg4e_unlock($LAUNCH) {
     global $CFG, $OUTPUT;
     if ( pg4e_unlock_check($LAUNCH) ) return true;
 
+    $unlock_code = pg4e_unlock_code($LAUNCH);
     if ( U::get($_POST, 'unlock_code') == $CFG->pg4e_unlock ) {
         setcookie('unlock_code', $unlock_code);
         header("Location: ".addSession($_SERVER['REQUEST_URI']));
@@ -179,6 +186,10 @@ function pg4e_user_db_load($LAUNCH) {
 
 function pg4e_user_db_form($LAUNCH) {
     global $OUTPUT, $pdo_database, $pdo_host, $pdo_user, $pdo_pass, $info, $pdo_connection;
+
+	if ( ! $pdo_host || strlen($pdo_host < 1) ) {
+		echo('<p style="color:red">It appears that your default PostgreSQL environment is not yet set up or is not running.</p>'."\n");
+    }
 ?>
 <form name="myform" method="post" >
 <p>

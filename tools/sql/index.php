@@ -18,11 +18,11 @@ if ( SettingsForm::handleSettingsPost() ) {
 
 // All the assignments we support
 $assignments = array(
-    'setup.php' => 'Setup database environment',
-    'first.php' => 'Add some housekeeping tables',
-    'single.php' => 'Single Table PostgreSQL (ages)',
-    'many_one_track.php' => 'Many-to-One PostgreSQL (tracks)',
-    'many_one_unesco.php' => 'Many-to-One PostgreSQL (unesco)',
+    '00setup.php' => 'Setup database environment',
+    '00first.php' => 'Add some housekeeping tables',
+    '01single.php' => 'Single Table PostgreSQL (ages)',
+    '01many_one_track.php' => 'Many-to-One PostgreSQL (tracks)',
+    '01many_one_unesco.php' => 'Many-to-One PostgreSQL (unesco)',
 );
 
 $oldsettings = Settings::linkGetAll();
