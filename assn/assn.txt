@@ -1,36 +1,32 @@
 
 01-Basic SQL
 
-- Setup - insert a signature - Add py4e_debug
-- Make a role
+- Setup / make a role
+- Populate the py4e tables
 - MD5 Users
-- Create a table per some specification - naming convention
 - Auto increment
-- On delete cascade
-- Parse CSV => One Table - tracks_raw
-- Parse CSV => One Table - unesco_raw
+- Parse CSV => One table tracks_raw
 
-03- Model / Many-Many
+02-Model / Many-Many / Key types
 
 - Key types - primary, logical, foreign
-- Hand construct one-to-many table
-- Create a table per some specification - naming convention
-- Design model One-Many unesco
-- Insert normalized data
-- Parse CSV => five one-to-many tables
+- Design model One-Many unesco identify vertical replication
+- Hand construct one-to-many table autos
+- Parse CSV => one-to-many 2 tables - tracks (alter table)
+- Parse CSV => one-to-many 5 tables - unesco
+- Design model Many-to-One unesco
 
-03 - Alter / Distinct / Group / Transactions / Stored Procs
+03-Alter / Distinct / Group / Transactions / Stored Procs
 
-- Make a table - alter the table to add a field
 - Read sql commands from a file??
 - Hand construct many-to-many table - roster
-- Design model Many-to-One unesco
-- Alter Table - tracks_raw (add the foreign key fields)
+- Alter Table - tracks_raw (add the artist foreign key field)
+- Parse CSV => many-to-many 3 tables - tracks
 - CSV -> tracks_many_to_many
 - CSV -> unesco_many_to_many
 - Stored procedure updated_at
 
-04 - Text / test data / index perf / character setc / hashing / regex
+04-Text / test data / index perf / character setc / hashing / regex
 
 - Fill up a lot of rows in a table
 - Character sets
