@@ -22,9 +22,10 @@ $assignments = array(
     '00first.php' => 'Add some housekeeping tables',
     '01single.php' => 'Single Table (ages)',
     '01auto.php' => 'Auto Increment / SERIAL (automagic)',
-    '01many_one_manual.php' => 'Many-to-One By Hand (autos)',
-    '01many_one_track.php' => 'Many-to-One Automated (tracks)',
-    '01many_one_unesco.php' => 'Many-to-One Automated (unesco)',
+    '01single_tracks.php' => 'Load one table (tracks_raw)',
+    '02many_one_manual.php' => 'Many-to-One By Hand (autos)',
+    '02many_one_track.php' => 'Many-to-One Automated (tracks)',
+    '02many_one_unesco.php' => 'Many-to-One Automated (unesco)',
 );
 
 $oldsettings = Settings::linkGetAll();
