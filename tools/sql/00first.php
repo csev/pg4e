@@ -65,6 +65,8 @@ SELECT query, result, created_at FROM pg4e_debug;
 <p>The <b>pg4e_meta</b> table is used internally by the autograder to pass
 information from one assignment to another assignment.  The autograder will
 store mysterious stuff in this table and look at it later.  Leave this table alone.
+If this table does not exist or you change the data the autograder puts in
+this table, your database may be deleted as part of a maintenance process.
 <pre>
 CREATE TABLE pg4e_meta (
   id SERIAL,
