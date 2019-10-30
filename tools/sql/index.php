@@ -22,8 +22,9 @@ $assignments = array(
     '00first.php' => 'Add some housekeeping tables',
     '01single.php' => 'Single Table (ages)',
     '01auto.php' => 'Auto Increment / SERIAL (automagic)',
-    '01many_one_track.php' => 'Many-to-One PostgreSQL (tracks)',
-    '01many_one_unesco.php' => 'Many-to-One PostgreSQL (unesco)',
+    '01many_one_manual.php' => 'Many-to-One By Hand (autos)',
+    '01many_one_track.php' => 'Many-to-One Automated (tracks)',
+    '01many_one_unesco.php' => 'Many-to-One Automated (unesco)',
 );
 
 $oldsettings = Settings::linkGetAll();

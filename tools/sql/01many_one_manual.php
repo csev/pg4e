@@ -12,23 +12,22 @@ require_once "sql_util.php";
 
 if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
-$file = fopen("library.csv","r");
-$library = array();
-$answer = array();
-while ( $pieces = fgetcsv($file) ) {
-    if ( strlen($titles) > 0 ) $titles .= ',';
-    $library[] = $pieces;
-    $answer[] = array($pieces[0], $pieces[2]);
-}
-fclose($file);
+$code = getCode($LAUNCH);
+$MT = new \Tsugi\Util\Mersenne_Twister($code);
 
-sort($library);
-sort($answer);
 
-$sql = "SELECT track.title, album.title
-    FROM track
-    JOIN album ON track.album_id = album.id
-    ORDER BY track.title LIMIT 3;";
+$autos = pg4e_load_csv("makemodel.csv");
+sort($autos);
+$first = $MT->getNext(0,count($autos)-5);
+$second = $MT->getNext(0,count($autos)-5);
+if ( $first > $second ) { $tmp = $first; $first = $second; $second = $tmp; }  // Order
+if ( ($first+3) > $second ) $second = $second + 3; // Overlap
+$answer = array_merge(array_slice($autos,$first,3), array_slice($autos,$second,2));
+
+$sql = "SELECT make.name, model.name
+    FROM model
+    JOIN make ON model.make_id = make.id
+    ORDER BY make.name LIMIT 5;";
 
 $oldgrade = $RESULT->grade;
 
@@ -97,59 +96,26 @@ check your answer.
 <p>
 Here is the structure of the tables you will need for this assignment:
 <pre>
-CREATE TABLE album (
-  id SERIAL,
-  title VARCHAR(128) UNIQUE,
-  artist_id INTEGER REFERENCES artist(id) ON DELETE CASCADE,
-  PRIMARY KEY(id)
-);
-
-CREATE TABLE track (
+CREATE TABLE make (
     id SERIAL,
-    title VARCHAR(128),
-    len INTEGER, rating INTEGER, count INTEGER,
-    album_id INTEGER REFERENCES album(id) ON DELETE CASCADE,
-    UNIQUE(title, album_id),
+    name VARCHAR(128) UNIQUE,
     PRIMARY KEY(id)
 );
 
-CREATE TABLE track_raw
- (title TEXT, artist TEXT, album TEXT, album_id INTEGER,
-  count INTEGER, rating INTEGER, len INTEGER);
+CREATE TABLE model (
+  id SERIAL,
+  name VARCHAR(128),
+  make_id INTEGER REFERENCES make(id) ON DELETE CASCADE,
+  PRIMARY KEY(id)
+);
 </pre>
-We will ignore the artist field for this assignment and focus on the many-to-one relationship
-between tracks and albums.
-</p>
-<p>
-If you run the program multiple times in testing or with different files,
-make sure to empty out the data before each run.
-<p>
-Load this
-<a href=library.csv" target="_blank">
-CSV data
-</a>
-data file into the <b>track_raw</b> table using the <b>\copy</b> command.
-Then write SQL commands to insert all of the distinct albums into the <b>album</b> table
-(creating their primary keys) and then set the <b>album_id</b> in the <b>track_raw</b>
-table using an SQL query like:
-<pre>
-UPDATE track_raw SET album_id = (SELECT album.id FROM album WHERE album.title = track_raw.album);
-</pre>
-</p>
-<p>
-Then copy the corresponding data from the <b>album</b> (text field) from <b>album_raw</b>
-to <b>album</b>.
-</p>
-<p>
-To grade this assignment, the program will run a query like this on
-your database and look for the data it expects to see:
-<pre>
-<?= htmlentities($sql) ?>
-</pre>
-The expected result of this query on your database is:
+Insert the following data into your database separating it
+appropriately into the <b>make</b> and <b>model</b> tables and 
+seting the <b>make_id</b> foreign key to link each model to
+its corresponding make.
 <table border="2">
 <tr>
-<th>track</th><th>album</th>
+<th>make</th><th>model</th>
 </tr>
 <?php
 $pos=0;
@@ -160,8 +126,27 @@ foreach($answer as $ans) {
     }
     echo("<tr>\n");
     $pos++;
-    if ( $pos >= 3 ) break;
+    if ( $pos >= 5 ) break;
 }
 ?>
 </table>
 </p>
+<p>
+To grade this assignment, the program will run a query like this on
+your database and look for the data above:
+<pre>
+<?= htmlentities($sql) ?>
+</pre>
+<?php 
+if ( ! $LAUNCH->user->instructor ) return;
+?>
+<p>
+Instructor-only cheat sheet:
+<pre>
+<?php
+foreach($answer as $ans) {
+	echo("INSERT INTO make (name) VALUES ('".$ans[0]."') ON CONFLICT (name) DO NOTHING;\n");
+	echo("INSERT INTO model (name, make_id) VALUES ('".$ans[1]."', (SELECT id FROM make WHERE name='".$ans[0]."'));\n");
+}
+?>
+</pre>

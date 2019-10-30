@@ -8,7 +8,7 @@ require_once "names.php";
 if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
 // Compute the stuff for the output
-$code = $LAUNCH->user->id*42+$LAUNCH->context->id;
+$code = getCode($LAUNCH);
 $MT = new Mersenne_Twister($code);
 $my_names = array();
 $my_age = array();

@@ -31,6 +31,10 @@ function makeRoster($code,$course_count=false,$name_count=false) {
 }
 
 // Unique to user + course
+function getCode($LAUNCH) {
+    return $LAUNCH->user->id*42+$LAUNCH->context->id;
+}
+
 function getUnique($LAUNCH) {
     return md5($LAUNCH->user->key.'::'.$LAUNCH->context->key.
         '::'.$LAUNCH->user->id.'::'.$LAUNCH->context->id);
@@ -348,5 +352,15 @@ function pg4e_grade_send($LAUNCH, $pg_PDO, $gradetosend, $oldgrade, $dueDate) {
                ":debug_log" => json_encode($debug_log)
          )
     );
+}
+
+function pg4e_load_csv($filename) {
+	$file = fopen($filename,"r");
+	$retval = array();
+	while ( $pieces = fgetcsv($file) ) {
+    	$retval[] = $pieces;
+	}
+	fclose($file);
+    return $retval;
 }
 

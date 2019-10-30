@@ -10,7 +10,7 @@ require_once "sql_util.php";
 $LAUNCH = LTIX::requireData();
 
 // Compute the stuff for the output
-$code = $USER->id+$LINK->id+$CONTEXT->id;
+$code = getCode($LAUNCH);
 
 header('Content-Disposition: attachment; filename="roster_data.json"');
 header('Content-Type: application/json; charset=utf-8');

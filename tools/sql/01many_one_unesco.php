@@ -16,7 +16,7 @@ if ( ! pg4e_user_db_load($LAUNCH) ) return;
 // name,description,justification,year,longitude,latitude,area_hectares,category,state,region,iso
 
 // For some randomness
-$code = $LAUNCH->user->id+$LAUNCH->context->id*42;
+$code = getCode($LAUNCH);
 $order_fields = [
    array('year',1),
    array('category.name',2),
