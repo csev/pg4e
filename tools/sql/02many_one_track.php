@@ -16,7 +16,6 @@ $file = fopen("library.csv","r");
 $library = array();
 $answer = array();
 while ( $pieces = fgetcsv($file) ) {
-    if ( strlen($titles) > 0 ) $titles .= ',';
     $library[] = $pieces;
     $answer[] = array($pieces[0], $pieces[2]);
 }
@@ -100,7 +99,6 @@ Here is the structure of the tables you will need for this assignment:
 CREATE TABLE album (
   id SERIAL,
   title VARCHAR(128) UNIQUE,
-  artist_id INTEGER REFERENCES artist(id) ON DELETE CASCADE,
   PRIMARY KEY(id)
 );
 

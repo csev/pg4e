@@ -16,7 +16,6 @@ $file = fopen("library.csv","r");
 $library = array();
 $answer = array();
 while ( $pieces = fgetcsv($file) ) {
-    if ( strlen($titles) > 0 ) $titles .= ',';
     $library[] = $pieces;
     $answer[] = array($pieces[0], $pieces[2]);
 }
@@ -25,10 +24,7 @@ fclose($file);
 sort($library);
 sort($answer);
 
-$sql = "SELECT track.title, album.title
-    FROM track
-    JOIN album ON track.album_id = album.id
-    ORDER BY track.title LIMIT 3;";
+$sql = "SELECT title, album FROM track_raw ORDER BY title LIMIT 3;";
 
 $oldgrade = $RESULT->grade;
 
@@ -97,24 +93,8 @@ check your answer.
 <p>
 Here is the structure of the tables you will need for this assignment:
 <pre>
-CREATE TABLE album (
-  id SERIAL,
-  title VARCHAR(128) UNIQUE,
-  artist_id INTEGER REFERENCES artist(id) ON DELETE CASCADE,
-  PRIMARY KEY(id)
-);
-
-CREATE TABLE track (
-    id SERIAL,
-    title VARCHAR(128),
-    len INTEGER, rating INTEGER, count INTEGER,
-    album_id INTEGER REFERENCES album(id) ON DELETE CASCADE,
-    UNIQUE(title, album_id),
-    PRIMARY KEY(id)
-);
-
 CREATE TABLE track_raw
- (title TEXT, artist TEXT, album TEXT, album_id INTEGER,
+ (title TEXT, artist TEXT, album TEXT,
   count INTEGER, rating INTEGER, len INTEGER);
 </pre>
 We will ignore the artist field for this assignment and focus on the many-to-one relationship
@@ -129,17 +109,9 @@ Load this
 CSV data
 </a>
 data file into the <b>track_raw</b> table using the <b>\copy</b> command.
-Then write SQL commands to insert all of the distinct albums into the <b>album</b> table
-(creating their primary keys) and then set the <b>album_id</b> in the <b>track_raw</b>
-table using an SQL query like:
 <pre>
-UPDATE track_raw SET album_id = (SELECT album.id FROM album WHERE album.title = track_raw.album);
+\copy track_raw(title,artist,album,count,rating,len) FROM 'library.csv' WITH DELIMITER ',' CSV;
 </pre>
-</p>
-<p>
-Then copy the corresponding data from the <b>album</b> (text field) from <b>album_raw</b>
-to <b>album</b>.
-</p>
 <p>
 To grade this assignment, the program will run a query like this on
 your database and look for the data it expects to see:
@@ -149,7 +121,7 @@ your database and look for the data it expects to see:
 The expected result of this query on your database is:
 <table border="2">
 <tr>
-<th>track</th><th>album</th>
+<th>title</th><th>album</th>
 </tr>
 <?php
 $pos=0;
