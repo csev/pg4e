@@ -28,6 +28,7 @@ $assignments = array(
     '02many_one_unesco.php' => 'Many-to-One CSV (unesco)',
     '03many_to_many_roster.php' => 'Many-to-Many By Hand (roster)',
     '03many_to_many_track.php' => 'Many-to-Many CSV (tracks)',
+    '03updated.php' => 'Stored Procedure',
 );
 
 $oldsettings = Settings::linkGetAll();
