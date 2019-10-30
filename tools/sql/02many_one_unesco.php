@@ -96,7 +96,7 @@ if ( U::get($_POST,'check') ) {
     }
 
     if ( $pos == 0 ) {
-        $_SESSION['error'] = "No records found in tracks table";
+        $_SESSION['error'] = "No records found in unesco table";
         $error = true;
     }
 
