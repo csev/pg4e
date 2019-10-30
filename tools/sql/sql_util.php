@@ -145,33 +145,38 @@ function pg4e_unlock($LAUNCH) {
 function pg4e_user_db_load($LAUNCH) {
     global $pdo_database, $pdo_host, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
-    $pdo_database = 'pg4e';
-    $pdo_host = false;
-    $pdo_user = false;
-    $pdo_pass = false;
+    if ( U::get($_POST,'default') ) {
+		unset($_SESSION['pdo_host']);
+		unset($_SESSION['pdo_database']);
+		unset($_SESSION['pdo_user']);
+		unset($_SESSION['pdo_pass']);
+        header( 'Location: '.addSession('index.php') ) ;
+		return false;
+    }
 
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
-    $pdo_user = getDbUser($unique);
-    $pdo_pass = getDbPass($unique);
 
-    $pdo_host = U::get($_SESSION,'pdo_host');
+    $pdo_database = U::get($_POST, 'pdo_database',U::get($_SESSION,'pdo_database', 'pg4e') );
+    $pdo_host = U::get($_POST, 'pdo_host', U::get($_SESSION,'pdo_host'));
+    $pdo_user = U::get($_POST, 'pdo_user', U::get($_SESSION,'pdo_user', getDbUser($unique)) );
+    $pdo_pass = U::get($_POST, 'pdo_pass', U::get($_SESSION,'pdo_pass', getDbPass($unique)) );
 
     if ( ! $pdo_host ) {
         $retval = pg4e_request($project, 'info');
         $info = false;
         if ( is_object($retval) ) {
-        $info = pg4e_extract_info($retval);
-         if ( isset($info->ip) ) $pdo_host = $info->ip;
-        $_SESSION['pdo_host'] = $pdo_host;
+            $info = pg4e_extract_info($retval);
+             if ( isset($info->ip) ) $pdo_host = $info->ip;
+            $_SESSION['pdo_host'] = $pdo_host;
         }
     }
 
     if ( $LAUNCH->user->instructor ) {
-        $pdo_host = U::get($_POST, 'pdo_host', $pdo_host);
-        $pdo_database = U::get($_POST, 'pdo_database', $pdo_database);
-        $pdo_user = U::get($_POST, 'pdo_user', $pdo_user);
-        $pdo_pass = U::get($_POST, 'pdo_pass', $pdo_pass);
+        $_SESSION['pdo_host'] = $pdo_host;
+        $_SESSION['pdo_database'] = $pdo_database;
+        $_SESSION['pdo_user'] = $pdo_user;
+        $_SESSION['pdo_pass'] = $pdo_pass;
     }
 
     $pdo_connection = "pgsql:host=$pdo_host;dbname=$pdo_database";
@@ -187,8 +192,8 @@ function pg4e_user_db_load($LAUNCH) {
 function pg4e_user_db_form($LAUNCH) {
     global $OUTPUT, $pdo_database, $pdo_host, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
-	if ( ! $pdo_host || strlen($pdo_host < 1) ) {
-		echo('<p style="color:red">It appears that your default PostgreSQL environment is not yet set up or is not running.</p>'."\n");
+	if ( ! $pdo_host || strlen($pdo_host) < 1 ) {
+		echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
     }
 ?>
 <form name="myform" method="post" >
@@ -214,6 +219,7 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> (<a href=
 <?php } ?>
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<input type="submit" name="default" value="Default Values">
 </form>
 </p>
 <p>
