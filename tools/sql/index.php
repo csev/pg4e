@@ -26,6 +26,7 @@ $assignments = array(
     '02many_one_manual.php' => 'Many-to-One By Hand (autos)',
     '02many_one_track.php' => 'Many-to-One CSV (tracks)',
     '02many_one_unesco.php' => 'Many-to-One CSV (unesco)',
+    '03many_to_many_roster.php' => 'Many-to-Many By Hand (roster)',
     '03many_to_many_track.php' => 'Many-to-Many CSV (tracks)',
 );
 

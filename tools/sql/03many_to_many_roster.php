@@ -14,7 +14,7 @@ require_once "sql_util.php";
 $oldgrade = $RESULT->grade;
 
 // Compute the stuff for the output
-$code = $USER->id+$LINK->id+$CONTEXT->id;
+$code = getCode($LAUNCH);
 $roster = makeRoster($code,3,5);
 
 function compare_func($a, $b) {
@@ -310,10 +310,11 @@ foreach($roster as $entry) {
 You can test to see if your data has been entered properly with the following
 SQL statement.
 <pre>
-SELECT `User`.name, Course.title, Member.role
-    FROM `User` JOIN Member JOIN Course
-    ON `User`.user_id = Member.user_id AND Member.course_id = Course.course_id
-    ORDER BY Course.title, Member.role DESC, `User`.name
+SELECT student.name, course.title, roster.role
+    FROM student 
+    JOIN roster ON student.id = roster.student_id
+    JOIN course ON roster.course_id = course.id
+    ORDER BY course.title, roster.role DESC, student.name;
 </pre>
 The order of the data and number of rows that comes back from this query should be the
 same as above.  There should be no missing or extra data in your query.
@@ -364,11 +365,11 @@ Here is a set of insert statements to achieve this assignment.
 <pre>
 <?php
 foreach($roster as $entry) {
-    echo "INSERT IGNORE INTO `User` (name) VALUES ('$entry[0]');\n";
-    echo "INSERT IGNORE INTO Course (title) VALUES ('$entry[1]');\n";
-    echo "INSERT IGNORE INTO Member (user_id,course_id,role) VALUES
-        ( (SELECT user_id FROM `User` WHERE name='$entry[0]') ,
-          (SELECT course_id FROM Course WHERE title='$entry[1]') , $entry[2] );\n";
+    echo "INSERT INTO student (name) VALUES ('$entry[0]') ON CONFLICT (name) DO NOTHING;\n";
+    echo "INSERT INTO course (title) VALUES ('$entry[1]') ON CONFLICT (title) DO NOTHING;\n";
+    echo "INSERT INTO roster (student_id,course_id,role) VALUES
+        ( (SELECT id FROM student WHERE name='$entry[0]') ,
+          (SELECT id FROM course WHERE title='$entry[1]') , $entry[2] );\n";
 }
 ?>
 </pre>
