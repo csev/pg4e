@@ -20,7 +20,8 @@ if ( SettingsForm::handleSettingsPost() ) {
 $assignments = array(
     '00setup.php' => 'Setup database environment',
     '00first.php' => 'Add some housekeeping tables',
-    '01single.php' => 'Single Table PostgreSQL (ages)',
+    '01single.php' => 'Single Table (ages)',
+    '01auto.php' => 'Auto Increment / SERIAL (automagic)',
     '01many_one_track.php' => 'Many-to-One PostgreSQL (tracks)',
     '01many_one_unesco.php' => 'Many-to-One PostgreSQL (unesco)',
 );

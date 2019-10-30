@@ -107,7 +107,7 @@ function pg4e_extract_info($info) {
 function pg4e_unlock_code($LAUNCH) {
     global $CFG;
     $unlock_code = md5(getUnique($LAUNCH) . $CFG->pg4e_unlock) ;
-	return $unlock_code;
+        return $unlock_code;
 }
 
 function pg4e_unlock_check($LAUNCH) {
@@ -146,12 +146,12 @@ function pg4e_user_db_load($LAUNCH) {
     global $pdo_database, $pdo_host, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     if ( U::get($_POST,'default') ) {
-		unset($_SESSION['pdo_host']);
-		unset($_SESSION['pdo_database']);
-		unset($_SESSION['pdo_user']);
-		unset($_SESSION['pdo_pass']);
+                unset($_SESSION['pdo_host']);
+                unset($_SESSION['pdo_database']);
+                unset($_SESSION['pdo_user']);
+                unset($_SESSION['pdo_pass']);
         header( 'Location: '.addSession('index.php') ) ;
-		return false;
+                return false;
     }
 
     $unique = getUnique($LAUNCH);
@@ -192,8 +192,8 @@ function pg4e_user_db_load($LAUNCH) {
 function pg4e_user_db_form($LAUNCH) {
     global $OUTPUT, $pdo_database, $pdo_host, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
-	if ( ! $pdo_host || strlen($pdo_host) < 1 ) {
-		echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
+        if ( ! $pdo_host || strlen($pdo_host) < 1 ) {
+                echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
     }
 ?>
 <form name="myform" method="post" >
@@ -239,7 +239,7 @@ Python Notebook:
 function pg4e_insert_meta($pg_PDO, $keystr, $valstr) {
     $pg_PDO->queryReturnError(
         "INSERT INTO pg4e_meta (keystr, valstr) VALUES (:keystr, :valstr)
-		ON CONFLICT (keystr) DO UPDATE SET keystr=:keystr, updated_at=now();",
+                ON CONFLICT (keystr) DO UPDATE SET keystr=:keystr, updated_at=now();",
         array(":keystr" => $keystr, ":valstr" => $valstr)
     );
 }
@@ -258,7 +258,7 @@ function pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass
         header( 'Location: '.addSession('index.php') ) ;
         return false;
     }
-	return $pg_PDO;
+        return $pg_PDO;
 }
 
 function pg4e_check_debug_table($LAUNCH, $pg_PDO) {
@@ -272,39 +272,47 @@ function pg4e_check_debug_table($LAUNCH, $pg_PDO) {
         return false;
     }
     $stmt = $pg_PDO->queryReturnError("DELETE FROM pg4e_debug");
-	$stmt = $pg_PDO->queryReturnError(
-		"INSERT INTO pg4e_debug (query, result) VALUES (:query, 'Success')",
-		array(":query" => $sql)
-	);
-	pg4e_insert_meta($pg_PDO, "user_id", $LAUNCH->user->id);
-	pg4e_insert_meta($pg_PDO, "context_id", $LAUNCH->context->id);
-	pg4e_insert_meta($pg_PDO, "key", $LAUNCH->context->key);
+        $stmt = $pg_PDO->queryReturnError(
+                "INSERT INTO pg4e_debug (query, result) VALUES (:query, 'Success')",
+                array(":query" => $sql)
+        );
+        pg4e_insert_meta($pg_PDO, "user_id", $LAUNCH->user->id);
+        pg4e_insert_meta($pg_PDO, "context_id", $LAUNCH->context->id);
+        pg4e_insert_meta($pg_PDO, "key", $LAUNCH->context->key);
     $valstr = md5($LAUNCH->context->key.'::'.$CFG->pg4e_unlock).'::42::'.
-		($LAUNCH->user->id*42).'::'.($LAUNCH->context->id*42);
+                ($LAUNCH->user->id*42).'::'.($LAUNCH->context->id*42);
     $pg_PDO->queryDie(
         "INSERT INTO pg4e_meta (keystr, valstr) VALUES (:keystr, :valstr)
-		ON CONFLICT (keystr) DO NOTHING;",
+                ON CONFLICT (keystr) DO NOTHING;",
         array(":keystr" => "code", ":valstr" => $valstr)
     );
-	return true;
+        return true;
 }
+
+function pg4e_debug_note($pg_PDO, $note) {
+    $pg_PDO->queryReturnError(
+        "INSERT INTO pg4e_debug (query, result) VALUES (:query, :result)",
+        array(":query" => $note, ':result' => 'Note only')
+    );
+}
+
 function pg4e_query_return_error($pg_PDO, $sql, $arr=false) {
     $stmt = $pg_PDO->queryReturnError($sql, $arr);
     if ( ! $stmt->success ) {
-		$pg_PDO->queryReturnError(
-			"INSERT INTO pg4e_debug (query, result) VALUES (:query, :result)",
-			array(":query" => $sql, ':result' => $stmt->errorImplode)
-		);
+                $pg_PDO->queryReturnError(
+                        "INSERT INTO pg4e_debug (query, result) VALUES (:query, :result)",
+                        array(":query" => $sql, ':result' => $stmt->errorImplode)
+                );
         error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
         $_SESSION['error'] = "SQL Query Error: ".$stmt->errorImplode;
         header( 'Location: '.addSession('index.php') ) ;
         return false;
     }
-	$pg_PDO->queryReturnError(
-		"INSERT INTO pg4e_debug (query, result) VALUES (:query, 'Success')",
-		array(":query" => $sql)
-	);
-	return $stmt;
+        $pg_PDO->queryReturnError(
+                "INSERT INTO pg4e_debug (query, result) VALUES (:query, 'Success')",
+                array(":query" => $sql)
+        );
+        return $stmt;
 }
 
 function pg4e_grade_send($LAUNCH, $pg_PDO, $gradetosend, $oldgrade, $dueDate) {
@@ -329,16 +337,16 @@ function pg4e_grade_send($LAUNCH, $pg_PDO, $gradetosend, $oldgrade, $dueDate) {
         $scorestr = "Grade not sent: ".$retval;
         $_SESSION['error'] = $scorestr;
     } else {
-		$scorestr = "Unexpected return: ".json_encode($retval);
-		$_SESSION['error'] = "Unexpected return, see pg4e_result for detail";
+                $scorestr = "Unexpected return: ".json_encode($retval);
+                $_SESSION['error'] = "Unexpected return, see pg4e_result for detail";
     }
-	$pg_PDO->queryReturnError(
+        $pg_PDO->queryReturnError(
         "INSERT INTO pg4e_result (link_id, score, note, title, debug_log)
-		    VALUES (:link_id, :score, :note, :title, :debug_log)",
+                    VALUES (:link_id, :score, :note, :title, :debug_log)",
         array(":link_id" => $LAUNCH->link->id, ":score" => $gradetosend,
-			":note" => $scorestr, ":title" => $LAUNCH->link->title,
-			":debug_log" => json_encode($debug_log)
-		)
+               ":note" => $scorestr, ":title" => $LAUNCH->link->title,
+               ":debug_log" => json_encode($debug_log)
+         )
     );
 }
 
