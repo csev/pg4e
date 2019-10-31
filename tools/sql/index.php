@@ -29,6 +29,7 @@ $assignments = array(
     '03many_to_many_roster.php' => 'Many-to-Many By Hand (roster)',
     '03many_to_many_track.php' => 'Many-to-Many CSV (tracks)',
     '03updated.php' => 'Stored Procedure',
+    '04bigtext.php' => 'Text Scan',
 );
 
 $oldsettings = Settings::linkGetAll();
