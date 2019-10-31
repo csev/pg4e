@@ -223,7 +223,9 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> (<a href=
 <?php } ?>
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<?php if ( $LAUNCH->user->instructor) { ?>
 <input type="submit" name="default" value="Default Values">
+<?php } ?>
 </form>
 </p>
 <p>
