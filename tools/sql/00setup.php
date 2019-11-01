@@ -73,7 +73,7 @@ echo("<p>To access this in a command line / terminal use:</p>\n");
 echo("<pre>\n");
 echo('psql -h <span id="server2">'.$spinner.'</span> -U <span id="user2">'.$spinner."</span>\n");
 echo("</pre>\n");
-echo("<p>It usually takes about a minute to create your database the first time.</p>\n");
+echo("<p id=\"access_delay\">It usually takes about a minute to create your database the first time...</p>\n");
 echo('<div id="access_instructions" style="display:none;">'."\n");
 echo("<p>To access this in a Python notebook use:</p>\n");
 echo("<pre>\n");
@@ -160,6 +160,7 @@ function updateMsg() {
               $("#server2").html(retval.ip);
               $("#server3").html(retval.ip);
               $("#access_instructions").show();
+              $("#access_delay").hide();
           }
       } else { 
           $("#status").html("Waiting on environment creation ("+load_tries+")");
