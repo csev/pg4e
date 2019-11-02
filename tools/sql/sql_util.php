@@ -236,6 +236,8 @@ psql -h <?= htmlentities($pdo_host) ?> -U <?= htmlentities($pdo_user) ?> <?= htm
 
 
 Python Notebook:
+%load_ext sql
+%config SqlMagic.autocommit=False
 %sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@<?= htmlentities($pdo_host) ?>/<?= htmlentities($pdo_database) ?>
 </pre>
 </p>
