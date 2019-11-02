@@ -101,6 +101,11 @@ postgres=# CREATE DATABASE pg4e WITH OWNER '<?= htmlentities($dbuser) ?>';
 CREATE DATABASE
 postgres=# \q
 </pre>
+If you make a mistake and want to reset or recreate the user or database, use:
+<pre>
+DROP USER '<?= htmlentities($dbuser) ?>;
+DROP DATABASE pg4e;
+</pre>
 </div>
 <?php
 $OUTPUT->footerStart();

@@ -1,36 +1,37 @@
+Week 1
 
-01-Basic SQL
+Setup PostgreSQL
+Making our first tables
+Inserting some data into a table
+SERIAL fields and auto-increment
+Musical Track Database
 
-- Setup / make a role
-- Populate the py4e tables
-- MD5 Users
-- Auto increment
-- Parse CSV => One table tracks_raw
+Week 2
 
-02-Model / Many-Many / Key types
+Entering Many-to-One Automobiles
+Musical Tracks Many-to-One
+Unesco Heritage Sites Many-to-One
 
-- Key types - primary, logical, foreign
-- Design model One-Many unesco identify vertical replication
-- Hand construct one-to-many table autos
-- Parse CSV => one-to-many 2 tables - tracks (alter table)
-- Parse CSV => one-to-many 5 tables - unesco
-- Design model Many-to-One unesco
+Week 3
+
+Building a Many-to-Many Roster
+Musical Track Database plus Artists
+
+Week 4
+
+Creating a Stored Procedure
+Generating Text
+
+TBD 
 
 03-Alter / Distinct / Group / Transactions / Stored Procs
 
 - Read sql commands from a file??
-- Hand construct many-to-many table - roster
-- Alter Table - tracks_raw (add the artist foreign key field)
-- Parse CSV => many-to-many 3 tables - tracks
-- CSV -> tracks_many_to_many
-- CSV -> unesco_many_to_many
-- Stored procedure updated_at
 
 04-Text / test data / index perf / character setc / hashing / regex
 
-- Fill up a lot of rows in a table
 - Character sets
-- Email -> data one table
+- Email -> data one table - Probably needs Python
 - Normalize / filter / clean like PY4E#5
 - Bunch-O-Queries
 
