@@ -41,7 +41,9 @@ if ( $dueDate->message ) {
 <p>
 At this point you should have your <b><?= $pdo_database ?></b> database created
 and have given access to the specified role.  You will now create a few tables
-that the autograder will use to communicate with you.
+that the autograder will use to communicate with you.  You <b>cannot</b> do this assignment
+using the superuser account.  You must use the role and database you created using the superuser
+for this assignment.
 </p>
 <?php pg4e_user_db_form($LAUNCH); ?>
 <p>The <b>pg4e_debug</b> table will let you see the queries that were run by the
