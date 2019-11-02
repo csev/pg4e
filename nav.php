@@ -8,11 +8,11 @@ $set->setHome($CFG->servicename, $CFG->apphome);
 
 if ( isset($CFG->lessons) ) {
     $set->addLeft('Lessons', $R.'lessons');
-}
 if ( isset($_SESSION['id']) ) {
     $set->addLeft('My Progress', $R.'assignments');
 } else {
     $set->addLeft('Assignments', $R.'assn');
+}
 }
 
 if ( isset($_SESSION['id']) ) {
@@ -52,7 +52,8 @@ if ( isset($_SESSION['id']) ) {
         $set->addRight(htmlentities($_SESSION['displayname']), $submenu);
     }
 } else {
-    $set->addRight('Login', $T.'login.php');
+    $set->addLeft('Autograder', $T.'store');
+    // $set->addRight('Login', $T.'login.php');
 }
 $set->addRight('Instructor', 'http://www.dr-chuck.com');
 
