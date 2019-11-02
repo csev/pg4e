@@ -85,8 +85,8 @@ if ( $dueDate->message ) {
 <h1>Musical Track Database</h1>
 <p>
 This application will read an iTunes library in comma-separated-values (CSV)
-and produce a properly normalized database as specified below.
-Once you have placed the proper data in the database, press the button below to
+and produce a table as specified below.
+Once you have placed the proper data in the table, press the button below to
 check your answer.
 </p>
 <?php pg4e_user_db_form($LAUNCH); ?>

@@ -121,13 +121,13 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>Unesco Heritage Sites Database</h1>
+<h1>Unesco Heritage Sites Many-to-One</h1>
 <p>
 In this assignment you will read some 
 <a href="https://whc.unesco.org/en/list/" target="_blank">Unesco Heritage Site</a> data
-in comma-separated-values (CSV)
-and produce a properly normalized database as specified below.
-Once you have placed the proper data in the database, press the button below to
+in comma-separated-values (CSV) format
+and produce properly normalized tables as specified below.
+Once you have placed the proper data in the tables, press the button below to
 check your answer.
 </p>
 <?php pg4e_user_db_form($LAUNCH); ?>

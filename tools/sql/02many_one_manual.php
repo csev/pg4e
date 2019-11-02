@@ -85,11 +85,11 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>Musical Track Database</h1>
+<h1>Entering Many-to-One Data - Automobiles</h1>
 <p>
-This application will read an iTunes library in comma-separated-values (CSV)
-and produce a properly normalized database as specified below.
-Once you have placed the proper data in the database, press the button below to
+This application will create two tables, and hand-load a
+small amount of data in the the tables while properly normalizing the data.
+Once you have placed the proper data in the tables, press the button below to
 check your answer.
 </p>
 <?php pg4e_user_db_form($LAUNCH); ?>
@@ -110,7 +110,7 @@ CREATE TABLE model (
 );
 </pre>
 Insert the following data into your database separating it
-appropriately into the <b>make</b> and <b>model</b> tables and 
+appropriately into the <b>make</b> and <b>model</b> tables and
 seting the <b>make_id</b> foreign key to link each model to
 its corresponding make.
 <table border="2">
@@ -137,7 +137,7 @@ your database and look for the data above:
 <pre>
 <?= htmlentities($sql) ?>
 </pre>
-<?php 
+<?php
 if ( ! $LAUNCH->user->instructor ) return;
 ?>
 <p>
