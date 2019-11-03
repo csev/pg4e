@@ -86,17 +86,14 @@ if ( $dueDate->message ) {
 <p>
 This application will read an iTunes library in comma-separated-values (CSV)
 and produce a table as specified below.
-Once you have placed the proper data in the table, press the button below to
-check your answer.
-</p>
-<?php pg4e_user_db_form($LAUNCH); ?>
 <p>
-Download this file
+To get the data for this assignment, 
+download this file
 <a href=library.csv" target="_blank">
 <?= $CFG->apphome ?>/tools/sql/library.csv
 </a>
-into the folder on system where you are running your <b>psql</b> client or notebooks. Two commands
-to download the file into a terminal or shell are:
+into the folder on system where you are running your <b>psql</b> client or Jupyter notebooks.
+ Two commands to download the file into a terminal or shell are:
 <pre>
 wget <?= $CFG->apphome ?>/tools/sql/library.csv
 curl -O <?= $CFG->apphome ?>/tools/sql/library.csv
@@ -104,6 +101,8 @@ curl -O <?= $CFG->apphome ?>/tools/sql/library.csv
 If you don't have either <b>wget</b> or <b>curl</b> installed you will need to
 download the CSV file and upload or copy
 it to the folder where you are running your SQL client.
+</p>
+<?php pg4e_user_db_form($LAUNCH); ?>
 <p>
 Here is the structure of the tables you will need for this assignment:
 <pre>
@@ -116,7 +115,7 @@ between tracks and albums.
 If you run the program multiple times in testing or with different files,
 make sure to empty out the data before each run.
 <p>
-Once you have the table creaed and the CSV file in the correct location, you can load it
+Once you have the table created and the CSV file in the correct location, you can load it
 into the <b>track_raw</b> table using the psql <b>\copy</b> command.
 <pre>
 \copy track_raw(title,artist,album,count,rating,len) FROM 'library.csv' WITH DELIMITER ',' CSV;
