@@ -206,7 +206,7 @@ function pg4e_user_db_form($LAUNCH) {
 Host: <input type="text" name="pdo_host" value="<?= htmlentities($pdo_host) ?>"><br/>
 Database: <input type="text" name="pdo_database" value="<?= htmlentities($pdo_database) ?>"><br/>
 User: <input type="text" name="pdo_user" value="<?= htmlentities($pdo_user) ?>"><br/>
-Password: <span id="pass" style="display:none"><input type="text" name="pdo_pass" value="<?= htmlentities($pdo_pass) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a>) <br/>
+Password: <span id="pass" style="display:none"><input type="text" name="pdo_pass" id="pdo_pass" value="<?= htmlentities($pdo_pass) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="tsugiCopyText('pdo_pass');return false;">Copy to Clipboard</a>) <br/>
 </pre>
 <?php } else { ?>
 <p>
@@ -217,7 +217,7 @@ Database: <?= $pdo_database ?>
 
 Account: <?= $pdo_user ?>
 
-Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a>)
+Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input type="hidden" name="pdo_pass" id="pdo_pass" value="<?= htmlentities($pdo_pass) ?>"/> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="tsugiCopyText('pdo_pass');return false;">Copy to Clipboard</a>)
 </pre>
 </p>
 <?php } ?>
