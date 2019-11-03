@@ -61,6 +61,7 @@ if ( is_string($retval) ) {
 }
 
 $spinner = '<img src="'.$OUTPUT->getSpinnerUrl().'">';
+echo("<p>You get a grade for this assignment once your environment has been created.</p>\n");
 echo("<p>Postgres superuser details for project: ".htmlentities($dbname)."</p>\n");
 echo("<pre>\n");
 echo('Server: <span id="server">'.$spinner."</span>\n");
