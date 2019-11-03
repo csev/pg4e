@@ -67,7 +67,9 @@ echo("<pre>\n");
 echo('Server: <span id="server">'.$spinner."</span>\n");
 echo('User: <span id="user">'.$spinner."</span>\n");
 echo("Password: ");
-echo('<span id="pass" style="display:none">'.$spinner.'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show</a>)'."\n");
+echo('<span id="pass" style="display:none">'.$spinner.'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show</a> ');
+echo('<a href="#" onclick="copyToClipboard(this, $(\'#pass\').text());return false;">copy</a>');
+echo(')'."\n");
 echo('Status: <span id="status">'.$spinner.'</span>');
 echo("</pre>\n");
 echo("<p>To access this in a command line / terminal use:</p>\n");
@@ -76,21 +78,13 @@ echo('psql -h <span id="server2">'.$spinner.'</span> -U <span id="user2">'.$spin
 echo("</pre>\n");
 echo("<p id=\"access_delay\">It usually takes about a minute to create your database the first time...</p>\n");
 echo('<div id="access_instructions" style="display:none;">'."\n");
-echo("<p>To access this in a Python notebook use:</p>\n");
-echo("<pre>\n");
-echo('%load_ext sql'."\n");
-echo('%config SqlMagic.autocommit=False'."\n");
-echo('%sql postgres://<span id="user3">'.$spinner.'</span>:replacewithsecret@<span id="server3">'.$spinner.'</span>/'."\n");
-echo("</pre>\n");
 ?>
-<p>Your Python notebook may need 
-<a href="https://towardsdatascience.com/jupyter-magics-with-sql-921370099589" target="_blank">some extensions</a> installed.</p>
 <p>Before going on to the next step, use your super user credentials to create a role
 with the following details:
 <pre>
 User: <?= htmlentities($dbuser) ?>
 
-Password: <span id="dbpass" style="display:none"><?= htmlentities($dbpass) ?></span> (<a href="#" onclick="$('#dbpass').toggle();return false;">hide/show</a>)
+Password: <span id="dbpass" style="display:none"><?= htmlentities($dbpass) ?></span> (<a href="#" onclick="$('#dbpass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, $('#dbpass').text());return false;">copy</a>)
 </pre>
 And create a database named <b>pg4e</b> and give the new role access to that database.  This database and role
 will be used to complete and grade the rest of your assignments in this class.
