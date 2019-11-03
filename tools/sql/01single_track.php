@@ -91,19 +91,6 @@ check your answer.
 </p>
 <?php pg4e_user_db_form($LAUNCH); ?>
 <p>
-Here is the structure of the tables you will need for this assignment:
-<pre>
-CREATE TABLE track_raw
- (title TEXT, artist TEXT, album TEXT,
-  count INTEGER, rating INTEGER, len INTEGER);
-</pre>
-We will ignore the artist field for this assignment and focus on the many-to-one relationship
-between tracks and albums.
-</p>
-<p>
-If you run the program multiple times in testing or with different files,
-make sure to empty out the data before each run.
-<p>
 Download this file
 <a href=library.csv" target="_blank">
 <?= $CFG->apphome ?>/tools/sql/library.csv
@@ -118,8 +105,19 @@ If you don't have either <b>wget</b> or <b>curl</b> installed you will need to
 download the CSV file and upload or copy
 it to the folder where you are running your SQL client.
 <p>
-Once you have the file in the correct location, you can load it
-into the <b>track_raw</b> table using the <b>\copy</b> command.
+Here is the structure of the tables you will need for this assignment:
+<pre>
+CREATE TABLE track_raw
+ (title TEXT, artist TEXT, album TEXT,
+  count INTEGER, rating INTEGER, len INTEGER);
+</pre>
+We will ignore the artist field for this assignment and focus on the many-to-one relationship
+between tracks and albums.
+If you run the program multiple times in testing or with different files,
+make sure to empty out the data before each run.
+<p>
+Once you have the table creaed and the CSV file in the correct location, you can load it
+into the <b>track_raw</b> table using the psql <b>\copy</b> command.
 <pre>
 \copy track_raw(title,artist,album,count,rating,len) FROM 'library.csv' WITH DELIMITER ',' CSV;
 </pre>
