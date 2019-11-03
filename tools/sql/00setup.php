@@ -104,8 +104,8 @@ postgres=# \q
 </pre>
 If you make a mistake and want to reset or recreate the user or database, use:
 <pre>
-DROP USER '<?= htmlentities($dbuser) ?>;
 DROP DATABASE pg4e;
+DROP USER <?= htmlentities($dbuser) ?>;
 </pre>
 </div>
 <?php
