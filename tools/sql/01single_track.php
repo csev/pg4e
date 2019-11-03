@@ -108,7 +108,7 @@ Download this file
 <a href=library.csv" target="_blank">
 <?= $CFG->apphome ?>/tools/sql/library.csv
 </a>
-data file into the system where you are running your <b>psql</b> client or notebooks. Two commands
+into the folder on system where you are running your <b>psql</b> client or notebooks. Two commands
 to download the file into a terminal or shell are:
 <pre>
 wget <?= $CFG->apphome ?>/tools/sql/library.csv
