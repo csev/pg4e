@@ -104,11 +104,22 @@ between tracks and albums.
 If you run the program multiple times in testing or with different files,
 make sure to empty out the data before each run.
 <p>
-Load this
+Download this file
 <a href=library.csv" target="_blank">
-CSV data
+<?= $CFG->apphome ?>/tools/sql/library.csv
 </a>
-data file into the <b>track_raw</b> table using the <b>\copy</b> command.
+data file into the system where you are running your <b>psql</b> client or notebooks. Two commands
+to download the file into a terminal or shell are:
+<pre>
+wget <?= $CFG->apphome ?>/tools/sql/library.csv
+curl -O <?= $CFG->apphome ?>/tools/sql/library.csv
+</pre>
+If you don't have either <b>wget</b> or <b>curl</b> installed you will need to
+download the CSV file and upload or copy
+it to the folder where you are running your SQL client.
+<p>
+Once you have the file in the correct location, you can load it
+into the <b>track_raw</b> table using the <b>\copy</b> command.
 <pre>
 \copy track_raw(title,artist,album,count,rating,len) FROM 'library.csv' WITH DELIMITER ',' CSV;
 </pre>
