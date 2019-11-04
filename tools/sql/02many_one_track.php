@@ -135,11 +135,12 @@ UPDATE track_raw SET album_id = (SELECT album.id FROM album WHERE album.title = 
 </pre>
 </p>
 <p>
-Then copy the corresponding data from the <b>album</b> (text field) from <b>album_raw</b>
-to <b>album</b>.
+Then use a <b>INSERT ... SELECT</b> statement copy the corresponding data from 
+the <b>album</b> from <b>album_raw</b> to <b>album</b>, effectively dropping
+the <b>artist</b> and <b>album</b> tect fields.
 </p>
 <p>
-To grade this assignment, the program will run a query like this on
+To grade this assignment, the auto-grader will run a query like this on
 your database and look for the data it expects to see:
 <pre>
 <?= htmlentities($sql) ?>
