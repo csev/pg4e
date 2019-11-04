@@ -220,14 +220,16 @@ RETURNING *;
 BEGIN;
 SELECT howmuch FROM fav WHERE account_id=1 AND post_id=1 FOR UPDATE OF fav;
 -- Time passes... 
-UPDATE SET howmuch=999 WHERE account_id=1 AND post_id=1;
+UPDATE fav SET howmuch=999 WHERE account_id=1 AND post_id=1;
+SELECT howmuch FROM fav WHERE account_id=1 AND post_id=1;
 ROLLBACK;
 SELECT howmuch FROM fav WHERE account_id=1 AND post_id=1;
 
 BEGIN;
 SELECT howmuch FROM fav WHERE account_id=1 AND post_id=1 FOR UPDATE OF fav;
 -- Time passes... 
-UPDATE SET howmuch=999 WHERE account_id=1 AND post_id=1;
+UPDATE fav SET howmuch=999 WHERE account_id=1 AND post_id=1;
+SELECT howmuch FROM fav WHERE account_id=1 AND post_id=1;
 COMMIT;
 SELECT howmuch FROM fav WHERE account_id=1 AND post_id=1;
 
@@ -262,7 +264,16 @@ BEFORE UPDATE ON comment
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
---- Example Use - Load a CSV file and normalize
+--- Load a CSV file and automatically normalize into one-to-many
+
+-- Download 
+-- wget https://www.pg4e.com/lectures/03-Techniques.csv
+
+-- x,y
+-- Zap,A
+-- Zip,A
+-- One,B
+-- Two,B
 
 DROP TABLE IF EXISTS xy_raw;
 DROP TABLE IF EXISTS y;
@@ -274,13 +285,6 @@ CREATE TABLE xy(id SERIAL, PRIMARY KEY(id), x TEXT, y_id INTEGER, UNIQUE(x,y_id)
 
 \d xy_raw
 \d+ y
-
--- Download https://www.pg4e.com/lectures/03-Techniques.csv
-
--- Zap,A
--- Zip,A
--- One,B
--- Two,B
 
 \copy xy_raw(x,y) FROM '03-Techniques.csv' WITH DELIMITER ',' CSV;
 
