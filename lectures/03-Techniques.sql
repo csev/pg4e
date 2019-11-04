@@ -109,7 +109,7 @@ SELECT id, content, created_at FROM comment
     WHERE created_at >= DATE_TRUNC('day',NOW()) 
     AND created_at < DATE_TRUNC('day',NOW() + INTERVAL '1 day');
 
--- DISTINCT
+-- DISTINCT AND DISTINCT ON
 
 DROP TABLE IF EXISTS racing;
 
@@ -138,10 +138,11 @@ VALUES
 ('Opel', 'Cadet', 1973, 500)
 ;
 
+SELECT DISTINCT make FROM racing;
+
 SELECT DISTINCT model FROM racing;
 
-SELECT DISTINCT ON (model) make,model FROM racing;
-
+-- Can have duplicates in the make column
 SELECT DISTINCT ON (model) make,model,year FROM racing;
 
 -- Must include the DISTINCT column in ORDER BY
@@ -153,7 +154,7 @@ SELECT DISTINCT ON (model) make,model,year FROM racing ORDER BY model, year DESC
 
 -- GROUP BY
 
-SELECT * FROM pg_timezone_names;
+SELECT * FROM pg_timezone_names LIMIT 20;
 
 SELECT COUNT(*) FROM pg_timezone_names;
 
@@ -171,9 +172,6 @@ SELECT COUNT(abbrev) AS ct, abbrev FROM  pg_timezone_names GROUP BY abbrev HAVIN
 
 SELECT COUNT(abbrev) AS ct, abbrev FROM  pg_timezone_names GROUP BY abbrev HAVING COUNT(abbrev) > 10 ORDER BY COUNT(abbrev) DESC;
 
-SELECT ct, abbrev FROM (SELECT COUNT(abbrev) AS ct, abbrev FROM  pg_timezone_names WHERE is_dst = 't' GROUP BY abbrev) AS zap WHERE ct > 10;
-
-
 
 -- Subquery
 
@@ -184,6 +182,16 @@ SELECT content FROM comment WHERE account_id = 1;
 
 SELECT content FROM comment 
 WHERE account_id = (SELECT id FROM account WHERE email='ed@umich.edu');
+
+-- If you did not have the HAVING clause for GROUP_BY
+SELECT ct, abbrev FROM (
+      SELECT COUNT(abbrev) AS ct, abbrev FROM  pg_timezone_names WHERE is_dst = 'f' GROUP BY abbrev
+) AS zap WHERE ct > 10;
+
+SELECT ct, abbrev FROM (
+      SELECT COUNT(abbrev) AS ct, abbrev FROM  pg_timezone_names WHERE is_dst = 'f' GROUP BY abbrev
+) AS zap WHERE ct > 10 ORDER BY ct DESC;
+
 
 -- Concurrency
 
