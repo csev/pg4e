@@ -14,9 +14,9 @@ CREATE TABLE textfun (
 
 INSERT INTO textfun (content) SELECT 'Neon' || generate_series(1,5);
 
-CREATE TABLE textfun (
-  content TEXT
-);
+SELECT * FROM textfun;
+
+DELETE FROM textfun;
 
 -- BTree Index is Default
 CREATE INDEX textfun_b ON textfun (content);
@@ -27,8 +27,6 @@ SELECT (CASE WHEN (random() < 0.5)
          THEN 'https://www.pg4e.com/neon/'
          ELSE 'http://www.pg4e.com/LEMONS/'
          END) || generate_series(1000,1005);
-
-SELECT pg_relation_size('textfun'), pg_indexes_size('textfun');
 
 INSERT INTO textfun (content)
 SELECT (CASE WHEN (random() < 0.5)
@@ -57,103 +55,14 @@ SELECT split_part(content, '/', 4) FROM textfun WHERE content LIKE '%150000%';
 SELECT translate(content, 'th.p/', 'TH!P_') FROM textfun WHERE content LIKE '%150000%';
 --  HTTPs:__www!Pg4e!com_neon_150000
 
-
+-- LIKE-style wild cards
 SELECT content FROM textfun WHERE content LIKE '%150000%';
-SELECT content FROM textfun WHERE content LIKE '%15__00%' LIMIT 3;
-SELECT content FROM textfun WHERE content LIKE 'https://%';
-SELECT content FROM textfun WHERE content ILIKE 'racing%';
+SELECT content FROM textfun WHERE content LIKE '%150_00%';
 
-explain analyze SELECT content FROM textfun WHERE content LIKE 'racing%';
-explain analyze SELECT content FROM textfun WHERE content LIKE '%racing%';
--- ILIKE Can't use B-tree index
-explain analyze SELECT content FROM textfun WHERE content ILIKE 'racing%';
+SELECT content FROM textfun WHERE content IN ('http://www.pg4e.com/neon/150000', 'https://www.pg4e.com/neon/150001');
 
-SELECT content FROM textfun WHERE content IN ('http://www.pg4e.com/neon/150000', 'https://www.pg4e.com/neon/150000');
-explain analyze SELECT content FROM textfun WHERE content IN ('http://www.pg4e.com/neon/150000', 'https://www.pg4e.com/neon/150000');
-
-SELECT content FROM textfun WHERE content IN (SELECT content FROM textfun WHERE content LIKE '%150000%');
-explain analyze SELECT content FROM textfun WHERE content IN (SELECT content FROM textfun WHERE content LIKE '%150000%');
-explain analyze SELECT content FROM textfun WHERE content IN (SELECT content FROM textfun LIKE '%150000%');
-
-
---- Advanced Indexes
-
-select 'https://sql4e.com/neon/' || trunc(random()*1000000) || repeat('Lemon', 5) || generate_series(1,5);
-
-CREATE TABLE cr1 (
-  id SERIAL,
-  url VARCHAR(128) UNIQUE,
-  content TEXT
-);
-
-insert into cr1(url)
-select repeat('Neon', 1000) || generate_series(1,5000);
-
-CREATE TABLE cr2 (
-  id SERIAL,
-  url TEXT,
-  content TEXT
-);
-
-insert into cr2 (url)
-select repeat('Neon', 1000) || generate_series(1,5000);
-
-select pg_relation_size('cr2'), pg_indexes_size('cr2');
-
-create unique index cr2_unique on cr2 (url);
-
-select pg_relation_size('cr2'), pg_indexes_size('cr2');
-
-drop index cr2_unique;
-
-select pg_relation_size('cr2'), pg_indexes_size('cr2');
-
-create unique index cr2_md5 on cr2 (md5(url));
-
-select pg_relation_size('cr2'), pg_indexes_size('cr2');
-
-explain select * from cr2 where url='lemons';
-
-explain select * from cr2 where md5(url)=md5('lemons');
-
-drop index cr2_md5;
-
-create unique index cr2_sha256 on cr2 (sha256(url::bytea));
-
-explain select * from cr2 where sha256(url::bytea)=sha256('bob'::bytea);
-
-CREATE TABLE cr3 (
-  id SERIAL,
-  url TEXT,
-  url_md5 uuid unique,
-  content TEXT
-);
-
-insert into cr3 (url)
-select repeat('Neon', 1000) || generate_series(1,5000);
-
-select pg_relation_size('cr3'), pg_indexes_size('cr3');
-
-update cr3 set url_md5 = md5(url)::uuid;
-
-select pg_relation_size('cr3'), pg_indexes_size('cr3');
-
-explain analyze select * from cr3 where url_md5=md5('lemons')::uuid;
-
-CREATE TABLE cr4 (
-  id SERIAL,
-  url TEXT,
-  content TEXT
-);
-
-insert into cr4 (url)
-select repeat('Neon', 1000) || generate_series(1,5000);
-
-create index cr4_hash on cr4 using hash (url);
-
-select pg_relation_size('cr4'), pg_indexes_size('cr4');
-
-explain analyze select * from cr5 where url='lemons';
+-- Don't want to fill up the server
+DROP TABLE textfun;
 
 --- Regex
 
@@ -183,12 +92,12 @@ SELECT substring(email FROM '.+@(.*)$'),
     count(substring(email FROM '.+@(.*)$')) 
 FROM em GROUP BY substring(email FROM '.+@(.*)$');
 
-SELECT * FROM em where substring(email FROM '.+@(.*)$') = 'umich.edu';
+SELECT * FROM em WHERE substring(email FROM '.+@(.*)$') = 'umich.edu';
 
 CREATE TABLE tw (id serial, primary key(id), tweet text);
 
 INSERT INTO tw (tweet) VALUES ('This is #SQL and #FUN stuff');
-INSERT INTO tw (tweet) VALUES ('More people should learn #SQL from #UMSI');
+INSERT INTO tw (tweet) VALUES ('More people should learn #SQL FROM #UMSI');
 INSERT INTO tw (tweet) VALUES ('#UMSI also teaches #PYTHON');
 
 SELECT tweet FROM tw;
@@ -204,6 +113,8 @@ SELECT id, regexp_matches(tweet,'#([A-Za-z0-9_]+)', 'g') FROM tw;
 -- https://www.pg4e.com/lectures/mbox-short.txt
 
 CREATE TABLE mbox (line TEXT);
+
+-- E'\007' is the BEL character and not in the data so each row is one column
 \copy mbox FROM 'mbox-short.txt' with delimiter E'\007';
 
 SELECT line FROM mbox WHERE line ~ '^From ';
@@ -215,4 +126,92 @@ SELECT email, count(email) FROM
 ( SELECT substring(line, ' (.+@[^ ]+) ') AS email FROM mbox WHERE line ~ '^From '
 ) AS badsub
 GROUP BY email ORDER BY count(email) DESC;
+
+
+--- Advanced Indexes
+--- Note thiese might overrun a class-provided server with a small disk quota
+
+SELECT 'https://sql4e.com/neon/' || trunc(random()*1000000) || repeat('Lemon', 5) || generate_series(1,5);
+
+CREATE TABLE cr1 (
+  id SERIAL,
+  url VARCHAR(128) UNIQUE,
+  content TEXT
+);
+
+INSERT INTO cr1(url)
+SELECT repeat('Neon', 1000) || generate_series(1,5000);
+
+CREATE TABLE cr2 (
+  id SERIAL,
+  url TEXT,
+  content TEXT
+);
+
+INSERT INTO cr2 (url)
+SELECT repeat('Neon', 1000) || generate_series(1,5000);
+
+SELECT pg_relation_size('cr2'), pg_indexes_size('cr2');
+
+CREATE unique index cr2_unique on cr2 (url);
+
+SELECT pg_relation_size('cr2'), pg_indexes_size('cr2');
+
+DROP index cr2_unique;
+
+SELECT pg_relation_size('cr2'), pg_indexes_size('cr2');
+
+CREATE unique index cr2_md5 on cr2 (md5(url));
+
+SELECT pg_relation_size('cr2'), pg_indexes_size('cr2');
+
+explain SELECT * FROM cr2 WHERE url='lemons';
+
+explain SELECT * FROM cr2 WHERE md5(url)=md5('lemons');
+
+DROP index cr2_md5;
+
+CREATE unique index cr2_sha256 on cr2 (sha256(url::bytea));
+
+explain SELECT * FROM cr2 WHERE sha256(url::bytea)=sha256('bob'::bytea);
+
+CREATE TABLE cr3 (
+  id SERIAL,
+  url TEXT,
+  url_md5 uuid unique,
+  content TEXT
+);
+
+INSERT INTO cr3 (url)
+SELECT repeat('Neon', 1000) || generate_series(1,5000);
+
+SELECT pg_relation_size('cr3'), pg_indexes_size('cr3');
+
+update cr3 set url_md5 = md5(url)::uuid;
+
+SELECT pg_relation_size('cr3'), pg_indexes_size('cr3');
+
+EXPLAIN ANALYZE SELECT * FROM cr3 WHERE url_md5=md5('lemons')::uuid;
+
+CREATE TABLE cr4 (
+  id SERIAL,
+  url TEXT,
+  content TEXT
+);
+
+INSERT INTO cr4 (url)
+SELECT repeat('Neon', 1000) || generate_series(1,5000);
+
+CREATE index cr4_hash on cr4 using hash (url);
+
+SELECT pg_relation_size('cr4'), pg_indexes_size('cr4');
+
+EXPLAIN ANALYZE SELECT * FROM cr5 WHERE url='lemons';
+
+-- Drop these tables to make sure not to overrun your server
+DROP table cr1;
+DROP table cr2;
+DROP table cr3;
+DROP table cr4;
+DROP table cr5;
 
