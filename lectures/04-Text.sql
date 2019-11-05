@@ -25,13 +25,13 @@ SELECT pg_relation_size('textfun'), pg_indexes_size('textfun');
 
 SELECT (CASE WHEN (random() < 0.5)
          THEN 'https://www.pg4e.com/neon/'
-         ELSE 'http://www.pg4e.com/LEMONS/'
+         ELSE 'https://www.pg4e.com/LEMONS/'
          END) || generate_series(1000,1005);
 
 INSERT INTO textfun (content)
 SELECT (CASE WHEN (random() < 0.5)
          THEN 'https://www.pg4e.com/neon/'
-         ELSE 'http://www.pg4e.com/LEMONS/'
+         ELSE 'https://www.pg4e.com/LEMONS/'
          END) || generate_series(100000,200000);
 
 SELECT pg_relation_size('textfun'), pg_indexes_size('textfun');
@@ -59,7 +59,7 @@ SELECT translate(content, 'th.p/', 'TH!P_') FROM textfun WHERE content LIKE '%15
 SELECT content FROM textfun WHERE content LIKE '%150000%';
 SELECT content FROM textfun WHERE content LIKE '%150_00%';
 
-SELECT content FROM textfun WHERE content IN ('http://www.pg4e.com/neon/150000', 'https://www.pg4e.com/neon/150001');
+SELECT content FROM textfun WHERE content IN ('https://www.pg4e.com/neon/150000', 'https://www.pg4e.com/neon/150001');
 
 -- Don't want to fill up the server
 DROP TABLE textfun;
@@ -110,12 +110,14 @@ SELECT DISTINCT regexp_matches(tweet,'#([A-Za-z0-9_]+)', 'g') FROM tw;
 
 SELECT id, regexp_matches(tweet,'#([A-Za-z0-9_]+)', 'g') FROM tw;
 
--- https://www.pg4e.com/lectures/mbox-short.txt
+-- wget https://www.pg4e.com/lectures/mbox-short.txt
 
 CREATE TABLE mbox (line TEXT);
 
 -- E'\007' is the BEL character and not in the data so each row is one column
 \copy mbox FROM 'mbox-short.txt' with delimiter E'\007';
+
+\copy mbox FROM PROGRAM 'wget -q -O - "$@" https://www.pg4e.com/lectures/mbox-short.txt' with delimiter E'\007';
 
 SELECT line FROM mbox WHERE line ~ '^From ';
 SELECT substring(line, ' (.+@[^ ]+) ') FROM mbox WHERE line ~ '^From ';
@@ -129,9 +131,9 @@ GROUP BY email ORDER BY count(email) DESC;
 
 
 --- Advanced Indexes
---- Note thiese might overrun a class-provided server with a small disk quota
+--- Note these might overrun a class-provided server with a small disk quota
 
-SELECT 'https://sql4e.com/neon/' || trunc(random()*1000000) || repeat('Lemon', 5) || generate_series(1,5);
+SELECT 'https://www.pg4e.com/neon/' || trunc(random()*1000000) || repeat('Lemon', 5) || generate_series(1,5);
 
 CREATE TABLE cr1 (
   id SERIAL,
