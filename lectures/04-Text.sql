@@ -1,7 +1,4 @@
 
-
-psql discuss pg4e
-
 -- Generate Data
 
 SELECT random(), random(), trunc(random()*100);
@@ -30,6 +27,8 @@ SELECT (CASE WHEN (random() < 0.5)
          THEN 'https://www.pg4e.com/neon/'
          ELSE 'http://www.pg4e.com/LEMONS/'
          END) || generate_series(1000,1005);
+
+SELECT pg_relation_size('textfun'), pg_indexes_size('textfun');
 
 INSERT INTO textfun (content)
 SELECT (CASE WHEN (random() < 0.5)
