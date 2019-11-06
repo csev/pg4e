@@ -2,11 +2,77 @@
 COURSE 2
 ========
 
-WEEK 1
-======
+WEEK 1 - FULL TEXT SEARCHES
+===========================
 
-JSON FIELDS
-===========
+A tsvector value is a sorted list of distinct lexemes, which are words that have been normalized to merge different variants of the same word.  Position / weight (A-D)
+
+SELECT to_tsvector('have a nice day');
+   to_tsvector
+------------------
+ 'day':4 'nice':3
+
+A tsquery value stores lexemes that are to be searched for, and combines them honoring the Boolean operators
+
+pg4e=> SELECT to_tsquery('have & a & nice & day');
+   to_tsquery
+----------------
+ 'nice' & 'day'
+
+SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( '''have a nice day''' );
+SELECT to_tsvector( 'have a nice day' ) @@ plainto_tsquery( 'have a nice day' );
+SELECT to_tsvector( 'have a nice day' ) @@ plainto_tsquery( 'day nice' );
+SELECT to_tsvector( 'have a nice day' ) @@ phraseto_tsquery('nice day');
+SELECT to_tsvector( 'have a nice day' ) @@ phraseto_tsquery('day nice');
+SELECT to_tsvector( 'have a nice day' ) @@ websearch_to_tsquery('english', 'days of wine and roses');
+SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( 'have & a & nice  & day' );
+SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( 'day & nice' );
+
+CREATE INDEX pictures_title ON pictures
+  USING gin(to_tsvector('english', title));
+
+ts_vector
+ts_query
+GIN  - Generalized inverted - Perfect - Slow update, fast select
+GiST - Generalized Search Tree - Lossy - Hash - Fast update, slow select
+
+SHOW default_text_search_config;  
+\dF
+
+Index Types
+B-Tree versus BRIN (Range) Indexes
+GIN - Words not LIKE
+GiST - Words not LIKE
+https://en.wikipedia.org/wiki/Block_Range_Index
+
+SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impossible');
+
+https://www.compose.com/articles/indexing-for-full-text-search-in-postgresql/
+
+Operators..
+
+Ranking...
+
+https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
+
+CREATE INDEX pictures_title ON pictures 
+  USING gin(to_tsvector('english', title));
+
+https://stackoverflow.com/questions/4014519/fulltext-query-with-scores-ranks-in-postgresql/4014625#4014625
+https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-RANKING
+
+SELECT substring(content, '0([0-9][0-9])0') AS num FROM content;
+
+
+
+WEEK 2 - JSON / KEY-VALUE DATA
+==============================
+
+Store Types:
+HSTORE
+JSON
+JSONB
+
 
 Casting using :: or CAST(value AS type)
 https://stackoverflow.com/questions/15537709/what-does-do-in-postgresql
@@ -19,9 +85,6 @@ https://www.postgresql.org/docs/9.5/functions-json.html
 Contain
 
 '{"a":1, "b":2}'::jsonb @> '{"b":2}'::jsonb
-
-JSON
-JSONB
 
 https://blog.hagander.net/json-field-constraints-228/
 https://www.postgresql.org/docs/9.5/datatype-json.html#JSON-INDEXING
@@ -45,21 +108,18 @@ while jsonb_path_ops creates index items only for each value in the data.
 Basically, each jsonb_path_ops index item is a hash of the value and the
 key(s) leading to it.
 
-WEEK 2
-======
-
-FULL TEXT SEARCHES
-------------------
-
-ts_vector
-GIN  - Generalized inverted - Perfect - Slow update, fast select
-GiST - Generalized Search Tree - Lossy - Hash - Fast update, slow select
-
-SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impossible');
+WEEK 3 - ELASTIC SEARCH
+=======================
 
 
-WEEK 3
-======
+WEEK 4 - PANDAS AND SQL
+=======================
+
+
+
+
+TODO
+====
 
 DUMP / RESTORE
 --------------
@@ -72,14 +132,6 @@ psql dbname < infile
 
 INDEXES AND PERFORMANCE
 -----------------------
-
-Explain Queries
-
-Index Types
-B-Tree versus BRIN (Range) Indexes
-GIN - Words not LIKE
-GiST - Words not LIKE
-https://en.wikipedia.org/wiki/Block_Range_Index
 
 VIEWS
 ----- 
