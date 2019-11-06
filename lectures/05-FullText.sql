@@ -1,34 +1,25 @@
 
--- wget https://www.pg4e.com/lectures/mbox-short.txt
+-- wget https://www.pg4e.com/code/gmane.py
+-- python3 game.py
+-- Pulls data and puts it into messages table
 
-CREATE TABLE mbox (id SERIAL, line TEXT);
+-- CREATE TABLE IF NOT EXISTS messages
+--    (id SERIAL, email TEXT, sent_at TIMESTAMPTZ,
+--     subject TEXT, headers TEXT, body TEXT)
 
--- E'\007' is the BEL character and not in the data so each row is one column
-\copy mbox FROM 'mbox-short.txt' with delimiter E'\007';
+SELECT substring(headers, '\nFrom: [^\n]*<([^>]*)') FROM messages LIMIT 100;
 
-\copy mbox (line) FROM PROGRAM 'wget -q -O - "$@" https://www.pg4e.com/lectures/mbox-short.txt' with delimiter E'\007';
+CREATE INDEX messages_f ON messages (substring(headers, '\nFrom: [^\n]*<([^>]*)'));
 
-SELECT substring(line, ' (.+@[^ ]+) ') FROM mbox WHERE line ~ '^From ';
+SELECT sent_at FROM messages WHERE substring(headers, '\nFrom: [^\n]*<([^>]*)') = 'john@caret.cam.ac.uk';
 
--- Indeses are about WHERE clauses
-CREATE INDEX mbox_r ON mbox (substring(line, ' (.+@[^ ]+) '));
+--- Yes it would be nice not to have to place that expression over and over :)
+EXPLAIN ANALYZE SELECT sent_at FROM messages WHERE substring(headers, '\nFrom: [^\n]*<([^>]*)') = 'john@caret.cam.ac.uk';
 
-SELECT id FROM mbox WHERE substring(line, ' (.+@[^ ]+) ') = 'zqian@umich.edu';
-SELECT id FROM mbox WHERE substring(line, ' (.+@[^ !]+) ') = 'zqian@umich.edu';
+ALTER TABLE messages ADD COLUMN sender TEXT;
 
-EXPLAIN ANALYZE SELECT COUNT(*) FROM mbox WHERE substring(line, ' (.+@[^ ]+) ') = 'zqian@umich.edu';
-EXPLAIN ANALYZE SELECT COUNT(*) FROM mbox WHERE substring(line, ' (.+@[^ !]+) ') = 'zqian@umich.edu';
+UPDATE messages SET sender=substring(headers, '\nFrom: [^\n]*<([^>]*)');
 
-SELECT line FROM mbox WHERE line ~ '^From ';
-SELECT substring(line, ' (.+@[^ ]+) ') FROM mbox WHERE line ~ '^From ';
-
-SELECT substring(line, ' (.+@[^ ]+) '), count(substring(line, ' (.+@[^ ]+) ')) FROM mbox WHERE line ~ '^From ' GROUP BY substring(line, ' (.+@[^ ]+) ') ORDER BY count(substring(line, ' (.+@[^ ]+) ')) DESC;
-
-SELECT email, count(email) FROM
-( SELECT substring(line, ' (.+@[^ ]+) ') AS email FROM mbox WHERE line ~ '^From '
-) AS badsub
-GROUP BY email ORDER BY count(email) DESC;
-
-CREATE TABLE mbox (id SERIAL, header TEXT, body TEXT);
-
+SELECT substring(headers, '\nLines: ([0-9]*)') FROM messages LIMIT 100;
+SELECT AVG(substring(headers, '\nLines: ([0-9]*)')::integer) FROM messages;
 
