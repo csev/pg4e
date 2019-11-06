@@ -1,3 +1,6 @@
+
+# https://www.pg4e.com/code/gmane.py
+
 import psycopg2
 import time
 import ssl

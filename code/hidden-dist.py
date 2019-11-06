@@ -1,4 +1,5 @@
-# Keep this file separate
+
+# https://www.pg4e.com/code/hidden-dist.py
 
 def secrets():
     return {"host": "35.123.23.37",

@@ -1,4 +1,6 @@
 
+# https://www.pg4e.com/code/datecompat.py
+
 # Non-dateutil version - we try our best
 def parsemaildate(md) :
 
