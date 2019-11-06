@@ -29,4 +29,6 @@ SELECT email, count(email) FROM
 ) AS badsub
 GROUP BY email ORDER BY count(email) DESC;
 
+CREATE TABLE mbox (id SERIAL, header TEXT, body TEXT);
+
 

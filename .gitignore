@@ -1,6 +1,8 @@
 .DS_Store
 *.swp
 ~*
+__pycache__
 tsugi
 pg4e-solutions
+hidden.py
 

@@ -19,11 +19,16 @@ pg4e=> SELECT to_tsquery('have & a & nice & day');
 ----------------
  'nice' & 'day'
 
+Text query operators
+https://www.postgresql.org/docs/9.6/functions-textsearch.html
+
 SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( '''have a nice day''' );
 SELECT to_tsvector( 'have a nice day' ) @@ plainto_tsquery( 'have a nice day' );
 SELECT to_tsvector( 'have a nice day' ) @@ plainto_tsquery( 'day nice' );
 SELECT to_tsvector( 'have a nice day' ) @@ phraseto_tsquery('nice day');
 SELECT to_tsvector( 'have a nice day' ) @@ phraseto_tsquery('day nice');
+
+-- Required PostgreSQL 11
 SELECT to_tsvector( 'have a nice day' ) @@ websearch_to_tsquery('english', 'days of wine and roses');
 SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( 'have & a & nice  & day' );
 SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( 'day & nice' );
@@ -47,21 +52,27 @@ https://en.wikipedia.org/wiki/Block_Range_Index
 
 SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impossible');
 
-https://www.compose.com/articles/indexing-for-full-text-search-in-postgresql/
-
 Operators..
 
 Ranking...
 
-https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
-
 CREATE INDEX pictures_title ON pictures 
   USING gin(to_tsvector('english', title));
 
-https://stackoverflow.com/questions/4014519/fulltext-query-with-scores-ranks-in-postgresql/4014625#4014625
-https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-RANKING
 
 SELECT substring(content, '0([0-9][0-9])0') AS num FROM content;
+
+References
+
+https://www.compose.com/articles/indexing-for-full-text-search-in-postgresql/
+https://stackoverflow.com/questions/4014519/fulltext-query-with-scores-ranks-in-postgresql/4014625#4014625
+https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-RANKING
+https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
+
+https://www.postgresql.org/docs/9.5/brin-intro.html
+https://en.wikipedia.org/wiki/Block_Range_Index
+https://www.postgresql.fastware.com/blog/brin-indexes-what-are-they-and-how-do-you-use-them
+
 
 
 
