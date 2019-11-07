@@ -1,0 +1,243 @@
+<html>
+    <head>
+<style>
+body {
+    font-family: sans-serif;
+}
+</style>
+    </head>
+    <body>
+<h1>PostgreSQL Full Text Lecture Notes</h1>
+<p>
+In this lecture we will explore how Postgres supports large text fields
+and how we can look into those fields and use indexes to search large text fields efficiently.
+</p>
+<h2>Similar to <a href="https://www.youtube.com/watch?v=BNHR6IQJGZs" target="_blank">Google Search</a></h2>
+<ul>
+    <li>Crawl: Retrieve documents, parse them and create an inverted index</li>
+    <li>Search: Take keywords, find the documents with the words then rank them and present results</li>
+</ul>
+
+<h2><a href="https://www.postgresql.org/docs/10/textsearch-intro.html" target="_blank">https://www.postgresql.org/docs/10/textsearch-intro.html</a></h2>
+<ul>
+    <li>SQL LIKE and Regex scan text columns and can even build indexes but are not "language-aware"</li>
+    <li>Full Text is language aware (i.e. "stop words" and "lexemes") more like a search engine</li>
+</ul>
+
+<pre>
+https://www.postgresql.org/docs/9.6/functions-textsearch.html
+
+
+A tsvector value is a sorted list of distinct lexemes, which are words that have been normalized to merge different variants of the same word.  Position / weight (A-D)
+
+SELECT to_tsvector('have a nice day');
+   to_tsvector
+------------------
+ 'day':4 'nice':3
+
+A tsquery value stores lexemes that are to be searched for, and combines them honoring the Boolean operators
+
+pg4e=> SELECT to_tsquery('have & a & nice & day');
+   to_tsquery
+----------------
+ 'nice' & 'day'
+
+Text query operators
+
+SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( '''have a nice day''' );
+SELECT to_tsvector( 'have a nice day' ) @@ plainto_tsquery( 'have a nice day' );
+SELECT to_tsvector( 'have a nice day' ) @@ plainto_tsquery( 'day nice' );
+SELECT to_tsvector( 'have a nice day' ) @@ phraseto_tsquery('nice day');
+SELECT to_tsvector( 'have a nice day' ) @@ phraseto_tsquery('day nice');
+
+-- Required PostgreSQL 11
+SELECT to_tsvector( 'have a nice day' ) @@ websearch_to_tsquery('english', 'days of wine and roses');
+SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( 'have & a & nice  & day' );
+SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( 'day & nice' );
+
+CREATE INDEX pictures_title ON pictures
+  USING gin(to_tsvector('english', title));
+
+ts_vector
+ts_query
+GIN  - Generalized inverted - Perfect - Slow update, fast select
+GiST - Generalized Search Tree - Lossy - Hash - Fast update, slow select
+
+SHOW default_text_search_config;  
+\dF
+
+Index Types
+GIN - Words not LIKE
+GiST - Words not LIKE
+https://en.wikipedia.org/wiki/Block_Range_Index
+
+SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impossible');
+
+Ranking...
+
+CREATE INDEX pictures_title ON pictures 
+  USING gin(to_tsvector('english', title));
+
+
+SELECT substring(content, '0([0-9][0-9])0') AS num FROM content;
+
+References
+
+https://www.compose.com/articles/indexing-for-full-text-search-in-postgresql/
+https://stackoverflow.com/questions/4014519/fulltext-query-with-scores-ranks-in-postgresql/4014625#4014625
+https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-RANKING
+https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
+
+https://www.postgresql.org/docs/9.5/brin-intro.html
+https://en.wikipedia.org/wiki/Block_Range_Index
+https://www.postgresql.fastware.com/blog/brin-indexes-what-are-they-and-how-do-you-use-them
+
+
+
+
+WEEK 2 - JSON / KEY-VALUE DATA
+==============================
+
+https://stackoverflow.com/questions/18404055/index-for-finding-an-element-in-a-json-array
+
+JSON - Text + some functions.
+JSOB - Parsed objects - More awesome.
+@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
+
+With the new binary JSON data type jsonb, Postgres 9.4 introduced largely improved index options. You can now have a GIN index on a jsonb array directly:
+
+CREATE TABLE tracks (id serial, artists jsonb);
+CREATE INDEX tracks_artists_gin_idx ON tracks USING gin (artists);
+
+No need for a function to convert the array. This would support a query:
+
+SELECT * FROM tracks WHERE artists @> '[{"name": "The Dirty Heads"}]';
+
+@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
+
+Or you use the more specialized, non-default GIN operator class jsonb_path_ops for the index:
+
+CREATE INDEX tracks_artists_gin_idx ON tracks
+USING  gin (artists jsonb_path_ops);
+
+Same query.
+
+Currently jsonb_path_ops only supports the @> operator. But it's typically much smaller and faster. There are more index options, details in the manual.
+
+https://stackoverflow.com/questions/24006291/postgresql-return-result-set-as-json-array
+
+create table t (a int primary key, b text);
+
+insert into t values (1, 'value1');
+insert into t values (2, 'value2');
+insert into t values (3, 'value3');
+
+select row_to_json(row) from (select * from t) row;
+
+Store Types:
+HSTORE
+JSON
+JSONB
+
+
+Casting using :: or CAST(value AS type)
+https://stackoverflow.com/questions/15537709/what-does-do-in-postgresql
+https://stackoverflow.com/questions/5758499/double-colon-notation-in-sql
+
+Operators @>
+https://www.postgresql.org/docs/9.5/functions-json.html
+
+Contain
+
+'{"a":1, "b":2}'::jsonb @> '{"b":2}'::jsonb
+
+https://blog.hagander.net/json-field-constraints-228/
+https://www.postgresql.org/docs/9.5/datatype-json.html#JSON-INDEXING
+
+CREATE TABLE jsontable (j jsonb NOT NULL);
+-- All of the keys - a bit of overkill
+CREATE INDEX j_idx ON jsontable USING gin(j jsonb_path_ops);
+-- Just one key
+CREATE UNIQUE INDEX j_uuid_idx ON jsontable(((j->>'uuid')::uuid));
+CREATE INDEX idxgintags ON api USING gin ((jdoc -> 'tags'));
+ALTER TABLE jsontable ADD CONSTRAINT uuid_must_exist CHECK (j ? 'uuid');
+
+SELECT count(*) FROM cards WHERE data->>'finished' = 'true';
+
+-> and --> operators
+
+jsonb_path_ops means index can only handle @>
+The technical difference between a jsonb_ops and a jsonb_path_ops GIN index is that
+jsonb_ops creates independent index items for each key and value in the data,
+while jsonb_path_ops creates index items only for each value in the data. 
+Basically, each jsonb_path_ops index item is a hash of the value and the
+key(s) leading to it.
+
+https://stackoverflow.com/questions/18404055/index-for-finding-an-element-in-a-json-array
+
+CREATE TABLE tracks (id serial, artists jsonb);
+CREATE INDEX tracks_artists_gin_idx ON tracks USING gin (artists);
+
+No need for a function to convert the array. This would support a query:
+
+SELECT * FROM tracks WHERE artists @> '[{"name": "The Dirty Heads"}]';
+
+@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
+
+WEEK 3 - ELASTIC SEARCH
+=======================
+
+
+WEEK 4 - PANDAS AND SQL
+=======================
+
+
+
+
+TODO
+====
+
+DUMP / RESTORE
+--------------
+
+https://www.postgresql.org/docs/9.1/backup-dump.html
+
+pg_dump dbname > outfile
+
+psql dbname < infile
+
+INDEXES AND PERFORMANCE
+-----------------------
+
+VIEWS
+----- 
+
+You can “hide” complexity with a view.   You can create a view with computed columns, which can prove quite handy. You can limit access by use of views as well restrict certain dB users to read-only views.  
+
+
+PROCEDURES
+----------
+
+Stored Procedures
+
+Before, After, or Instead of INSERT, UPDATE, or DELETE
+
+http://www.postgresqltutorial.com/postgresql-create-procedure/
+
+Triggers
+
+CREATE  TRIGGER trigger_name [BEFORE|AFTER|INSTEAD OF] [INSERT|UPDATE|DELETE] OF column_name
+ON table_name
+[
+];
+
+TODO
+----
+
+WITH / Common Table Expressions
+
+Doing it in Python
+
+PERCENT_RANK
+
+HSTORE :)
