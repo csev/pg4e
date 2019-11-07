@@ -45,14 +45,11 @@ SHOW default_text_search_config;
 \dF
 
 Index Types
-B-Tree versus BRIN (Range) Indexes
 GIN - Words not LIKE
 GiST - Words not LIKE
 https://en.wikipedia.org/wiki/Block_Range_Index
 
 SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impossible');
-
-Operators..
 
 Ranking...
 
@@ -79,6 +76,42 @@ https://www.postgresql.fastware.com/blog/brin-indexes-what-are-they-and-how-do-y
 WEEK 2 - JSON / KEY-VALUE DATA
 ==============================
 
+https://stackoverflow.com/questions/18404055/index-for-finding-an-element-in-a-json-array
+
+JSON - Text + some functions.
+JSOB - Parsed objects - More awesome.
+@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
+
+With the new binary JSON data type jsonb, Postgres 9.4 introduced largely improved index options. You can now have a GIN index on a jsonb array directly:
+
+CREATE TABLE tracks (id serial, artists jsonb);
+CREATE INDEX tracks_artists_gin_idx ON tracks USING gin (artists);
+
+No need for a function to convert the array. This would support a query:
+
+SELECT * FROM tracks WHERE artists @> '[{"name": "The Dirty Heads"}]';
+
+@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
+
+Or you use the more specialized, non-default GIN operator class jsonb_path_ops for the index:
+
+CREATE INDEX tracks_artists_gin_idx ON tracks
+USING  gin (artists jsonb_path_ops);
+
+Same query.
+
+Currently jsonb_path_ops only supports the @> operator. But it's typically much smaller and faster. There are more index options, details in the manual.
+
+https://stackoverflow.com/questions/24006291/postgresql-return-result-set-as-json-array
+
+create table t (a int primary key, b text);
+
+insert into t values (1, 'value1');
+insert into t values (2, 'value2');
+insert into t values (3, 'value3');
+
+select row_to_json(row) from (select * from t) row;
+
 Store Types:
 HSTORE
 JSON
@@ -88,7 +121,6 @@ JSONB
 Casting using :: or CAST(value AS type)
 https://stackoverflow.com/questions/15537709/what-does-do-in-postgresql
 https://stackoverflow.com/questions/5758499/double-colon-notation-in-sql
-
 
 Operators @>
 https://www.postgresql.org/docs/9.5/functions-json.html
@@ -118,6 +150,17 @@ jsonb_ops creates independent index items for each key and value in the data,
 while jsonb_path_ops creates index items only for each value in the data. 
 Basically, each jsonb_path_ops index item is a hash of the value and the
 key(s) leading to it.
+
+https://stackoverflow.com/questions/18404055/index-for-finding-an-element-in-a-json-array
+
+CREATE TABLE tracks (id serial, artists jsonb);
+CREATE INDEX tracks_artists_gin_idx ON tracks USING gin (artists);
+
+No need for a function to convert the array. This would support a query:
+
+SELECT * FROM tracks WHERE artists @> '[{"name": "The Dirty Heads"}]';
+
+@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
 
 WEEK 3 - ELASTIC SEARCH
 =======================
