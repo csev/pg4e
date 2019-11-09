@@ -3,6 +3,117 @@
 -- python3 game.py
 -- Pulls data and puts it into messages table
 
+CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
+INSERT INTO docs (doc) VALUES
+('This is SQL and Python and other fun teaching stuff'),
+('More people should learn SQL from UMSI'),
+('UMSI also teaches Python and also SQL');
+SELECT * FROM docs;
+
+--- https://stackoverflow.com/questions/29419993/split-column-into-multiple-rows-in-postgres
+
+SELECT id, lower(s.keyword) AS keyword
+FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+ORDER BY id;
+
+SELECT DISTINCT id, lower(s.keyword) AS keyword
+FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+ORDER BY id;
+
+CREATE TABLE stop_words (word TEXT unique);
+INSERT INTO stop_words (word) VALUES ('is'), ('this'), ('and');
+
+SELECT DISTINCT id, lower(s.keyword) AS keyword
+FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+WHERE s.keyword NOT IN (SELECT word FROM stop_words)
+ORDER BY id;
+
+CREATE TABLE docs_gin (
+  keyword TEXT,
+  doc_id INTEGER REFERENCES docs(id) ON DELETE CASCADE
+);
+
+INSERT INTO docs_gin (doc_id, keyword) 
+SELECT DISTINCT id, lower(s.keyword) AS keyword
+FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+WHERE s.keyword NOT IN (SELECT word FROM stop_words)
+ORDER BY id;
+
+SELECT * FROM docs_gin;
+
+SELECT doc FROM docs AS D
+JOIN docs_gin AS G ON D.id = G.doc_id
+WHERE G.keyword = lower('UMSI');
+
+SELECT doc FROM docs AS D
+JOIN docs_gin AS G ON D.id = G.doc_id
+WHERE G.keyword in (lower('fun'), lower('people'));
+
+SELECT doc FROM docs AS D
+JOIN docs_gin AS G ON D.id = G.doc_id
+WHERE G.keyword in (lower('SQL'), lower('Python'));
+
+SELECT DISTINCT id, doc FROM docs AS D
+JOIN docs_gin AS G ON D.id = G.doc_id
+WHERE G.keyword in (lower('SQL'), lower('Python'));
+
+CREATE TABLE docs_stem (word TEXT, stem TEXT);
+INSERT INTO docs_stem (word, stem) VALUES 
+('teaching', 'teach'), ('teaches', 'teach');
+
+SELECT id, keyword FROM (
+SELECT DISTINCT id, lower(s.keyword) AS keyword
+FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+) AS X;
+
+SELECT id, keyword, stem FROM (
+SELECT DISTINCT id, lower(s.keyword) AS keyword
+FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+) AS K 
+LEFT JOIN docs_stem AS S ON K.keyword = S.word;
+
+SELECT id, 
+CASE WHEN stem IS NOT NULL THEN stem ELSE keyword END,
+keyword, stem 
+FROM (
+SELECT DISTINCT id, lower(s.keyword) AS keyword
+FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+) AS K 
+LEFT JOIN docs_stem AS S ON K.keyword = S.word;
+
+DELETE FROM docs_gin;
+
+INSERT INTO docs_gin (doc_id, keyword) 
+SELECT id, 
+CASE WHEN stem IS NOT NULL THEN stem ELSE keyword END
+FROM (
+SELECT DISTINCT id, lower(s.keyword) AS keyword
+FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+) AS K 
+LEFT JOIN docs_stem AS S ON K.keyword = S.word;
+
+SELECT * FROM docs_gin;
+
+SELECT COALESCE((SELECT stem FROM docs_stem WHERE word=lower('teaching')), lower('teaching'));
+SELECT COALESCE((SELECT stem FROM docs_stem WHERE word=lower('SQL')), lower('SQL'));
+
+SELECT DISTINCT doc FROM docs AS D
+JOIN docs_gin AS G ON D.id = G.doc_id
+WHERE G.keyword = COALESCE((SELECT stem FROM docs_stem WHERE word=lower('SQL')), lower('SQL'));
+
+SELECT DISTINCT doc FROM docs AS D
+JOIN docs_gin AS G ON D.id = G.doc_id
+WHERE G.keyword = COALESCE((SELECT stem FROM docs_stem WHERE word=lower('teaching')), lower('teaching'));
+
+SELECT to_tsvector('english', 'This is SQL and Python and other fun teaching stuff');
+SELECT to_tsvector('english', 'More people should learn SQL from UMSI');
+SELECT to_tsvector('english', 'UMSI also teaches Python and also SQL');
+
+SELECT to_tsquery('english', 'teaching');
+SELECT to_tsquery('english', 'SQL');
+
+-- CREATE TABLE IF NOT EXISTS messages
+
 -- CREATE TABLE IF NOT EXISTS messages
 --    (id SERIAL, email TEXT, sent_at TIMESTAMPTZ,
 --     subject TEXT, headers TEXT, body TEXT)
