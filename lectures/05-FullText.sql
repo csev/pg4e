@@ -12,13 +12,43 @@ SELECT * FROM docs;
 
 --- https://stackoverflow.com/questions/29419993/split-column-into-multiple-rows-in-postgres
 
-SELECT id, lower(s.keyword) AS keyword
+SELECT id, s.keyword AS keyword
 FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 ORDER BY id;
 
-SELECT DISTINCT id, lower(s.keyword) AS keyword
+SELECT DISTINCT id, s.keyword AS keyword
 FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 ORDER BY id;
+
+CREATE TABLE docs_gin (
+  keyword TEXT,
+  doc_id INTEGER REFERENCES docs(id) ON DELETE CASCADE
+);
+
+INSERT INTO docs_gin (doc_id, keyword) 
+SELECT DISTINCT id, s.keyword AS keyword
+FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+ORDER BY id;
+
+SELECT * FROM docs_gin ORDER BY doc_id;
+
+SELECT doc FROM docs AS D
+JOIN docs_gin AS G ON D.id = G.doc_id
+WHERE G.keyword = 'UMSI';
+
+SELECT doc FROM docs AS D
+JOIN docs_gin AS G ON D.id = G.doc_id
+WHERE G.keyword in ('SQL', 'Python');
+
+SELECT DISTINCT doc FROM docs AS D
+JOIN docs_gin AS G ON D.id = G.doc_id
+WHERE G.keyword in ('SQL', 'Python');
+
+-- This is a basic Inverted Index
+
+-- But we can have a smaller index if we know that we are dealing with language
+-- (1) Ignore the case of words 
+-- (2) Don't index stop words that we won't search for
 
 CREATE TABLE stop_words (word TEXT unique);
 INSERT INTO stop_words (word) VALUES ('is'), ('this'), ('and');
@@ -28,10 +58,7 @@ FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 WHERE s.keyword NOT IN (SELECT word FROM stop_words)
 ORDER BY id;
 
-CREATE TABLE docs_gin (
-  keyword TEXT,
-  doc_id INTEGER REFERENCES docs(id) ON DELETE CASCADE
-);
+DELETE FROM docs_gin;
 
 INSERT INTO docs_gin (doc_id, keyword) 
 SELECT DISTINCT id, lower(s.keyword) AS keyword
@@ -41,21 +68,20 @@ ORDER BY id;
 
 SELECT * FROM docs_gin;
 
-SELECT doc FROM docs AS D
+SELECT DISTINCT doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword = lower('UMSI');
 
-SELECT doc FROM docs AS D
+SELECT DISTINCT doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword in (lower('fun'), lower('people'));
-
-SELECT doc FROM docs AS D
-JOIN docs_gin AS G ON D.id = G.doc_id
-WHERE G.keyword in (lower('SQL'), lower('Python'));
 
 SELECT DISTINCT id, doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword in (lower('SQL'), lower('Python'));
+
+-- We can make the index even smaller 
+--- (3) Only store the "stems" of words
 
 CREATE TABLE docs_stem (word TEXT, stem TEXT);
 INSERT INTO docs_stem (word, stem) VALUES 
@@ -104,6 +130,8 @@ WHERE G.keyword = COALESCE((SELECT stem FROM docs_stem WHERE word=lower('SQL')),
 SELECT DISTINCT doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword = COALESCE((SELECT stem FROM docs_stem WHERE word=lower('teaching')), lower('teaching'));
+
+-- There is an easier way :)
 
 SELECT to_tsvector('english', 'This is SQL and Python and other fun teaching stuff');
 SELECT to_tsvector('english', 'More people should learn SQL from UMSI');
