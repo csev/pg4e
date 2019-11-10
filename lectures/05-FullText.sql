@@ -10,8 +10,6 @@ INSERT INTO docs (doc) VALUES
 ('UMSI also teaches Python and also SQL');
 SELECT * FROM docs;
 
-INSERT INTO docs (doc) SELECT 'Neon ' || generate_series(10000,20000);
-
 --- https://stackoverflow.com/questions/29419993/split-column-into-multiple-rows-in-postgres
 
 SELECT id, s.keyword AS keyword
@@ -46,15 +44,21 @@ SELECT DISTINCT doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword in ('SQL', 'Python');
 
--- This is a basic Inverted Index
--- Not quite right:
--- Select version();   -- PostgreSQL 9.6.7
--- https://habr.com/en/company/postgrespro/blog/448746/
--- create index gin1 on docs using gin(string_to_array(doc, ' ')  _text_ops);
--- select doc from docs where '{SQL}' <@ string_to_array(doc, ' ');
--- explain select doc from docs where '{SQL}' <@ string_to_array(doc, ' ');
+-- This is a basic Inverted Index - We can use the GIN index instead
 
--- SELECT am.amname AS index_method, opc.opcname AS opclass_name FROM pg_am am, pg_opclass opc WHERE opc.opcmethod = am.oid ORDER BY index_method, opclass_name;
+DROP TABLE docs cascade;
+DROP INDEX gin1;
+CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
+CREATE INDEX gin1 ON docs USING gin(string_to_array(doc, ' ')  _text_ops);
+INSERT INTO docs (doc) VALUES
+('This is SQL and Python and other fun teaching stuff'),
+('More people should learn SQL from UMSI'),
+('UMSI also teaches Python and also SQL');
+
+SELECT doc FROM docs WHERE '{learn}' <@ string_to_array(doc, ' ');
+EXPLAIN SELECT doc FROM docs WHERE '{learn}' <@ string_to_array(doc, ' ');
+
+
 
 -- But we can have a smaller index if we know that we are dealing with language
 -- (1) Ignore the case of words 
