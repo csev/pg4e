@@ -10,6 +10,8 @@ INSERT INTO docs (doc) VALUES
 ('UMSI also teaches Python and also SQL');
 SELECT * FROM docs;
 
+INSERT INTO docs (doc) SELECT 'Neon ' || generate_series(10000,20000);
+
 --- https://stackoverflow.com/questions/29419993/split-column-into-multiple-rows-in-postgres
 
 SELECT id, s.keyword AS keyword
@@ -45,6 +47,14 @@ JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword in ('SQL', 'Python');
 
 -- This is a basic Inverted Index
+-- Not quite right:
+-- Select version();   -- PostgreSQL 9.6.7
+-- https://habr.com/en/company/postgrespro/blog/448746/
+-- create index gin1 on docs using gin(string_to_array(doc, ' ')  _text_ops);
+-- select doc from docs where '{SQL}' <@ string_to_array(doc, ' ');
+-- explain select doc from docs where '{SQL}' <@ string_to_array(doc, ' ');
+
+-- SELECT am.amname AS index_method, opc.opcname AS opclass_name FROM pg_am am, pg_opclass opc WHERE opc.opcmethod = am.oid ORDER BY index_method, opclass_name;
 
 -- But we can have a smaller index if we know that we are dealing with language
 -- (1) Ignore the case of words 
@@ -120,6 +130,8 @@ LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
 SELECT * FROM docs_gin;
 
+-- Like Python null/false coalescing
+-- x = stem or 'teaching'
 SELECT COALESCE((SELECT stem FROM docs_stem WHERE word=lower('teaching')), lower('teaching'));
 SELECT COALESCE((SELECT stem FROM docs_stem WHERE word=lower('SQL')), lower('SQL'));
 
