@@ -13,11 +13,11 @@ SELECT * FROM docs;
 --- https://stackoverflow.com/questions/29419993/split-column-into-multiple-rows-in-postgres
 
 SELECT id, s.keyword AS keyword
-FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 ORDER BY id;
 
 SELECT DISTINCT id, s.keyword AS keyword
-FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 ORDER BY id;
 
 CREATE TABLE docs_gin (
@@ -27,7 +27,7 @@ CREATE TABLE docs_gin (
 
 INSERT INTO docs_gin (doc_id, keyword) 
 SELECT DISTINCT id, s.keyword AS keyword
-FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 ORDER BY id;
 
 SELECT * FROM docs_gin ORDER BY doc_id;
@@ -44,7 +44,8 @@ SELECT DISTINCT doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword in ('SQL', 'Python');
 
--- This is a basic Inverted Index - We can use the GIN index instead
+-- docs_gin is a string (not language) based Inverted Index
+-- PostgreSQL already knows how to do this using the GIN index
 
 DROP TABLE docs cascade;
 DROP INDEX gin1;
@@ -68,7 +69,7 @@ CREATE TABLE stop_words (word TEXT unique);
 INSERT INTO stop_words (word) VALUES ('is'), ('this'), ('and');
 
 SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 WHERE s.keyword NOT IN (SELECT word FROM stop_words)
 ORDER BY id;
 
@@ -76,7 +77,7 @@ DELETE FROM docs_gin;
 
 INSERT INTO docs_gin (doc_id, keyword) 
 SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 WHERE s.keyword NOT IN (SELECT word FROM stop_words)
 ORDER BY id;
 
@@ -101,14 +102,16 @@ CREATE TABLE docs_stem (word TEXT, stem TEXT);
 INSERT INTO docs_stem (word, stem) VALUES 
 ('teaching', 'teach'), ('teaches', 'teach');
 
+-- unnest() expands an array column into multiple rows with one value
+-- https://www.postgresql.org/docs/10/functions-array.html
 SELECT id, keyword FROM (
 SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 ) AS X;
 
 SELECT id, keyword, stem FROM (
 SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 ) AS K 
 LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
@@ -117,7 +120,7 @@ CASE WHEN stem IS NOT NULL THEN stem ELSE keyword END,
 keyword, stem 
 FROM (
 SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 ) AS K 
 LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
@@ -128,7 +131,7 @@ SELECT id,
 CASE WHEN stem IS NOT NULL THEN stem ELSE keyword END
 FROM (
 SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM   docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 ) AS K 
 LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
