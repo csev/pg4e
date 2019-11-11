@@ -1,8 +1,4 @@
 
--- wget https://www.pg4e.com/code/gmane.py
--- python3 game.py
--- Pulls data and puts it into messages table
-
 CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
 INSERT INTO docs (doc) VALUES
 ('This is SQL and Python and other fun teaching stuff'),
@@ -25,7 +21,7 @@ CREATE TABLE docs_gin (
   doc_id INTEGER REFERENCES docs(id) ON DELETE CASCADE
 );
 
-INSERT INTO docs_gin (doc_id, keyword) 
+INSERT INTO docs_gin (doc_id, keyword)
 SELECT DISTINCT id, s.keyword AS keyword
 FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 ORDER BY id;
@@ -60,10 +56,10 @@ SELECT doc FROM docs WHERE '{learn}' <@ string_to_array(doc, ' ');
 EXPLAIN SELECT doc FROM docs WHERE '{learn}' <@ string_to_array(doc, ' ');
 
 
+-- If we know the documents are language, we can create smaller indexes
 
--- But we can have a smaller index if we know that we are dealing with language
--- (1) Ignore the case of words 
--- (2) Don't index stop words that we won't search for
+-- (1) Ignore the case of words in the index and in the query
+-- (2) Don't index low-meaning "stop words" that we won't search for
 
 CREATE TABLE stop_words (word TEXT unique);
 INSERT INTO stop_words (word) VALUES ('is'), ('this'), ('and');
@@ -75,7 +71,7 @@ ORDER BY id;
 
 DELETE FROM docs_gin;
 
-INSERT INTO docs_gin (doc_id, keyword) 
+INSERT INTO docs_gin (doc_id, keyword)
 SELECT DISTINCT id, lower(s.keyword) AS keyword
 FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 WHERE s.keyword NOT IN (SELECT word FROM stop_words)
@@ -95,11 +91,11 @@ SELECT DISTINCT id, doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword in (lower('SQL'), lower('Python'));
 
--- We can make the index even smaller 
+-- We can make the index even smaller
 --- (3) Only store the "stems" of words
 
 CREATE TABLE docs_stem (word TEXT, stem TEXT);
-INSERT INTO docs_stem (word, stem) VALUES 
+INSERT INTO docs_stem (word, stem) VALUES
 ('teaching', 'teach'), ('teaches', 'teach');
 
 -- unnest() expands an array column into multiple rows with one value
@@ -112,27 +108,27 @@ FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
 SELECT id, keyword, stem FROM (
 SELECT DISTINCT id, lower(s.keyword) AS keyword
 FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
-) AS K 
+) AS K
 LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
-SELECT id, 
+SELECT id,
 CASE WHEN stem IS NOT NULL THEN stem ELSE keyword END,
-keyword, stem 
+keyword, stem
 FROM (
 SELECT DISTINCT id, lower(s.keyword) AS keyword
 FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
-) AS K 
+) AS K
 LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
 DELETE FROM docs_gin;
 
-INSERT INTO docs_gin (doc_id, keyword) 
-SELECT id, 
+INSERT INTO docs_gin (doc_id, keyword)
+SELECT id,
 CASE WHEN stem IS NOT NULL THEN stem ELSE keyword END
 FROM (
 SELECT DISTINCT id, lower(s.keyword) AS keyword
 FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
-) AS K 
+) AS K
 LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
 SELECT * FROM docs_gin;
@@ -157,7 +153,15 @@ SELECT to_tsvector('english', 'More people should learn SQL from UMSI');
 SELECT to_tsvector('english', 'UMSI also teaches Python and also SQL');
 
 SELECT to_tsquery('english', 'teaching');
+SELECT to_tsquery('english', 'teaches');
+SELECT to_tsquery('english', 'Teach');
 SELECT to_tsquery('english', 'SQL');
+
+-- Indexing within structured data - Email messages from address
+
+-- wget https://www.pg4e.com/code/gmane.py
+-- python3 game.py
+-- Pulls data and puts it into messages table
 
 -- CREATE TABLE IF NOT EXISTS messages
 
@@ -187,6 +191,8 @@ EXPLAIN ANALYZE SELECT :zap FROM messages where :zap = 'john@caret.cam.ac.uk';
 CREATE INDEX messages_from ON messages (:zap);
 EXPLAIN ANALYZE SELECT :zap FROM messages where :zap = 'john@caret.cam.ac.uk';
 
+-- Making a language oriented inverted index in mail messages
+
 SELECT to_tsvector('english', body) FROM messages LIMIT 1;
 
 SELECT to_tsquery('english', 'monday');
@@ -195,7 +201,7 @@ SELECT to_tsquery('english', 'neon') @@ to_tsvector('english', body) FROM messag
 
 SELECT to_tsquery('english', 'monday') @@ to_tsvector('english', body) FROM messages LIMIT 1;
 
--- https://www.postgresql.org/docs/9.1/textsearch-indexes.html
+-- https://www.postgresql.org/docs/10/textsearch-indexes.html
 CREATE INDEX messages_gin ON messages USING gin(to_tsvector('english', body));
 DROP INDEX messages_gin;
 
@@ -224,16 +230,16 @@ SELECT id, subject, sender FROM messages WHERE to_tsquery('english', 'I <-> thin
 SELECT id, subject, sender FROM messages WHERE phraseto_tsquery('english', 'I think') @@ to_tsvector('english', body);
 
 -- https://www.postgresql.org/docs/12/textsearch-controls.html#TEXTSEARCH-RANKING
-SELECT id, subject, sender, 
+SELECT id, subject, sender,
   ts_rank(to_tsvector('english', body), to_tsquery('english', 'personal & learning')) as ts_rank
-FROM messages 
+FROM messages
 WHERE to_tsquery('english', 'personal & learning') @@ to_tsvector('english', body)
 ORDER BY ts_rank DESC;
 
 -- A different ranking algorithm
-SELECT id, subject, sender, 
+SELECT id, subject, sender,
   ts_rank_cd(to_tsvector('english', body), to_tsquery('english', 'personal & learning')) as ts_rank
-FROM messages 
+FROM messages
 WHERE to_tsquery('english', 'personal & learning') @@ to_tsvector('english', body)
 ORDER BY ts_rank DESC;
 
@@ -241,4 +247,17 @@ ORDER BY ts_rank DESC;
 SELECT id, subject, sender FROM messages WHERE to_tsquery('english', '! personal & learning') @@ to_tsvector('english', body);
 SELECT id, subject, sender FROM messages WHERE websearch_to_tsquery('english', '-personal learning') @@ to_tsvector('english', body);
 
+-- https://www.postgresql.org/docs/10/textsearch-indexes.html
+
+--- GIN versus GIsT
+
+-- Select version();   -- PostgreSQL 9.6.7
+-- https://habr.com/en/company/postgrespro/blog/448746/
+
+-- Check the operation types for the various indexes
+
+SELECT am.amname AS index_method, opc.opcname AS opclass_name
+    FROM pg_am am, pg_opclass opc
+    WHERE opc.opcmethod = am.oid
+    ORDER BY index_method, opclass_name;
 
