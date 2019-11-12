@@ -34,7 +34,7 @@ to make inserts updates, or deletes possible without needing to rewrite a large 
 things up or down.
 </p>
 <div style="float: right; width: 50%; min-width: 250;"><a href="05-FullText/postgres-disk-blocks.png" target="_blank">
-<img src="05-FullText/postgres-disk-blocks.png" style="width: 100%;">
+<img src="05-FullText/postgres-disk-blocks.png" style="border: 2px solid black; width: 100%;">
 </a></div>
 <p>
 PostgreSQL Organizes Rows into Blocks
@@ -55,8 +55,8 @@ What is the Best Block Size?
 <p>
 If we have a table that contains 1GB (125,000 blocks) of data, a sequential scan from a
 fast SSD takes about 2 seconds while with careful optimization, reading a random block
-can be fast as 1/50000th of a second.  Some SSD drives can read up to 32 different
-random blocks in a single read request.  If the block is already in memory it is even
+can be fast as 1/50000th of a second.  Some SSD drives can read as many as 32 different
+random blocks in a single read request.  If the block is already cached in memory it is even
 faster.  Sequential scans are very bad.
 </p>
 
@@ -133,14 +133,13 @@ It is not a perfect metaphor but in general there are two categories of indexes:
 The metaphor is not perfect - because B-tree indexes are stored in sorted order, if you give
 a B-Tree the prefix of a logical key, it can give you a set of rows...
 </p><p>
-The most typical use case for an <b>Inverse index</b> is to quickly search text documents wit one or a few words.
-</p> 
+The most typical use case for an <b>inverse index</b> is to quickly search text documents wit one or a few words.
+</p>
 <b>References</b>
 <ul>
     <li>
 <a href="https://en.wikipedia.org/wiki/Search_engine_indexing#Inverted_indices" target="_blank">
-    https://en.wikipedia.org/wiki/Search_engine_indexing#Inverted_indices
-</a></li>
+    Inverted_indices</a> (Wikipedia)</li>
 </ul>
 <h2>
     Similar to Google Search
@@ -160,261 +159,326 @@ The most typical use case for an <b>Inverse index</b> is to quickly search text 
 <h2>Inverted Indexes - The Hard Way
 </h2>
 <div style="float: right; width: 25%; min-width: 250;"><a href="05-FullText/inverted-index.png" target="_blank">
-<img src="05-FullText/inverted-index.png" style="width: 100%;">
+<img src="05-FullText/inverted-index.png" style="border: 2px solid black; width: 100%;">
 </a></div>
+<p>We can aplit long text columns into space-delimited words using PostgreSQL's split-like function
+called <b>string_to_array()</b>.  And then we can use the PostgresSQL <b>unnest()</b> function to turn
+the resulting array into separate rows.
+<pre>
+pg4e=&gt; string_to_array('Hello world', ' ');
+ string_to_array
+-----------------
+ {Hello,world}
+
+pg4e=&gt; unnest(string_to_array('Hello world', ' '));
+ unnest
+--------
+ Hello
+ world
+</pre>
+After that, it is just a few <b>SELECT DISTINCT</b> statements and we can create and use an inverted index.
+<pre>
+CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
+INSERT INTO docs (doc) VALUES
+('This is SQL and Python and other fun teaching stuff'),
+('More people should learn SQL from UMSI'),
+('UMSI also teaches Python and also SQL');
+
+CREATE TABLE docs_gin (
+  keyword TEXT,
+  doc_id INTEGER REFERENCES docs(id) ON DELETE CASCADE
+);
+
+<a href="05-FullText.sql" target="_blank">...</a>
+
+pg4e=&gt; select * from docs_gin;
+ keyword  | doc_id
+----------+--------
+ Python   |      1
+ SQL      |      1
+ This     |      1
+ stuff    |      1
+ teaching |      1
+ More     |      2
+ SQL      |      2
+ UMSI     |      2
+ from     |      2
+ learn    |      2
+ people   |      2
+ should   |      2
+ Python   |      3
+ SQL      |      3
+ UMSI     |      3
+ also     |      3
+ and      |      3
+ teaches  |      3
+
+</pre>
+<b>References</b>
 <ul>
     <li> <a href="https://stackoverflow.com/questions/29419993/split-column-into-multiple-rows-in-postgres"
-            target="_blank">Unest - S.O.</a></li>
+            target="_blank">Split column into multiple rows in Postgres</a> (Stackoverflow)</li>
 </ul>
-
-
-
-
 
 <br clear="all"/>
-<h2>Inverted Indexes - Stop Word
-</h2>
-<div style="float: right; width: 25%; min-width: 250;"><a href="05-FullText/inverted-index-stop.png" target="_blank">
-<img src="05-FullText/inverted-index-stop.png" style="width: 100%;">
-</a></div>
-<ul>
-    <li> <a href="https://stackoverflow.com/questions/29419993/split-column-into-multiple-rows-in-postgres"
-            target="_blank">Unest - S.O.</a></li>
-</ul>
-
 <h2>Inverted Indexes in PostgreSQL
 </h2>
 <ul>
     <li>Generalized Inverse Index (GIN)</li>
     <li>Generalized Search Tree (GiST)</li>
 </ul>
+<p>
+<i>GIN indexes are the preferred text search index type. </i>
+Advantages: exact matches, efficient on lookup/  Disadvantages: can be costly when inserting or updating data
+because every new word is inserted somewhere in the index and can get large.
+Like the B-Tree, the GIN is the usual "go-to" inverted index and GiST is used in more special cases.
+The previous example was a rough approximation of a GIN index.
+<p>
+Hashing is used to reduce the size of and cost to update the GiST.
+<i>
+A GiST index is lossy, meaning that the index might produce false matches, and it is necessary to check the actual table row to eliminate such false matches. (PostgreSQL does this automatically when needed.)
+</i>
+The indexes have equivalent functionality and will return the same rows - but
+there may be performance / storage tradeoffs between GIN and GiST.
+</p>
+<p>
+Both GIN and GiST want to know something about the type of array data it will be indexing
+and the kinds of operations that we will be using in <b>WHERE</b> clauses.  In the example
+below we are indexing arrays of strings (i.e. text[]) and will be using the "&lt;@" operator
+(contained within).
+</p>
+<p>
+We can build a simple GIN index like the manual index above:
+<pre>
+pg4e=&gt; CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
+CREATE TABLE
+
+pg4e=&gt; CREATE INDEX gin1 ON docs USING gin(string_to_array(doc, ' ')  _text_ops);
+CREATE INDEX
+
+pg4e=&gt; INSERT INTO docs (doc) VALUES
+pg4e-&gt; ('This is SQL and Python and other fun teaching stuff'),
+pg4e-&gt; ('More people should learn SQL from UMSI'),
+pg4e-&gt; ('UMSI also teaches Python and also SQL');
+INSERT 0 3
+pg4e=-- The &lt@ is looking for an intersection between two arrays
+pg4e=&gt; SELECT id, doc FROM docs WHERE '{learn}' &lt;@ string_to_array(doc, ' ');
+ id |                  doc
+----+----------------------------------------
+  2 | More people should learn SQL from UMSI
+
+pg4e=&gt; EXPLAIN SELECT id, doc FROM docs WHERE '{learn}' &lt@ string_to_array(doc, ' ');
+                                 QUERY PLAN
+----------------------------------------------------------------------------
+ Bitmap Heap Scan on docs  (cost=12.05..21.53 rows=6 width=32)
+   Recheck Cond: ('{learn}'::text[] &lt@ string_to_array(doc, ' '::text))
+   -&gt;  Bitmap Index Scan on gin1  (cost=0.00..12.05 rows=6 width=0)
+         Index Cond: ('{learn}'::text[] &lt@ string_to_array(doc, ' '::text))
+(4 rows)
+</pre>
+
 
 <b>References</b>
 <ul>
-    <li><a href="https://www.postgresql.org/docs/10/textsearch-indexes.html" target="_blank">
-            Text Searches in PostgreSQL</a></li>
+    <li><a href="https://www.postgresql.org/docs/11/textsearch-indexes.html" target="_blank">
+            GIN and Gist Indexes in PostgreSQL</a></li>
 </ul>
-
-<h2><a href="https://www.postgresql.org/docs/10/textsearch-intro.html" target="_blank">https://www.postgresql.org/docs/10/textsearch-intro.html</a></h2>
-<ul>
-    <li>SQL LIKE and Regex scan text columns and can even build indexes but are not "language-aware"</li>
-    <li>Full Text is language aware (i.e. "stop words" and "lexemes") more like a search engine</li>
-</ul>
-
+<br clear="all"/>
+<h2>Inverted Indexes of Natural Language - Stemming and Stop Words
+</h2>
+<div style="float: right; width: 25%; min-width: 250;"><a href="05-FullText/inverted-index-stop.png" target="_blank">
+<img src="05-FullText/inverted-index-stop.png" style="border: 2px solid black; width: 100%;">
+</a></div>
+<p>
+To take advantage of the "naruralness" of natural language, we need to ignore words that convey no meaning
+and consistently reduce variations of words with equivalent meanings down to a single "stem word".
+</p>
+<p>
+Recall this failure
 <pre>
-https://www.postgresql.org/docs/9.6/functions-textsearch.html
-
-
-A tsvector value is a sorted list of distinct lexemes, which are words that have been normalized to merge different variants of the same word.  Position / weight (A-D)
-
-SELECT to_tsvector('have a nice day');
-   to_tsvector
-------------------
- 'day':4 'nice':3
-
-A tsquery value stores lexemes that are to be searched for, and combines them honoring the Boolean operators
-
-pg4e=> SELECT to_tsquery('have & a & nice & day');
-   to_tsquery
-----------------
- 'nice' & 'day'
-
-Text query operators
-
-SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( '''have a nice day''' );
-SELECT to_tsvector( 'have a nice day' ) @@ plainto_tsquery( 'have a nice day' );
-SELECT to_tsvector( 'have a nice day' ) @@ plainto_tsquery( 'day nice' );
-SELECT to_tsvector( 'have a nice day' ) @@ phraseto_tsquery('nice day');
-SELECT to_tsvector( 'have a nice day' ) @@ phraseto_tsquery('day nice');
-
--- Required PostgreSQL 11
-SELECT to_tsvector( 'have a nice day' ) @@ websearch_to_tsquery('english', 'days of wine and roses');
-SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( 'have & a & nice  & day' );
-SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( 'day & nice' );
-
-CREATE INDEX pictures_title ON pictures
-  USING gin(to_tsvector('english', title));
-
-ts_vector
-ts_query
-GIN  - Generalized inverted - Perfect - Slow update, fast select
-GiST - Generalized Search Tree - Lossy - Hash - Fast update, slow select
-
-SHOW default_text_search_config;
-\dF
-
-Index Types
-GIN - Words not LIKE
-GiST - Words not LIKE
-https://en.wikipedia.org/wiki/Block_Range_Index
-
-SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impossible');
-
-Ranking...
-
-CREATE INDEX pictures_title ON pictures
-  USING gin(to_tsvector('english', title));
-
-
-SELECT substring(content, '0([0-9][0-9])0') AS num FROM content;
-
-References
-
-https://www.compose.com/articles/indexing-for-full-text-search-in-postgresql/
-https://stackoverflow.com/questions/4014519/fulltext-query-with-scores-ranks-in-postgresql/4014625#4014625
-https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-RANKING
-https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
-
-https://www.postgresql.org/docs/9.5/brin-intro.html
-https://en.wikipedia.org/wiki/Block_Range_Index
-https://www.postgresql.fastware.com/blog/brin-indexes-what-are-they-and-how-do-you-use-them
-
-
-
-
-WEEK 2 - JSON / KEY-VALUE DATA
-==============================
-
-https://stackoverflow.com/questions/18404055/index-for-finding-an-element-in-a-json-array
-
-JSON - Text + some functions.
-JSOB - Parsed objects - More awesome.
-@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
-
-With the new binary JSON data type jsonb, Postgres 9.4 introduced largely improved index options. You can now have a GIN index on a jsonb array directly:
-
-CREATE TABLE tracks (id serial, artists jsonb);
-CREATE INDEX tracks_artists_gin_idx ON tracks USING gin (artists);
-
-No need for a function to convert the array. This would support a query:
-
-SELECT * FROM tracks WHERE artists @> '[{"name": "The Dirty Heads"}]';
-
-@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
-
-Or you use the more specialized, non-default GIN operator class jsonb_path_ops for the index:
-
-CREATE INDEX tracks_artists_gin_idx ON tracks
-USING  gin (artists jsonb_path_ops);
-
-Same query.
-
-Currently jsonb_path_ops only supports the @> operator. But it's typically much smaller and faster. There are more index options, details in the manual.
-
-https://stackoverflow.com/questions/24006291/postgresql-return-result-set-as-json-array
-
-create table t (a int primary key, b text);
-
-insert into t values (1, 'value1');
-insert into t values (2, 'value2');
-insert into t values (3, 'value3');
-
-select row_to_json(row) from (select * from t) row;
-
-Store Types:
-HSTORE
-JSON
-JSONB
-
-
-Casting using :: or CAST(value AS type)
-https://stackoverflow.com/questions/15537709/what-does-do-in-postgresql
-https://stackoverflow.com/questions/5758499/double-colon-notation-in-sql
-
-Operators @>
-https://www.postgresql.org/docs/9.5/functions-json.html
-
-Contain
-
-'{"a":1, "b":2}'::jsonb @> '{"b":2}'::jsonb
-
-https://blog.hagander.net/json-field-constraints-228/
-https://www.postgresql.org/docs/9.5/datatype-json.html#JSON-INDEXING
-
-CREATE TABLE jsontable (j jsonb NOT NULL);
--- All of the keys - a bit of overkill
-CREATE INDEX j_idx ON jsontable USING gin(j jsonb_path_ops);
--- Just one key
-CREATE UNIQUE INDEX j_uuid_idx ON jsontable(((j->>'uuid')::uuid));
-CREATE INDEX idxgintags ON api USING gin ((jdoc -> 'tags'));
-ALTER TABLE jsontable ADD CONSTRAINT uuid_must_exist CHECK (j ? 'uuid');
-
-SELECT count(*) FROM cards WHERE data->>'finished' = 'true';
-
--> and --> operators
-
-jsonb_path_ops means index can only handle @>
-The technical difference between a jsonb_ops and a jsonb_path_ops GIN index is that
-jsonb_ops creates independent index items for each key and value in the data,
-while jsonb_path_ops creates index items only for each value in the data. 
-Basically, each jsonb_path_ops index item is a hash of the value and the
-key(s) leading to it.
-
-https://stackoverflow.com/questions/18404055/index-for-finding-an-element-in-a-json-array
-
-CREATE TABLE tracks (id serial, artists jsonb);
-CREATE INDEX tracks_artists_gin_idx ON tracks USING gin (artists);
-
-No need for a function to convert the array. This would support a query:
-
-SELECT * FROM tracks WHERE artists @> '[{"name": "The Dirty Heads"}]';
-
-@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
-
-WEEK 3 - ELASTIC SEARCH
-=======================
-
-
-WEEK 4 - PANDAS AND SQL
-=======================
-
-
-
-
-TODO
-====
-
-DUMP / RESTORE
---------------
-
-https://www.postgresql.org/docs/9.1/backup-dump.html
-
-pg_dump dbname > outfile
-
-psql dbname < infile
-
-INDEXES AND PERFORMANCE
------------------------
-
-VIEWS
------ 
-
-You can “hide” complexity with a view.   You can create a view with computed columns, which can prove quite handy. You can limit access by use of views as well restrict certain dB users to read-only views.  
-
-
-PROCEDURES
+pg4e=&gt; SELECT DISTINCT id, doc FROM docs AS D
+pg4e-&gt; JOIN docs_gin AS G ON D.id = G.doc_id
+pg4e-&gt; WHERE G.keyword = ANY(string_to_array('Search for Lemons and Neons', ' '));
+ id |                         doc
+----+-----------------------------------------------------
+  1 | This is SQL and Python and other fun teaching stuff
+  3 | UMSI also teaches Python and also SQL
+</pre>
+The word "and" contributed no real meaning to our query.  And it took up valuable space in our GIN
+index. So we put it on the
+<a href="https://en.wikipedia.org/wiki/Stop_words" target="_blank">stop word</a> list.
+Lets stop word and
+<a href="https://en.wikipedia.org/wiki/Stemming" target="_blank">stemming</a> capabilities
+by hand and then just use PostgreSQL features to build a natural language search.
+<pre>
+pg4e=&gt; SELECT * FROM stop_words;
+ word
+------
+ is
+ this
+ and
+(3 rows)
+
+pg4e=&gt; SELECT * FROM docs_stem;
+   word   | stem
+----------+-------
+ teaching | teach
+ teaches  | teach
+(2 rows)
+
+<a href="05-FullText.sql" target="_blank">...</a>
+
+pg4e=&gt; select * from docs_gin;
+ keyword | doc_id
+---------+--------
+ also    |      3
+ from    |      2
+ fun     |      1
+ learn   |      2
+ more    |      2
+ other   |      1
+ people  |      2
+ python  |      1
+ python  |      3
+ should  |      2
+ sql     |      3
+ sql     |      1
+ sql     |      2
+ stuff   |      1
+ teach   |      3
+ teach   |      1
+ this    |      1
+ umsi    |      2
+ umsi    |      3
+(19 rows)
+</pre>
+
+<p>
+Stemming and stop words (and the meaning of "meaning") depend on which language is stored in the text column.
+The default install of PostgreSQL knows the rules for
+a few languages and more can be installed:
+<pre>
+pg4e=&gt; SELECT cfgname FROM pg_ts_config;
+  cfgname
+------------
+ simple
+ danish
+ dutch
+ english
+ finnish
+ french
+ german
+ hungarian
+ italian
+ norwegian
+ portuguese
+ romanian
+ russian
+ spanish
+ swedish
+ turkish
+(16 rows)
+</pre>
+
+<h2>Text Search Functions</h2>
+<p>
+PostgreSQL provides some functions that turn a text document/string into an "array" with stemming, stop words, and other
+language-oriented features.
+</p>
+<p>
+<b>ts_vector()</b> returns a list of words that represent the document.
+<b>ts_query()</b> returns a list of words with operators to representaions various logical combinations of words
+        much like
+        <a href="https://www.google.com/advanced_search" target="_blank">Google's Advanced Search</a>.
+<pre>
+pg4e=&gt; SELECT to_tsvector('english',
+pg4e(&gt;     'UMSI also teaches Python and also SQL');
+                   to_tsvector
+--------------------------------------------------
+ 'also':2,6 'python':4 'sql':7 'teach':3 'umsi':1
+(1 row)
+
+pg4e=&gt; SELECT to_tsquery('english', 'teaching');
+ to_tsquery
+------------
+ 'teach'
+(1 row)
+</pre>
+</p>
+<p>
+In a <b>WHERE</b> clause we use the
+<b>@@</b> operator to ask is a <b>ts_query</b> matches a <b>ts_vector</b>.
+</p><p>
+    <pre>
+pg4e=&gt; SELECT to_tsquery('english', 'teaching') @@
+pg4e-&gt;   to_tsvector('english', 'UMSI also teaches Python and also SQL');
+ ?column?
 ----------
+ t
+</pre>
+</p>
+<b>References</b>
+<ul>
+    <li><a href="https://www.postgresql.org/docs/11/textsearch-intro.html" target="_blank">
+            Introduction to Text Search</a> (PostgreSQL)</li>
+    <li><a href="https://www.postgresql.org/docs/11/functions-textsearch.html" target="_blank">
+            Operators and functions that work with ts_query and ts_vector</a> (PostgreSQL)</li>
+</ul>
+<h2>Making a Natural Language Inverted Index with PostgreSQL</h2>
+<p>
+As you might expect, letting PostgreSQL do all the work is the easy part.
+Stop words and stems are all handled in the "ts_" functions.  And the
+GIN knows what operations you will be using automatically when you
+pass in a <b>ts_vector</b>.
+<pre>
+pg4e=&gt; CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
+CREATE TABLE
+pg4e=&gt; CREATE INDEX gin1 ON docs USING gin(to_tsvector('english', doc));
+CREATE INDEX
+pg4e=&gt;
+pg4e=&gt; INSERT INTO docs (doc) VALUES
+pg4e-&gt; ('This is SQL and Python and other fun teaching stuff'),
+pg4e-&gt; ('More people should learn SQL from UMSI'),
+pg4e-&gt; ('UMSI also teaches Python and also SQL');
+INSERT 0 3
+pg4e=&gt;
+pg4e=&gt; SELECT id, doc FROM docs WHERE
+pg4e-&gt;     to_tsquery('english', 'learn') @@ to_tsvector('english', doc);
+ id |                  doc
+----+----------------------------------------
+  2 | More people should learn SQL from UMSI
 
-Stored Procedures
+pg4e=&gt; EXPLAIN SELECT id, doc FROM docs WHERE
+pg4e-&gt;     to_tsquery('english', 'learn') @@ to_tsvector('english', doc);
+                                      QUERY PLAN
+--------------------------------------------------------------------------------------
+ Bitmap Heap Scan on docs  (cost=12.05..23.02 rows=6 width=36)
+   Recheck Cond: ('''learn'''::tsquery @@ to_tsvector('english'::regconfig, doc))
+   -&gt;  Bitmap Index Scan on gin1  (cost=0.00..12.05 rows=6 width=0)
+         Index Cond: ('''learn'''::tsquery @@ to_tsvector('english'::regconfig, doc))
+</pre>
 
-Before, After, or Instead of INSERT, UPDATE, or DELETE
+<h2>Ranking The Results</h2>
+<p>
+The key benefit of a GIN / Natural Language index is to speed up the look up and retrieval
+of the rows selected in the <b>WHERE</b> clause.  When we have a set of rows, what we do with
+those rows is relatively inexpensive.
+</p>
+<p>
+Ranking of the "how well" a row (ts_vector) matches the query (ts_query) is something we compute
+directly from the data in the <b>ts_query</b> and the <b>ts_vector</b>.  We can use different fields
+in the ranking computation than we use in the <b>WHERE</b> clause.   The <b>WHERE</b> clause dominates
+the cost of a query.
+</p>
 
-http://www.postgresqltutorial.com/postgresql-create-procedure/
+<p><b>References</b></p>
 
-Triggers
+<ul>
+<li><a href="https://www.postgresql.org/docs/10/textsearch-controls.html#TEXTSEARCH-RANKING" target="_blank">
+        Controlling Text Search</a> (PostgreSQL)</li>
+<li><a href="https://stackoverflow.com/questions/4014519/fulltext-query-with-scores-ranks-in-postgresql/4014625#4014625"
+       target="_blank">FULLTEXT query with scores/ranks in PostgreSQL</a> (Stackoverflow)</li>
+<li><a href="https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking"
+       target="_blank">Best way to use PostgreSQL full text search ranking</a> (Stackoverflow) </li>
+</ul>
 
-CREATE  TRIGGER trigger_name [BEFORE|AFTER|INSTEAD OF] [INSERT|UPDATE|DELETE] OF column_name
-ON table_name
-[
-];
-
-TODO
-----
-
-WITH / Common Table Expressions
-
-Doing it in Python
-
-PERCENT_RANK
-
-HSTORE :)
