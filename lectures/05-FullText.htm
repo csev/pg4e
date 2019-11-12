@@ -135,6 +135,13 @@ a B-Tree the prefix of a logical key, it can give you a set of rows...
 </p><p>
 The most typical use case for an <b>Inverse index</b> is to quickly search text documents wit one or a few words.
 </p> 
+<b>References</b>
+<ul>
+    <li>
+<a href="https://en.wikipedia.org/wiki/Search_engine_indexing#Inverted_indices" target="_blank">
+    https://en.wikipedia.org/wiki/Search_engine_indexing#Inverted_indices
+</a></li>
+</ul>
 <h2>
     Similar to Google Search
 </h2>
@@ -150,24 +157,42 @@ The most typical use case for an <b>Inverse index</b> is to quickly search text 
             How Search Works - Matt Cutts</a></li>
 </ul>
 
-<h2>Inverted Indexes
-<a href="https://en.wikipedia.org/wiki/Search_engine_indexing#Inverted_indices" target="_blank">
-    https://en.wikipedia.org/wiki/Search_engine_indexing#Inverted_indices
-</a>
+<h2>Inverted Indexes - The Hard Way
 </h2>
+<div style="float: right; width: 25%; min-width: 250;"><a href="05-FullText/inverted-index.png" target="_blank">
+<img src="05-FullText/inverted-index.png" style="width: 100%;">
+</a></div>
+<ul>
+    <li> <a href="https://stackoverflow.com/questions/29419993/split-column-into-multiple-rows-in-postgres"
+            target="_blank">Unest - S.O.</a></li>
+</ul>
+
+
+
+
+
+<br clear="all"/>
+<h2>Inverted Indexes - Stop Word
+</h2>
+<div style="float: right; width: 25%; min-width: 250;"><a href="05-FullText/inverted-index-stop.png" target="_blank">
+<img src="05-FullText/inverted-index-stop.png" style="width: 100%;">
+</a></div>
 <ul>
     <li> <a href="https://stackoverflow.com/questions/29419993/split-column-into-multiple-rows-in-postgres"
             target="_blank">Unest - S.O.</a></li>
 </ul>
 
 <h2>Inverted Indexes in PostgreSQL
-<a href="https://www.postgresql.org/docs/10/textsearch-indexes.html" target="_blank">
-    https://www.postgresql.org/docs/10/textsearch-indexes.html
-</a>
 </h2>
 <ul>
     <li>Generalized Inverse Index (GIN)</li>
     <li>Generalized Search Tree (GiST)</li>
+</ul>
+
+<b>References</b>
+<ul>
+    <li><a href="https://www.postgresql.org/docs/10/textsearch-indexes.html" target="_blank">
+            Text Searches in PostgreSQL</a></li>
 </ul>
 
 <h2><a href="https://www.postgresql.org/docs/10/textsearch-intro.html" target="_blank">https://www.postgresql.org/docs/10/textsearch-intro.html</a></h2>
