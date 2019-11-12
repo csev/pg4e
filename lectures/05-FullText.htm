@@ -37,7 +37,7 @@ things up or down.
 <img src="05-FullText/postgres-disk-blocks.png" style="width: 100%;">
 </a></div>
 <p>
-PostgreSQL Organizes Rows into Blocks 
+PostgreSQL Organizes Rows into Blocks
 <ul>
     <li>We read an entire block into memory (i.e. not just one row)</li>
     <li>Easy to compute the start of a block within a file for random access</li>
@@ -53,10 +53,11 @@ What is the Best Block Size?
     <li>Large blocks longer to read and write to/from SSD </li>
 </ul>
 <p>
-If we have a table that contains 1GB (125,000 blocks) of data, a sequential scan from a fast SSD takes about 2 seconds while
-with careful optimization, reading a random block can be fast as 1/50000th of a second.
-Some SSD drives can read up to 32 diffferent random blocks in a single read request.
-If the block is already in memory it is even faster.  Sequential scans are very bad.
+If we have a table that contains 1GB (125,000 blocks) of data, a sequential scan from a
+fast SSD takes about 2 seconds while with careful optimization, reading a random block
+can be fast as 1/50000th of a second.  Some SSD drives can read up to 32 different
+random blocks in a single read request.  If the block is already in memory it is even
+faster.  Sequential scans are very bad.
 </p>
 
 <b>References</b>
@@ -78,8 +79,8 @@ If the block is already in memory it is even faster.  Sequential scans are very 
 <br clear="all"/>
 <h2>Indexes</h2>
 <p>
-Assume each row in the <b>users</b> table is about 1K, we could save a lot of time if somehow we had a hint which block
-contained a row we were looking for.
+Assume each row in the <b>users</b> table is about 1K, we could save a lot of time if somehow we had a hint
+about which row was in which block.
 <pre>
 email              | block
 -------------------+------
@@ -91,15 +92,15 @@ SELECT name FROM users WHERE email='csev@umich.edu';
 SELECT name FROM users WHERE email='colleen@umich.edu';
 SELECT name FROM users WHERE email='anthony@umich.edu';
 </pre>
-Our index would be about 30 bytes per row which is much smaller than the actual row data.  We store index data in 8K 
-blocks as well - as indexes grow in size we need to find was to avoid reading the entire index to look up one key.  
+Our index would be about 30 bytes per row which is much smaller than the actual row data.  We store index data in 8K
+blocks as well - as indexes grow in size we need to find was to avoid reading the entire index to look up one key.
 We need an index to the index.  For string logical keys, a B-Tree index is a good, general solution.
 B-Trees keep the keys in sorted order by reorganizing the tree as keys are inserted.
 </p>
 <p>
 PostgreSQL Index Types
 <ul>
-    <li>B-Tree - The default for many applications</li>
+    <li>B-Tree - The default for many applications - automatically balanced as it grows</li>
     <li>BRIN - Block Range Index - Smaller / faster if data is mostly sorted</li>
     <li>Hash - Quick lookup of long key strings</li>
     <li>GIN - Generalized Inverted Indexes - multiple values in a column</li>
@@ -120,10 +121,33 @@ PostgreSQL Index Types
     </li>
 </ul>
 
-<h2>Similar to <a href="https://www.youtube.com/watch?v=BNHR6IQJGZs" target="_blank">Google Search</a></h2>
+<h2>Forward and Inverted Indexes</h2>
+<p>
+It is not a perfect metaphor but in general there are two categories of indexes:
+<ul>
+    <li><b>Forward indexes</b> - You give the index a logical key and it tells you where to find the row
+        that contains the key. (B-Tree, BRIN, Hash)</li>
+    <li><b>Inverse indexes</b> - You give the index a string (query) and the index gives you a list of <i>all</i>
+        the rows that match the query. (GIN, GiST)</li>
+</ul>
+The metaphor is not perfect - because B-tree indexes are stored in sorted order, if you give
+a B-Tree the prefix of a logical key, it can give you a set of rows...
+</p><p>
+The most typical use case for an <b>Inverse index</b> is to quickly search text documents wit one or a few words.
+</p> 
+<h2>
+    Similar to Google Search
+</h2>
 <ul>
     <li>Crawl: Retrieve documents, parse them and create an <b>inverted index</b></li>
     <li>Search: Take keywords, find the documents with the words then rank them and present results</li>
+</ul>
+<b>References</b>
+<ul>
+    <li><a href="https://youtu.be/6x0cAzQ7PVs?t=559" traget="_blank">
+            Google I/O '08 Keynote by Marissa Mayer</a></li>
+    <li><a href="https://www.youtube.com/watch?v=BNHR6IQJGZs" target="_blank">
+            How Search Works - Matt Cutts</a></li>
 </ul>
 
 <h2>Inverted Indexes
@@ -191,7 +215,7 @@ ts_query
 GIN  - Generalized inverted - Perfect - Slow update, fast select
 GiST - Generalized Search Tree - Lossy - Hash - Fast update, slow select
 
-SHOW default_text_search_config;  
+SHOW default_text_search_config;
 \dF
 
 Index Types
@@ -203,7 +227,7 @@ SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impo
 
 Ranking...
 
-CREATE INDEX pictures_title ON pictures 
+CREATE INDEX pictures_title ON pictures
   USING gin(to_tsvector('english', title));
 
 
