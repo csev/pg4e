@@ -1,4 +1,5 @@
 
+
 CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
 INSERT INTO docs (doc) VALUES
 ('This is SQL and Python and other fun teaching stuff'),
