@@ -466,10 +466,37 @@ those rows is relatively inexpensive.
 </p>
 <p>
 Ranking of the "how well" a row (ts_vector) matches the query (ts_query) is something we compute
-directly from the data in the <b>ts_query</b> and the <b>ts_vector</b>.  We can use different fields
-in the ranking computation than we use in the <b>WHERE</b> clause.   The <b>WHERE</b> clause dominates
-the cost of a query.
+directly from the data in the <b>ts_query</b> and the <b>ts_vector</b> in each row.  We can use different fields
+in the ranking computation than the fields we use in the <b>WHERE</b> clause.   The <b>WHERE</b> clause dominates
+the cost of a query as it decides how to gather the matching rows.
+<pre>
+pg4e=&gt; SELECT id, subject, sender,
+pg4e-&gt;   ts_rank(to_tsvector('english', body), to_tsquery('english', 'personal &amp; learning')) as ts_rank
+pg4e-&gt; FROM messages
+pg4e-&gt; WHERE to_tsquery('english', 'personal &amp; learning') @@ to_tsvector('english', body)
+pg4e-&gt; ORDER BY ts_rank DESC;
+ id |          subject           |           sender           | ts_rank
+----+----------------------------+----------------------------+----------
+  4 | re: lms/vle rants/comments | Michael.Feldstein@suny.edu | 0.282352
+  5 | re: lms/vle rants/comments | john@caret.cam.ac.uk       |  0.09149
+  7 | re: lms/vle rants/comments | john@caret.cam.ac.uk       |  0.09149
+
+pg4e=&gt; SELECT id, subject, sender,
+pg4e-&gt;   ts_rank_cd(to_tsvector('english', body), to_tsquery('english', 'personal &amp; learning')) as ts_rank
+pg4e-&gt; FROM messages
+pg4e-&gt; WHERE to_tsquery('english', 'personal &amp; learning') @@ to_tsvector('english', body)
+pg4e-&gt; ORDER BY ts_rank DESC;
+ id |          subject           |           sender           |  ts_rank
+----+----------------------------+----------------------------+-----------
+  4 | re: lms/vle rants/comments | Michael.Feldstein@suny.edu |  0.130951
+  5 | re: lms/vle rants/comments | john@caret.cam.ac.uk       | 0.0218605
+  7 | re: lms/vle rants/comments | john@caret.cam.ac.uk       | 0.0218605
+</pre>
 </p>
+<p>
+There are two at least two ranking functions <b>ts_rank</b> and <b>ts_rank_cd</b>.  There is also
+the ability to weight different elements of a <b>ts_query</b> that influence how the relative ranking
+is computed.
 
 <p><b>References</b></p>
 
@@ -482,3 +509,59 @@ the cost of a query.
        target="_blank">Best way to use PostgreSQL full text search ranking</a> (Stackoverflow) </li>
 </ul>
 
+<span id="list-index"></span>
+<h2>There is a lot of ways to index and search in PostgreSQL
+    <a class="headerlink" href="#list-index" title="Permalink to this headline">¶</a>
+</h2>
+<p>
+You can ask PostgreSQL the different index / <b>WHERE</b> clause operator combinations
+it supports.  There are quite a few.
+<pre>
+pg4e=&gt; SELECT am.amname AS index_method, opc.opcname AS opclass_name
+pg4e-&gt;     FROM pg_am am, pg_opclass opc
+pg4e-&gt;     WHERE opc.opcmethod = am.oid
+pg4e-&gt;     ORDER BY index_method, opclass_name;
+ index_method |      opclass_name
+--------------+------------------------
+ brin         | abstime_minmax_ops
+ brin         | bit_minmax_ops
+ brin         | box_inclusion_ops
+ ...
+ brin         | bpchar_minmax_ops
+ brin         | uuid_minmax_ops
+ brin         | varbit_minmax_ops
+ btree        | abstime_ops
+ btree        | array_ops
+ ...
+ btree        | tsquery_ops
+ btree        | tsvector_ops
+ btree        | uuid_ops
+ gin          | _abstime_ops
+ gin          | _bit_ops
+ gin          | _bool_ops
+ gin          | _date_ops
+ ...
+ gin          | _text_ops
+ gin          | _time_ops
+ gin          | _timestamp_ops
+ gin          | _timestamptz_ops
+ ...
+ gin          | jsonb_ops
+ gin          | jsonb_path_ops
+ gin          | tsvector_ops
+ gist         | box_ops
+ gist         | circle_ops
+ ...
+ gist         | tsvector_ops
+ hash         | abstime_ops
+ hash         | aclitem_ops
+ hash         | array_ops
+ ...
+ hash         | text_pattern_ops
+ hash         | time_ops
+ hash         | timestamp_ops
+ spgist       | quad_point_ops
+ spgist       | range_ops
+ spgist       | text_ops
+(159 rows)
+</pre>
