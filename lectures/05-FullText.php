@@ -208,7 +208,7 @@ The most typical use case for an <b>inverse index</b> is to quickly search text 
             How Search Works - Matt Cutts</a></li>
 </ul>
 
-<h2 id="invert-sql">Inverted Indexes - The Hard Way
+<h2 id="invert-sql">Inverted Indexes - Using only SQL
 <?php doNav('invert-sql'); ?>
 </h2>
 <div style="float: right; width: 25%; min-width: 250;"><a href="05-FullText-images/inverted-index.png" target="_blank">
