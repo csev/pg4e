@@ -45,6 +45,11 @@ In this lecture we will explore how PostgreSQL indexes work and how we build ind
 for large text fields that contain natural language
 and how we can look into those fields and use indexes to search large text fields efficiently.
 </p>
+<p><b>Additional Materials</b>
+<ul>
+<li><a href="05-FullText.pptx">PowerPoint slides of the diagrams</a></li>
+<li><a href="05-FullText.sql" target="_blank">Sample SQL commands for this lecture</a></li>
+</ul>
 <h2 id="data-layout">Row Data Layout
 <?php doNav('data-layout'); ?>
 </h2>
