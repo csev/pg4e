@@ -68,7 +68,13 @@ to make inserts updates, or deletes possible without needing to rewrite a large 
 things up or down.
 </p>
 <div style="float: right; width: 50%; min-width: 250;"><a href="05-FullText-images/postgres-disk-blocks.png" target="_blank">
-<img src="05-FullText-images/postgres-disk-blocks.png" style="border: 2px solid black; width: 100%;">
+<img src="05-FullText-images/postgres-disk-blocks.png" 
+alt="A picture of an 8K PostgreSQL disk block allocation.  The beginning of the block is a set of 
+short pointers that indicate the starting poing (offset) of each of the rows in the block.
+Rows are inserted from the end of the block and the middle space between the rows and offsets
+is free space.
+The link simply opens a larger version of the image in a new window."
+style="border: 2px solid black; width: 100%;">
 </a></div>
 <p>
 PostgreSQL Organizes Rows into Blocks
@@ -199,7 +205,11 @@ The most typical use case for an <b>inverse index</b> is to quickly search text 
 <?php doNav('invert-sql'); ?>
 </h2>
 <div style="float: right; width: 25%; min-width: 250;"><a href="05-FullText-images/inverted-index.png" target="_blank">
-<img src="05-FullText-images/inverted-index.png" style="border: 2px solid black; width: 100%;">
+<img src="05-FullText-images/inverted-index.png" 
+alt="This shows three documents with ids of 1, 2, and 3 and an inverted index with columns labelled 'keyword' and 'doc_id'.
+All the items in this image are in the code samples below.
+The link simply opens a larger version of the image in a new window."
+style="border: 2px solid black; width: 100%;">
 </a></div>
 <p>We can aplit long text columns into space-delimited words using PostgreSQL's split-like function
 called <b>string_to_array()</b>.  And then we can use the PostgresSQL <b>unnest()</b> function to turn
@@ -329,7 +339,11 @@ pg4e=&gt; EXPLAIN SELECT id, doc FROM docs WHERE '{learn}' &lt@ string_to_array(
 <?php doNav('stemming'); ?>
 </h2>
 <div style="float: right; width: 25%; min-width: 250;"><a href="05-FullText-images/inverted-index-stop.png" target="_blank">
-<img src="05-FullText-images/inverted-index-stop.png" style="border: 2px solid black; width: 100%;">
+<img src="05-FullText-images/inverted-index-stop.png"
+alt="This shows three documents with ids of 1, 2, and 3, a stop word table and an inverted index with columns labelled 'keyword' and 'doc_id'.
+All the items in this image are in the code samples below.
+The link simply opens a larger version of the image in a new window."
+ style="border: 2px solid black; width: 100%;">
 </a></div>
 <p>
 To take advantage of the "naruralness" of natural language, we need to ignore words that convey no meaning
