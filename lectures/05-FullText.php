@@ -49,6 +49,8 @@ and how we can look into those fields and use indexes to search large text field
 <ul>
 <li><a href="05-FullText.pptx">PowerPoint slides of the diagrams</a></li>
 <li><a href="05-FullText.sql" target="_blank">Sample SQL commands for this lecture</a></li>
+<li>URL for these notes: <a href="https://www.pg4e.com/lectures/05-FullText" target="_blank">
+https://www.pg4e.com/lectures/05-FullText</a></li>
 </ul>
 <h2 id="data-layout">Row Data Layout
 <?php doNav('data-layout'); ?>
@@ -631,3 +633,16 @@ pg4e-&gt;     ORDER BY index_method, opclass_name;
  spgist       | text_ops
 (159 rows)
 </pre>
+<footer style="margin-top: 50px;">
+<hr/>
+<p>
+Copyright 
+<a href="https://www.dr-chuck.com/" target="_blank">
+Charles R. Severance</a>, CC0 - 
+You are welcome to adapt, reuse or reference this material with or without attribution.
+</p>
+<p>
+Feel free to help improve this lecture at 
+<a href="https://www.pg4e.com/lectures/05-FullText" target="_blank">GitHub</a>.
+</p>
+</footer>
