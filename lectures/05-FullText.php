@@ -219,7 +219,7 @@ All the items in this image are in the code samples below.
 The link simply opens a larger version of the image in a new window."
 style="border: 2px solid black; width: 100%;">
 </a></div>
-<p>We can aplit long text columns into space-delimited words using PostgreSQL's split-like function
+<p>We can split long text columns into space-delimited words using PostgreSQL's split-like function
 called <b>string_to_array()</b>.  And then we can use the PostgresSQL <b>unnest()</b> function to turn
 the resulting array into separate rows.
 <pre>
