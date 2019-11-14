@@ -58,13 +58,14 @@ function getDbPass($unique) {
  * String if something went wrong
  * Number if something went wrong and all we have is the http code
  */
-function pg4e_request($dbname, $path='info') {
-    global $CFG, $pg4e_request_result;
+function pg4e_request($dbname, $path='info/pg') {
+    global $CFG, $pg4e_request_result, $pg4e_request_url;
 
     $pg4e_request_result = false;
-    $endpoint = $CFG->pg4e_api_url.'/'.$path.'/'.$dbname;
+    $pg4e_request_url = false;
+    $pg4e_request_url = $CFG->pg4e_api_url.'/'.$path.'/'.$dbname;
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $endpoint);
+    curl_setopt($ch, CURLOPT_URL, $pg4e_request_url);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_USERPWD, $CFG->pg4e_api_key.':'.$CFG->pg4e_api_password);

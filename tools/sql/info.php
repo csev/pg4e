@@ -27,19 +27,22 @@ if ( U::get($_POST,'create') ) {
     $_SESSION['operation'] = 'create';
     $_SESSION['retval'] = $retval;
     $_SESSION['pg4e_request_result'] = $pg4e_request_result;
+    $_SESSION['pg4e_request_url'] = $pg4e_request_url;
     header('Location: '. $url);
     return;
 } else if ( U::get($_POST,'delete') ) {
     $retval = pg4e_request($dbname, 'delete');
     $_SESSION['operation'] = 'delete';
     $_SESSION['pg4e_request_result'] = $pg4e_request_result;
+    $_SESSION['pg4e_request_url'] = $pg4e_request_url;
     $_SESSION['retval'] = $retval;
     header('Location: '. $url);
     return;
 } else if ( U::get($_POST,'info') ) {
-    $retval = pg4e_request($dbname, 'info');
+    $retval = pg4e_request($dbname, 'info/pg');
     $_SESSION['operation'] = 'delete';
     $_SESSION['pg4e_request_result'] = $pg4e_request_result;
+    $_SESSION['pg4e_request_url'] = $pg4e_request_url;
     $_SESSION['retval'] = $retval;
     header('Location: '. $url);
     return;
@@ -52,7 +55,9 @@ if ( is_object($retval) ) {
    $info = pg4e_extract_info($retval);
 }
 $pg4e_request_result = U::get($_SESSION,'pg4e_request_result', null);
+$pg4e_request_url = U::get($_SESSION,'pg4e_request_url', null);
 unset($_SESSION['pg4e_request_result']);
+unset($_SESSION['pg4e_request_url']);
 $operation = U::get($_SESSION,'operation', null);
 unset($_SESSION['operation']);
 
@@ -104,6 +109,9 @@ if ( $retval === null ) {
     echo("</pre>\n");
 }
 if ( $pg4e_request_result != null ) {
+    echo("<p>\n");
+    echo(htmlentities($pg4e_request_url));
+    echo("</p>\n");
     echo("<hr/>\n<pre>\n");
     echo("Returned data:\n");
     echo(htmlentities($pg4e_request_result));
