@@ -1,5 +1,6 @@
 <html>
     <head>
+<title>PG4E - Full Text Search - Lecture Notes</title>
 <style>
 body {
     font-family: sans-serif;
