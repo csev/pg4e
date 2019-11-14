@@ -168,7 +168,7 @@ function pg4e_user_db_load($LAUNCH) {
     $pdo_pass = U::get($_POST, 'pdo_pass', U::get($_SESSION,'pdo_pass', getDbPass($unique)) );
 
     if ( ! $pdo_host ) {
-        $retval = pg4e_request($project, 'info');
+        $retval = pg4e_request($project, 'info/pg');
         $info = false;
         if ( is_object($retval) ) {
             $info = pg4e_extract_info($retval);
@@ -187,7 +187,7 @@ function pg4e_user_db_load($LAUNCH) {
     $pdo_connection = "pgsql:host=$pdo_host;dbname=$pdo_database";
 
     if ( ! $pdo_host && ! $LAUNCH->user->instructor ) {
-        echo("<p>You have not yet set up your database server for project <b>".htmlentities($unique)."</b></p>\n");
+        echo("<p>You have not yet set up your database server for project <b>".htmlentities($project)."</b></p>\n");
         echo("<p>Make sure to run the setup process before attempting this assignment..</p>\n");
         return false;
     }
