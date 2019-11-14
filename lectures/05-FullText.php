@@ -287,7 +287,7 @@ pg4e=&gt; select * from docs_gin;
 </ul>
 <p>
 <i>GIN indexes are the preferred text search index type. </i>
-Advantages: exact matches, efficient on lookup/  Disadvantages: can be costly when inserting or updating data
+Advantages: exact matches, efficient on lookup/search.  Disadvantages: can be costly when inserting or updating data
 because every new word is inserted somewhere in the index and can get large.
 Like the B-Tree, the GIN is the usual "go-to" inverted index and GiST is used in more special cases.
 The previous example was a rough approximation of a GIN index.
