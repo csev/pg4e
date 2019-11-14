@@ -375,7 +375,7 @@ WHERE G.keyword = ANY(string_to_array('Search for Lemons and Neons', ' '));
 The word "and" contributed no real meaning to our query.  And it took up valuable space in our GIN
 index. So we put it on the
 <a href="https://en.wikipedia.org/wiki/Stop_words" target="_blank">stop word</a> list.
-Lets stop word and
+Lets implement stop word and
 <a href="https://en.wikipedia.org/wiki/Stemming" target="_blank">stemming</a> capabilities
 by hand and then just use PostgreSQL features to build a natural language search.
 <pre>
