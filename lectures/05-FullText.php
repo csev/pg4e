@@ -270,6 +270,7 @@ pg4e=&gt; select * from docs_gin;
  also     |      3
  and      |      3
  teaches  |      3
+(22 rows)
 
 </pre>
 <b>References</b>
@@ -309,31 +310,33 @@ below we are indexing arrays of strings (i.e. text[]) and will be using the "&lt
 <p>
 We can build a simple GIN index like the manual index above:
 <pre>
-pg4e=&gt; CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
-CREATE TABLE
+CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
 
-pg4e=&gt; CREATE INDEX gin1 ON docs USING gin(string_to_array(doc, ' ')  _text_ops);
-CREATE INDEX
+CREATE INDEX gin1 ON docs USING gin(string_to_array(doc, ' ')  _text_ops);
 
-pg4e=&gt; INSERT INTO docs (doc) VALUES
-pg4e-&gt; ('This is SQL and Python and other fun teaching stuff'),
-pg4e-&gt; ('More people should learn SQL from UMSI'),
-pg4e-&gt; ('UMSI also teaches Python and also SQL');
-INSERT 0 3
-pg4e=-- The &lt@ is looking for an intersection between two arrays
-pg4e=&gt; SELECT id, doc FROM docs WHERE '{learn}' &lt;@ string_to_array(doc, ' ');
+INSERT INTO docs (doc) VALUES
+('This is SQL and Python and other fun teaching stuff'),
+('More people should learn SQL from UMSI'),
+('UMSI also teaches Python and also SQL');
+
+</pre>
+The &lt@ is looking for an intersection between two arrays
+<pre>
+SELECT id, doc FROM docs WHERE '{learn}' &lt;@ string_to_array(doc, ' ');
+
  id |                  doc
 ----+----------------------------------------
   2 | More people should learn SQL from UMSI
 
-pg4e=&gt; EXPLAIN SELECT id, doc FROM docs WHERE '{learn}' &lt@ string_to_array(doc, ' ');
+EXPLAIN SELECT id, doc FROM docs WHERE '{learn}' &lt@ string_to_array(doc, ' ');
+
                                  QUERY PLAN
 ----------------------------------------------------------------------------
  Bitmap Heap Scan on docs  (cost=12.05..21.53 rows=6 width=32)
    Recheck Cond: ('{learn}'::text[] &lt@ string_to_array(doc, ' '::text))
    -&gt;  Bitmap Index Scan on gin1  (cost=0.00..12.05 rows=6 width=0)
          Index Cond: ('{learn}'::text[] &lt@ string_to_array(doc, ' '::text))
-(4 rows)
+
 </pre>
 
 
@@ -360,9 +363,10 @@ and consistently reduce variations of words with equivalent meanings down to a s
 <p>
 Recall this failure
 <pre>
-pg4e=&gt; SELECT DISTINCT id, doc FROM docs AS D
-pg4e-&gt; JOIN docs_gin AS G ON D.id = G.doc_id
-pg4e-&gt; WHERE G.keyword = ANY(string_to_array('Search for Lemons and Neons', ' '));
+SELECT DISTINCT id, doc FROM docs AS D
+JOIN docs_gin AS G ON D.id = G.doc_id
+WHERE G.keyword = ANY(string_to_array('Search for Lemons and Neons', ' '));
+
  id |                         doc
 ----+-----------------------------------------------------
   1 | This is SQL and Python and other fun teaching stuff
@@ -375,24 +379,23 @@ Lets stop word and
 <a href="https://en.wikipedia.org/wiki/Stemming" target="_blank">stemming</a> capabilities
 by hand and then just use PostgreSQL features to build a natural language search.
 <pre>
-pg4e=&gt; SELECT * FROM stop_words;
+SELECT * FROM stop_words;
  word
 ------
  is
  this
  and
-(3 rows)
 
-pg4e=&gt; SELECT * FROM docs_stem;
+SELECT * FROM docs_stem;
    word   | stem
 ----------+-------
  teaching | teach
  teaches  | teach
-(2 rows)
 
 <a href="05-FullText.sql" target="_blank">...</a>
 
-pg4e=&gt; select * from docs_gin;
+SELECT * FROM docs_gin;
+
  keyword | doc_id
 ---------+--------
  also    |      3
@@ -422,7 +425,8 @@ Stemming and stop words (and the meaning of "meaning") depend on which language 
 The default install of PostgreSQL knows the rules for
 a few languages and more can be installed:
 <pre>
-pg4e=&gt; SELECT cfgname FROM pg_ts_config;
+SELECT cfgname FROM pg_ts_config;
+
   cfgname
 ------------
  simple
@@ -457,18 +461,17 @@ language-oriented features.
         much like
         <a href="https://www.google.com/advanced_search" target="_blank">Google's Advanced Search</a>.
 <pre>
-pg4e=&gt; SELECT to_tsvector('english',
-pg4e(&gt;     'UMSI also teaches Python and also SQL');
+SELECT to_tsvector('english', 'UMSI also teaches Python and also SQL');
+
                    to_tsvector
 --------------------------------------------------
  'also':2,6 'python':4 'sql':7 'teach':3 'umsi':1
-(1 row)
 
-pg4e=&gt; SELECT to_tsquery('english', 'teaching');
+SELECT to_tsquery('english', 'teaching');
+
  to_tsquery
 ------------
  'teach'
-(1 row)
 </pre>
 </p>
 <p>
@@ -476,8 +479,9 @@ In a <b>WHERE</b> clause we use the
 <b>@@</b> operator to ask is a <b>ts_query</b> matches a <b>ts_vector</b>.
 </p><p>
     <pre>
-pg4e=&gt; SELECT to_tsquery('english', 'teaching') @@
-pg4e-&gt;   to_tsvector('english', 'UMSI also teaches Python and also SQL');
+SELECT to_tsquery('english', 'teaching') @@
+  to_tsvector('english', 'UMSI also teaches Python and also SQL');
+
  ?column?
 ----------
  t
@@ -499,25 +503,25 @@ Stop words and stems are all handled in the "ts_" functions.  And the
 GIN knows what operations you will be using automatically when you
 pass in a <b>ts_vector</b>.
 <pre>
-pg4e=&gt; CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
-CREATE TABLE
-pg4e=&gt; CREATE INDEX gin1 ON docs USING gin(to_tsvector('english', doc));
-CREATE INDEX
-pg4e=&gt;
-pg4e=&gt; INSERT INTO docs (doc) VALUES
-pg4e-&gt; ('This is SQL and Python and other fun teaching stuff'),
-pg4e-&gt; ('More people should learn SQL from UMSI'),
-pg4e-&gt; ('UMSI also teaches Python and also SQL');
-INSERT 0 3
-pg4e=&gt;
-pg4e=&gt; SELECT id, doc FROM docs WHERE
-pg4e-&gt;     to_tsquery('english', 'learn') @@ to_tsvector('english', doc);
+CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
+
+CREATE INDEX gin1 ON docs USING gin(to_tsvector('english', doc));
+
+INSERT INTO docs (doc) VALUES
+('This is SQL and Python and other fun teaching stuff'),
+('More people should learn SQL from UMSI'),
+('UMSI also teaches Python and also SQL');
+
+SELECT id, doc FROM docs WHERE
+    to_tsquery('english', 'learn') @@ to_tsvector('english', doc);
+
  id |                  doc
 ----+----------------------------------------
   2 | More people should learn SQL from UMSI
 
-pg4e=&gt; EXPLAIN SELECT id, doc FROM docs WHERE
-pg4e-&gt;     to_tsquery('english', 'learn') @@ to_tsvector('english', doc);
+EXPLAIN SELECT id, doc FROM docs WHERE
+    to_tsquery('english', 'learn') @@ to_tsvector('english', doc);
+
                                       QUERY PLAN
 --------------------------------------------------------------------------------------
  Bitmap Heap Scan on docs  (cost=12.05..23.02 rows=6 width=36)
@@ -540,22 +544,24 @@ directly from the data in the <b>ts_query</b> and the <b>ts_vector</b> in each r
 in the ranking computation than the fields we use in the <b>WHERE</b> clause.   The <b>WHERE</b> clause dominates
 the cost of a query as it decides how to gather the matching rows.
 <pre>
-pg4e=&gt; SELECT id, subject, sender,
-pg4e-&gt;   ts_rank(to_tsvector('english', body), to_tsquery('english', 'personal &amp; learning')) as ts_rank
-pg4e-&gt; FROM messages
-pg4e-&gt; WHERE to_tsquery('english', 'personal &amp; learning') @@ to_tsvector('english', body)
-pg4e-&gt; ORDER BY ts_rank DESC;
+SELECT id, subject, sender,
+  ts_rank(to_tsvector('english', body), to_tsquery('english', 'personal &amp; learning')) as ts_rank
+FROM messages
+WHERE to_tsquery('english', 'personal &amp; learning') @@ to_tsvector('english', body)
+ORDER BY ts_rank DESC;
+
  id |          subject           |           sender           | ts_rank
 ----+----------------------------+----------------------------+----------
   4 | re: lms/vle rants/comments | Michael.Feldstein@suny.edu | 0.282352
   5 | re: lms/vle rants/comments | john@caret.cam.ac.uk       |  0.09149
   7 | re: lms/vle rants/comments | john@caret.cam.ac.uk       |  0.09149
 
-pg4e=&gt; SELECT id, subject, sender,
-pg4e-&gt;   ts_rank_cd(to_tsvector('english', body), to_tsquery('english', 'personal &amp; learning')) as ts_rank
-pg4e-&gt; FROM messages
-pg4e-&gt; WHERE to_tsquery('english', 'personal &amp; learning') @@ to_tsvector('english', body)
-pg4e-&gt; ORDER BY ts_rank DESC;
+SELECT id, subject, sender,
+  ts_rank_cd(to_tsvector('english', body), to_tsquery('english', 'personal &amp; learning')) as ts_rank
+FROM messages
+WHERE to_tsquery('english', 'personal &amp; learning') @@ to_tsvector('english', body)
+ORDER BY ts_rank DESC;
+
  id |          subject           |           sender           |  ts_rank
 ----+----------------------------+----------------------------+-----------
   4 | re: lms/vle rants/comments | Michael.Feldstein@suny.edu |  0.130951
@@ -586,10 +592,11 @@ is computed.
 You can ask PostgreSQL the different index / <b>WHERE</b> clause operator combinations
 it supports.  There are quite a few.
 <pre>
-pg4e=&gt; SELECT am.amname AS index_method, opc.opcname AS opclass_name
-pg4e-&gt;     FROM pg_am am, pg_opclass opc
-pg4e-&gt;     WHERE opc.opcmethod = am.oid
-pg4e-&gt;     ORDER BY index_method, opclass_name;
+SELECT am.amname AS index_method, opc.opcname AS opclass_name
+    FROM pg_am am, pg_opclass opc
+    WHERE opc.opcmethod = am.oid
+    ORDER BY index_method, opclass_name;
+
  index_method |      opclass_name
 --------------+------------------------
  brin         | abstime_minmax_ops
