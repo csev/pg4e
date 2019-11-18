@@ -5,73 +5,6 @@ COURSE 2
 WEEK 1 - FULL TEXT SEARCHES
 ===========================
 
-A tsvector value is a sorted list of distinct lexemes, which are words that have been normalized to merge different variants of the same word.  Position / weight (A-D)
-
-SELECT to_tsvector('have a nice day');
-   to_tsvector
-------------------
- 'day':4 'nice':3
-
-A tsquery value stores lexemes that are to be searched for, and combines them honoring the Boolean operators
-
-pg4e=> SELECT to_tsquery('have & a & nice & day');
-   to_tsquery
-----------------
- 'nice' & 'day'
-
-Text query operators
-https://www.postgresql.org/docs/9.6/functions-textsearch.html
-
-SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( '''have a nice day''' );
-SELECT to_tsvector( 'have a nice day' ) @@ plainto_tsquery( 'have a nice day' );
-SELECT to_tsvector( 'have a nice day' ) @@ plainto_tsquery( 'day nice' );
-SELECT to_tsvector( 'have a nice day' ) @@ phraseto_tsquery('nice day');
-SELECT to_tsvector( 'have a nice day' ) @@ phraseto_tsquery('day nice');
-
--- Required PostgreSQL 11
-SELECT to_tsvector( 'have a nice day' ) @@ websearch_to_tsquery('english', 'days of wine and roses');
-SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( 'have & a & nice  & day' );
-SELECT to_tsvector( 'have a nice day' ) @@ to_tsquery( 'day & nice' );
-
-CREATE INDEX pictures_title ON pictures
-  USING gin(to_tsvector('english', title));
-
-ts_vector
-ts_query
-GIN  - Generalized inverted - Perfect - Slow update, fast select
-GiST - Generalized Search Tree - Lossy - Hash - Fast update, slow select
-
-SHOW default_text_search_config;  
-\dF
-
-Index Types
-GIN - Words not LIKE
-GiST - Words not LIKE
-https://en.wikipedia.org/wiki/Block_Range_Index
-
-SELECT to_tsvector('It''s kind of fun to do the impossible') @@ to_tsquery('impossible');
-
-Ranking...
-
-CREATE INDEX pictures_title ON pictures 
-  USING gin(to_tsvector('english', title));
-
-
-SELECT substring(content, '0([0-9][0-9])0') AS num FROM content;
-
-References
-
-https://www.compose.com/articles/indexing-for-full-text-search-in-postgresql/
-https://stackoverflow.com/questions/4014519/fulltext-query-with-scores-ranks-in-postgresql/4014625#4014625
-https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-RANKING
-https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
-
-https://www.postgresql.org/docs/9.5/brin-intro.html
-https://en.wikipedia.org/wiki/Block_Range_Index
-https://www.postgresql.fastware.com/blog/brin-indexes-what-are-they-and-how-do-you-use-them
-
-
-
 
 WEEK 2 - JSON / KEY-VALUE DATA
 ==============================
@@ -165,10 +98,15 @@ SELECT * FROM tracks WHERE artists @> '[{"name": "The Dirty Heads"}]';
 WEEK 3 - ELASTIC SEARCH
 =======================
 
+https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html
+
 
 WEEK 4 - PANDAS AND SQL
 =======================
 
+https://pandas.pydata.org/pandas-docs/stable/getting_started/comparison/comparison_with_sql.html
+
+https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html
 
 
 
