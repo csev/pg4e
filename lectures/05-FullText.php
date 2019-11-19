@@ -590,7 +590,8 @@ is computed.
 </h2>
 <p>
 You can ask PostgreSQL the different index / <b>WHERE</b> clause operator combinations
-it supports.  There are quite a few.
+it supports.  There are quite a few and they can change from one PostgreSQL version
+to another.
 <pre>
 SELECT am.amname AS index_method, opc.opcname AS opclass_name
     FROM pg_am am, pg_opclass opc
@@ -603,25 +604,15 @@ SELECT am.amname AS index_method, opc.opcname AS opclass_name
  brin         | bit_minmax_ops
  brin         | box_inclusion_ops
  ...
- brin         | bpchar_minmax_ops
  brin         | uuid_minmax_ops
  brin         | varbit_minmax_ops
  btree        | abstime_ops
  btree        | array_ops
  ...
- btree        | tsquery_ops
- btree        | tsvector_ops
- btree        | uuid_ops
- gin          | _abstime_ops
- gin          | _bit_ops
- gin          | _bool_ops
- gin          | _date_ops
- ...
- gin          | _text_ops
- gin          | _time_ops
- gin          | _timestamp_ops
- gin          | _timestamptz_ops
- ...
+ btree        | varbit_ops
+ btree        | varchar_ops
+ btree        | varchar_pattern_ops
+ gin          | array_ops
  gin          | jsonb_ops
  gin          | jsonb_path_ops
  gin          | tsvector_ops
@@ -633,13 +624,16 @@ SELECT am.amname AS index_method, opc.opcname AS opclass_name
  hash         | aclitem_ops
  hash         | array_ops
  ...
- hash         | text_pattern_ops
- hash         | time_ops
- hash         | timestamp_ops
+ hash         | varchar_pattern_ops
+ hash         | xid_ops
+ spgist       | box_ops
+ spgist       | inet_ops
+ spgist       | kd_point_ops
+ spgist       | poly_ops
  spgist       | quad_point_ops
  spgist       | range_ops
  spgist       | text_ops
-(159 rows)
+(134 rows)
 </pre>
 <footer style="margin-top: 50px;">
 <hr/>

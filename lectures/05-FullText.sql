@@ -84,10 +84,14 @@ INSERT INTO docs (doc) VALUES
 ('More people should learn SQL from UMSI'),
 ('UMSI also teaches Python and also SQL');
 
+-- Insert enough lines to get PostgreSQL attention
+INSERT INTO docs (doc) SELECT 'Neon ' || generate_series(10000,20000);
+
+-- You might need to wait a minute until the index catches up to the inserts
+
 -- The <@ if "is contained within" or "intersection" from set theory
 SELECT id, doc FROM docs WHERE '{learn}' <@ string_to_array(doc, ' ');
 EXPLAIN SELECT id, doc FROM docs WHERE '{learn}' <@ string_to_array(doc, ' ');
-
 
 -- Inverted string index with stop words using SQL
 
@@ -97,6 +101,33 @@ EXPLAIN SELECT id, doc FROM docs WHERE '{learn}' <@ string_to_array(doc, ' ');
 -- (2) Don't index low-meaning "stop words" that we will ignore
 -- if they are in a search query
 
+DROP TABLE docs CASCADE;
+CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
+INSERT INTO docs (doc) VALUES
+('This is SQL and Python and other fun teaching stuff'),
+('More people should learn SQL from UMSI'),
+('UMSI also teaches Python and also SQL');
+SELECT * FROM docs;
+
+--- https://stackoverflow.com/questions/29419993/split-column-into-multiple-rows-in-postgres
+
+-- Break the document column into one row per word + primary key
+SELECT DISTINCT id, s.keyword AS keyword
+FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+ORDER BY id;
+
+-- Lower case it all
+SELECT DISTINCT id, s.keyword AS keyword
+FROM docs AS D, unnest(string_to_array(lower(D.doc), ' ')) s(keyword)
+ORDER BY id;
+
+DROP TABLE docs_gin CASCADE;
+CREATE TABLE docs_gin (
+  keyword TEXT,
+  doc_id INTEGER REFERENCES docs(id) ON DELETE CASCADE
+);
+
+DROP TABLE stop_words;
 CREATE TABLE stop_words (word TEXT unique);
 INSERT INTO stop_words (word) VALUES ('is'), ('this'), ('and');
 
@@ -105,8 +136,6 @@ SELECT DISTINCT id, s.keyword AS keyword
 FROM docs AS D, unnest(string_to_array(lower(D.doc), ' ')) s(keyword)
 WHERE s.keyword NOT IN (SELECT word FROM stop_words)
 ORDER BY id;
-
-DELETE FROM docs_gin;
 
 -- Put the stop-word free list into the GIN
 INSERT INTO docs_gin (doc_id, keyword)
@@ -146,20 +175,20 @@ INSERT INTO docs_stem (word, stem) VALUES
 
 -- Move the initial word extraction into a sub-query
 SELECT id, keyword FROM (
-SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+SELECT DISTINCT id, s.keyword AS keyword
+FROM docs AS D, unnest(string_to_array(lower(D.doc), ' ')) s(keyword)
 ) AS X;
 
 -- Add the stems as third column (may or may not exist)
 SELECT id, keyword, stem FROM (
-SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+SELECT DISTINCT id, s.keyword AS keyword
+FROM docs AS D, unnest(string_to_array(lower(D.doc), ' ')) s(keyword)
 ) AS K
 LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
 -- If the stem is there, use it
 SELECT id,
-CASE WHEN stem IS NOT NULL THEN stem ELSE keyword END,
+CASE WHEN stem IS NOT NULL THEN stem ELSE keyword END AS awesome,
 keyword, stem
 FROM (
 SELECT DISTINCT id, lower(s.keyword) AS keyword
@@ -173,7 +202,7 @@ SELECT COALESCE(NULL, NULL, 'umsi');
 SELECT COALESCE('umsi', NULL, 'SQL');
 
 -- If the stem is there, use it instead of the keyword
-SELECT id, COALESCE(stem, keyword)
+SELECT id, COALESCE(stem, keyword) AS keyword
 FROM (
 SELECT DISTINCT id, s.keyword AS keyword
 FROM docs AS D, unnest(string_to_array(lower(D.doc), ' ')) s(keyword)
@@ -207,8 +236,7 @@ LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
 SELECT * FROM docs_gin;
 
--- Like Python null/false coalescing
--- x = stem or 'teaching'
+-- Lets do some queries
 SELECT COALESCE((SELECT stem FROM docs_stem WHERE word=lower('SQL')), lower('SQL'));
 
 -- Handling the stems in queries.  Use the keyword if there is no stem
@@ -224,6 +252,8 @@ WHERE G.keyword = COALESCE((SELECT stem FROM docs_stem WHERE word=lower('teachin
 
 -- The technical term for converting search terms to their stems is called "conflation"
 -- from https://en.wikipedia.org/wiki/Stemming
+
+
 
 -- Using PostgreSQL built-in features (much easier and more efficient)
 
@@ -255,7 +285,8 @@ SELECT websearch_to_tsquery('english', 'SQL -not Python');
 SELECT to_tsquery('english', 'teaching') @@
   to_tsvector('english', 'UMSI also teaches Python and also SQL');
 
--- Lets do a natural language inverted index letting PostgreSQL do the work
+
+-- Lets do an english language inverted index using a tsvector index.
 
 DROP TABLE docs cascade;
 DROP INDEX gin1;
@@ -273,11 +304,18 @@ SELECT id, doc FROM docs WHERE
 EXPLAIN SELECT id, doc FROM docs WHERE
     to_tsquery('english', 'learn') @@ to_tsvector('english', doc);
 
+
+
 -- Using natural language on an email corpus
 
 -- wget https://www.pg4e.com/code/gmane.py
+-- wget https://www.pg4e.com/code/datecompat.py
+-- wget https://www.pg4e.com/code/hidden-dist.py
+-- mv hidden-dist.py hidden.py
+-- edit hidden.py and put in your credentials
+
 -- python3 gmane.py
--- Pulls data and puts it into messages table
+-- Pulls data from the web and puts it into messages table
 
 -- CREATE TABLE IF NOT EXISTS messages
 
