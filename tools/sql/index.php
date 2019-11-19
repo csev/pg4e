@@ -33,7 +33,7 @@ $assignments = array(
     '05sqlstring.php' => 'Inverted index using SQL',
     '05sqlstop.php' => 'Inverted index with stop words using SQL',
     '05ginstring.php' => 'Inverted string index using GIN',
-    '05fulltext.php' => 'GIN index using ts_vector',
+    '05fulltext.php' => 'Full text GIN using tsvector',
 );
 
 $oldsettings = Settings::linkGetAll();
