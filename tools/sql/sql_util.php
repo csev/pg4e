@@ -167,7 +167,7 @@ function pg4e_user_db_load($LAUNCH) {
     $pdo_user = U::get($_POST, 'pdo_user', U::get($_SESSION,'pdo_user', getDbUser($unique)) );
     $pdo_pass = U::get($_POST, 'pdo_pass', U::get($_SESSION,'pdo_pass', getDbPass($unique)) );
 
-    if ( ! $pdo_host ) {
+    if ( ! $pdo_host && isset($CFG->pg4e_api_key) ) {
         $retval = pg4e_request($project, 'info/pg');
         $info = false;
         if ( is_object($retval) ) {
@@ -177,7 +177,7 @@ function pg4e_user_db_load($LAUNCH) {
         }
     }
 
-    if ( $LAUNCH->user->instructor ) {
+    if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) {
         $_SESSION['pdo_host'] = $pdo_host;
         $_SESSION['pdo_database'] = $pdo_database;
         $_SESSION['pdo_user'] = $pdo_user;
@@ -185,6 +185,7 @@ function pg4e_user_db_load($LAUNCH) {
     }
 
     $pdo_connection = "pgsql:host=$pdo_host;dbname=$pdo_database";
+    
 
     if ( ! $pdo_host && ! $LAUNCH->user->instructor ) {
         echo("<p>You have not yet set up your database server for project <b>".htmlentities($project)."</b></p>\n");
@@ -203,7 +204,7 @@ function pg4e_user_db_form($LAUNCH) {
 ?>
 <form name="myform" method="post" >
 <p>
-<?php if ( $LAUNCH->user->instructor ) { ?>
+<?php if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) { ?>
 Host: <input type="text" name="pdo_host" value="<?= htmlentities($pdo_host) ?>"><br/>
 Database: <input type="text" name="pdo_database" value="<?= htmlentities($pdo_database) ?>"><br/>
 User: <input type="text" name="pdo_user" value="<?= htmlentities($pdo_user) ?>"><br/>

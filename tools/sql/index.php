@@ -30,6 +30,7 @@ $assignments = array(
     '03many_to_many_track.php' => 'Many-to-Many CSV (tracks)',
     '03updated.php' => 'Stored Procedure',
     '04bigtext.php' => 'Text Scan',
+    '05fulltext.php' => 'Full text',
 );
 
 $oldsettings = Settings::linkGetAll();
