@@ -16,9 +16,13 @@ $lines = get_lines($code);
 $gin = get_gin($lines);
 
 $stop_words = false;
+$table = "docs01";
+$index = "invert01";
 if ( strpos(__file__,"stop") ) {
     $stop_words = get_stop_words();
     $gin = get_gin($lines, $stop_words);
+    $table = "docs02";
+    $index = "invert02";
 }
 
 ksort($gin);
@@ -31,7 +35,7 @@ if ( U::get($_POST,'check') ) {
     if ( ! $pg_PDO ) return;
     if ( ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
 
-    $sql = "SELECT keyword, doc_id FROM invert01 ORDER BY keyword, doc_id;";
+    $sql = "SELECT keyword, doc_id FROM $index ORDER BY keyword, doc_id;";
     $stmt = pg4e_query_return_error($pg_PDO, $sql);
     if ( ! $stmt ) return;
 
@@ -107,11 +111,11 @@ should all end up as "python" in the inverted index).
 </p>
 <?php } ?>
 <pre>
-CREATE TABLE docs01 (id SERIAL, doc TEXT, PRIMARY KEY(id));
+CREATE TABLE <?= $table ?> (id SERIAL, doc TEXT, PRIMARY KEY(id));
 
-CREATE TABLE invert01 (
+CREATE TABLE <?= $index ?> (
   keyword TEXT,
-  doc_id INTEGER REFERENCES docs01(id) ON DELETE CASCADE
+  doc_id INTEGER REFERENCES <?= $table ?>(id) ON DELETE CASCADE
 );
 </pre>
 <?php if ( $stop_words ) { ?>
@@ -120,12 +124,12 @@ If you already have the above tables created and the documents inserted
 from a prior assignment, you can just delete all the rows from 
 the reverse index and recreate them following the rules of stop words:
 <pre>
-DELETE FROM invert01;
+DELETE FROM <?= $index ?>;
 </pre>
 </p>
 <?php } ?>
-Here are the one-line documents that you are to insert into <b>docs01</b>:
-<?php insert_docs('docs01', $lines); ?>
+Here are the one-line documents that you are to insert into <b><?= $table ?></b>:
+<?php insert_docs($table, $lines); ?>
 <?php if ( $stop_words ) { ?>
 <p>Here are your <a href="https://www.ranks.nl/stopwords" target="_blank">stop words</a>:
 <pre>
@@ -154,7 +158,7 @@ echo(";\n");
 Here is a sample for the first few expected rows of your reverse index:
 <?php $max_rows = 10; ?>
 <pre>
-SELECT keyword, doc_id FROM invert01 ORDER BY keyword, doc_id LIMIT <?= $max_rows ?>;
+SELECT keyword, doc_id FROM <?= $index ?> ORDER BY keyword, doc_id LIMIT <?= $max_rows ?>;
 
 keyword    |  doc_id
 -----------+--------

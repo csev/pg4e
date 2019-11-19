@@ -27,9 +27,9 @@ foreach($gin as $keyword => $docs) {
 
 $fulltext = (strpos(__file__,"fulltext") !== false);
 if ( $fulltext ) {
-$sql = "SELECT id, doc FROM docs02 WHERE to_tsquery('english', '$word') @@ to_tsvector('english', doc);";
+$sql = "SELECT id, doc FROM docs03 WHERE to_tsquery('english', '$word') @@ to_tsvector('english', doc);";
 } else {
-$sql = "SELECT id, doc FROM docs02 WHERE '{".$word."}' <@ string_to_array(lower(doc), ' ');";
+$sql = "SELECT id, doc FROM docs03 WHERE '{".$word."}' <@ string_to_array(lower(doc), ' ');";
 }
 
 $oldgrade = $RESULT->grade;
@@ -109,14 +109,14 @@ EXPLAIN <?= $sql ?>
 </pre>
 and (a) get the correct document(s) and (b) use the GIN index (i.e. not use a sequential scan).
 <pre>
-CREATE TABLE docs02 (id SERIAL, doc TEXT, PRIMARY KEY(id));
+CREATE TABLE docs03 (id SERIAL, doc TEXT, PRIMARY KEY(id));
 
-CREATE INDEX fulltext02 ON docs02 USING gin(...);
+CREATE INDEX fulltext03 ON docs03 USING gin(...);
 </pre>
 </p>
 <?php if ( $fulltext ) { ?>
 <p>
-If you already have the <b>docs02</b> filled with the correct rows, you can just add the new index
+If you already have the <b>docs03</b> filled with the correct rows, you can just add the new index
 to the table.
 </p>
 <?php } else { ?>
@@ -126,13 +126,13 @@ below for the solution.
 </p>
 <?php } ?>
 <p>
-Here are the one-line documents that you are to insert into <b>docs02</b>:
-<?php insert_docs('docs02', $lines); ?>
+Here are the one-line documents that you are to insert into <b>docs03</b>:
+<?php insert_docs('docs03', $lines); ?>
 <p>
 You should also insert a number of filler rows into the table to make sure
 PostgreSQL uses its index:
 <pre>
-INSERT INTO docs02 (doc) SELECT 'Neon ' || generate_series(10000,20000);
+INSERT INTO docs03 (doc) SELECT 'Neon ' || generate_series(10000,20000);
 </pre>
 </p>
 <?php pg4e_user_db_form($LAUNCH); ?>
