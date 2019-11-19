@@ -89,7 +89,7 @@ SELECT id, doc FROM docs WHERE '{learn}' <@ string_to_array(doc, ' ');
 EXPLAIN SELECT id, doc FROM docs WHERE '{learn}' <@ string_to_array(doc, ' ');
 
 
--- Inverted string index wht stop words using SQL
+-- Inverted string index with stop words using SQL
 
 -- If we know the documents contain natural language, we can optimize indexes
 
@@ -175,8 +175,8 @@ SELECT COALESCE('umsi', NULL, 'SQL');
 -- If the stem is there, use it instead of the keyword
 SELECT id, COALESCE(stem, keyword)
 FROM (
-SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+SELECT DISTINCT id, s.keyword AS keyword
+FROM docs AS D, unnest(string_to_array(lower(D.doc), ' ')) s(keyword)
 ) AS K
 LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
@@ -186,8 +186,8 @@ DELETE FROM docs_gin;
 INSERT INTO docs_gin (doc_id, keyword)
 SELECT id, COALESCE(stem, keyword)
 FROM (
-  SELECT DISTINCT id, lower(s.keyword) AS keyword
-  FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+  SELECT DISTINCT id, s.keyword AS keyword
+  FROM docs AS D, unnest(string_to_array(lower(D.doc), ' ')) s(keyword)
 ) AS K
 LEFT JOIN docs_stem AS S ON K.keyword = S.word;
 
@@ -199,8 +199,8 @@ DELETE FROM docs_gin;
 INSERT INTO docs_gin (doc_id, keyword)
 SELECT id, COALESCE(stem, keyword)
 FROM (
-  SELECT DISTINCT id, lower(s.keyword) AS keyword
-  FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+  SELECT DISTINCT id, s.keyword AS keyword
+  FROM docs AS D, unnest(string_to_array(lower(D.doc), ' ')) s(keyword)
   WHERE s.keyword NOT IN (SELECT word FROM stop_words)
 ) AS K
 LEFT JOIN docs_stem AS S ON K.keyword = S.word;
