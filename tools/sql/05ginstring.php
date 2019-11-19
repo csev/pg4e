@@ -3,6 +3,7 @@
 use \Tsugi\Util\U;
 use \Tsugi\Util\Mersenne_Twister;
 
+// 05ginstring.php and 05fulltext.php are copies of each other
 require_once "names.php";
 require_once "text_util.php";
 
@@ -24,7 +25,12 @@ foreach($gin as $keyword => $docs) {
     if(strlen($keyword) > strlen($word)) $word = $keyword;
 }
 
+$fulltext = (strpos(__file__,"fulltext") !== false);
+if ( $fulltext ) {
+$sql = "SELECT id, doc FROM docs02 WHERE to_tsquery('english', '$word') @@ to_tsvector('english', doc);";
+} else {
 $sql = "SELECT id, doc FROM docs02 WHERE '{".$word."}' <@ string_to_array(lower(doc), ' ');";
+}
 
 $oldgrade = $RESULT->grade;
 
@@ -77,6 +83,11 @@ if ( $dueDate->message ) {
 }
 ?>
 <h1>String Array GIN Index</h1>
+<?php if ( $fulltext ) { ?>
+<p>In this assignment, you will create a table of documents and then
+produce a GIN-based <b>ts_vector</b> index on the documents.
+</p>
+<?php } else { ?>
 <p>In this assignment, you will create a table of documents and then
 produce a GIN-based <b>text[]</b> reverse index
 for those documents that identifies each document
@@ -88,6 +99,7 @@ map all the words
 in the GIN index to lower case (i.e. Python, PYTHON, and python
 should all end up as "python" in the GIN index).
 </p>
+<?php } ?>
 <p>
 The goal of this assignment is to run these queries:
 <pre>
@@ -95,17 +107,24 @@ The goal of this assignment is to run these queries:
 
 EXPLAIN <?= $sql ?>
 </pre>
-and (a) get the correct documents and (b) use the GIN index (i.e. not use a sequential scan).
+and (a) get the correct document(s) and (b) use the GIN index (i.e. not use a sequential scan).
 <pre>
 CREATE TABLE docs02 (id SERIAL, doc TEXT, PRIMARY KEY(id));
 
-CREATE INDEX array02 ON docs02 USING gin(...);
+CREATE INDEX fulltext02 ON docs02 USING gin(...);
 </pre>
 </p>
+<?php if ( $fulltext ) { ?>
+<p>
+If you already have the <b>docs02</b> filled with the correct rows, you can just add the new index
+to the table.
+</p>
+<?php } else { ?>
 <p>
 If you get an <b>operator class</b> error on your <b>CREATE INDEX</b> check the instructions
 below for the solution.
 </p>
+<?php } ?>
 <p>
 Here are the one-line documents that you are to insert into <b>docs02</b>:
 <?php insert_docs('docs02', $lines); ?>
@@ -117,6 +136,7 @@ INSERT INTO docs02 (doc) SELECT 'Neon ' || generate_series(10000,20000);
 </pre>
 </p>
 <?php pg4e_user_db_form($LAUNCH); ?>
+<?php if ( ! $fulltext ) { ?>
 <h2>Operator Class Errors</h2>
 <p>
 If you try to create the index using the <b>_text_ops</b> operator class
@@ -134,6 +154,7 @@ pg4e=> select version();
  PostgreSQL 11.2 on x86_64-pc-linux-musl, compiled by gcc (Alpine 8.3.0) 8.3.0, 64-bit
 </pre>
 </p>
+<?php } ?>
 <?php
 if ( $LAUNCH->user->instructor ) {
     echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");

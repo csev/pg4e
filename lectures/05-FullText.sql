@@ -246,7 +246,7 @@ SELECT websearch_to_tsquery('english', 'SQL -not Python');
 SELECT to_tsquery('english', 'teaching') @@ 
   to_tsvector('english', 'UMSI also teaches Python and also SQL');
 
--- Lets do a naturla language inverted indes letting PostgreSQL do the work
+-- Lets do a natural language inverted index letting PostgreSQL do the work
 
 DROP TABLE docs cascade;
 DROP INDEX gin1;
