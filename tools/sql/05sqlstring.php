@@ -120,6 +120,7 @@ echo(";\n");
 <?php pg4e_user_db_form($LAUNCH); ?>
 <p>
 Here is a sample for the first few expected rows of your reverse index:
+<?php $max_rows = 10; ?>
 <pre>
 SELECT keyword, doc_id FROM invert01 ORDER BY keyword, doc_id LIMIT <?= $max_rows ?>;
 
@@ -138,4 +139,9 @@ foreach($gin as $word => $docs) {
 ?>
 </pre>
 
+<?php
+if ( $LAUNCH->user->instructor ) {
+    echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");
+}
+?>
 

@@ -87,7 +87,6 @@ foreach($lines as $line) {
     }
 }
 
-$max_rows = 10;
 ?>
 </pre>
 <?php
