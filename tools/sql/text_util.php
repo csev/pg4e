@@ -70,3 +70,25 @@ function get_stop_words() {
         'www');
     return $stop_words;
 }
+
+function insert_docs($table, $lines) {
+?>
+<pre>
+INSERT INTO <?= $table ?> (doc) VALUES
+<?php
+$n = count($lines);
+foreach($lines as $line) {
+    $n--;
+    echo("('".htmlentities($line)."')");
+    if ( $n == 0 ) {
+        echo(";\n");
+    } else {
+        echo(",\n");
+    }
+}
+
+$max_rows = 10;
+?>
+</pre>
+<?php
+}

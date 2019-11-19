@@ -30,7 +30,10 @@ $assignments = array(
     '03many_to_many_track.php' => 'Many-to-Many CSV (tracks)',
     '03updated.php' => 'Stored Procedure',
     '04bigtext.php' => 'Text Scan',
-    '05fulltext.php' => 'Full text',
+    '05sqlstring.php' => 'Inverted index using SQL',
+    '05ginstring.php' => 'Inverted string index using GIN',
+    '05sqlstop.php' => 'Inverted index with stop words using SQL',
+    '05fulltext.php' => 'GIN index using ts_vector',
 );
 
 $oldsettings = Settings::linkGetAll();
