@@ -89,8 +89,8 @@ CREATE TABLE stop_words (word TEXT unique);
 INSERT INTO stop_words (word) VALUES ('is'), ('this'), ('and');
 
 -- All we do is throw out the words in the stop word list
-SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+SELECT DISTINCT id, s.keyword AS keyword
+FROM docs AS D, unnest(string_to_array(lower(D.doc), ' ')) s(keyword)
 WHERE s.keyword NOT IN (SELECT word FROM stop_words)
 ORDER BY id;
 
@@ -98,8 +98,8 @@ DELETE FROM docs_gin;
 
 -- Put the stop-word free list into the GIN
 INSERT INTO docs_gin (doc_id, keyword)
-SELECT DISTINCT id, lower(s.keyword) AS keyword
-FROM docs AS D, unnest(string_to_array(D.doc, ' ')) s(keyword)
+SELECT DISTINCT id, s.keyword AS keyword
+FROM docs AS D, unnest(string_to_array(lower(D.doc), ' ')) s(keyword)
 WHERE s.keyword NOT IN (SELECT word FROM stop_words)
 ORDER BY id;
 

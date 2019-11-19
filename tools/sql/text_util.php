@@ -66,8 +66,7 @@ function get_stop_words() {
     $stop_words = array( 'i', 'a', 'about', 'an', 'are', 'as',
         'at', 'be', 'by', 'com', 'for', 'from', 'how', 'in',
         'is', 'it', 'of', 'on', 'or', 'that', 'the', 'this', 'to',
-        'was', 'what', 'when', 'where', 'who', 'will', 'with', 'the',
-        'www');
+        'was', 'what', 'when', 'where', 'who', 'will', 'with');
     return $stop_words;
 }
 

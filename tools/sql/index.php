@@ -31,8 +31,8 @@ $assignments = array(
     '03updated.php' => 'Stored Procedure',
     '04bigtext.php' => 'Text Scan',
     '05sqlstring.php' => 'Inverted index using SQL',
-    '05ginstring.php' => 'Inverted string index using GIN',
     '05sqlstop.php' => 'Inverted index with stop words using SQL',
+    '05ginstring.php' => 'Inverted string index using GIN',
     '05fulltext.php' => 'GIN index using ts_vector',
 );
 
