@@ -316,6 +316,7 @@ EXPLAIN SELECT id, doc FROM docs WHERE
 
 -- python3 gmane.py
 -- Pulls data from the web and puts it into messages table
+-- Load at least 300 messages (can be stopped and started)
 
 -- CREATE TABLE IF NOT EXISTS messages
 
@@ -327,21 +328,30 @@ EXPLAIN SELECT id, doc FROM docs WHERE
 
 SELECT to_tsvector('english', body) FROM messages LIMIT 1;
 
-SELECT to_tsquery('english', 'monday');
+SELECT to_tsquery('english', 'easier');
 
-SELECT to_tsquery('english', 'neon') @@ to_tsvector('english', body)
-FROM messages LIMIT 1;
+SELECT id, to_tsquery('english', 'neon') @@ to_tsvector('english', body)
+FROM messages LIMIT 10;
 
-SELECT to_tsquery('english', 'monday') @@ to_tsvector('english', body)
-FROM messages LIMIT 1;
+SELECT id, to_tsquery('english', 'easier') @@ to_tsvector('english', body)
+FROM messages LIMIT 10;
 
 -- https://www.postgresql.org/docs/11/textsearch-indexes.html
 CREATE INDEX messages_gin ON messages USING gin(to_tsvector('english', body));
 
+--- Extract from the headers and make a new column
+ALTER TABLE messages ADD COLUMN sender TEXT;
+UPDATE messages SET sender=substring(headers, '\nFrom: [^\n]*<([^>]*)');
+
 SELECT subject, sender FROM messages
-WHERE to_tsquery('english', 'monday') @@ to_tsvector('english', body);
+WHERE to_tsquery('english', 'monday') @@ to_tsvector('english', body) LIMIT 10;
+
 EXPLAIN ANALYZE SELECT subject, sender FROM messages
 WHERE to_tsquery('english', 'monday') @@ to_tsvector('english', body);
+
+-- We did not make a Spainish index
+EXPLAIN ANALYZE SELECT subject, sender FROM messages
+WHERE to_tsquery('spanish', 'monday') @@ to_tsvector('spanish', body);
 
 DROP INDEX messages_gin;
 CREATE INDEX messages_gist ON messages USING gist(to_tsvector('english', body));
@@ -401,16 +411,17 @@ WHERE to_tsquery('english', '! personal & learning') @@ to_tsvector('english', b
 
 -- websearch_to_tsquery is in PostgreSQL > 11
 SELECT id, subject, sender FROM messages
-WHERE websearch_to_tsquery('english', '-personal learning') @@ to_tsvector('english', body);
+WHERE websearch_to_tsquery('english', '-personal learning') @@ to_tsvector('english', body)
+LIMIT 10;
 
 -- https://www.postgresql.org/docs/11/textsearch-indexes.html
 
---- GIN versus GIsT
+-- Check the operation types for the various indexes
 
--- Select version();   -- PostgreSQL 9.6.7
+-- SELECT version();   -- PostgreSQL 9.6.7
 -- https://habr.com/en/company/postgrespro/blog/448746/
 
--- Check the operation types for the various indexes
+SELECT version();
 
 SELECT am.amname AS index_method, opc.opcname AS opclass_name
     FROM pg_am am, pg_opclass opc
