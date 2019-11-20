@@ -41,7 +41,11 @@ ORDER BY id;
 SELECT * FROM docs_gin ORDER BY doc_id;
 
 -- Find all the distinct documents that match a keyword
-SELECT DISTINCT doc FROM docs AS D
+SELECT DISTINCT keyword, doc_id FROM docs_gin AS G
+WHERE G.keyword = 'UMSI';
+
+-- Find all the distinct documents that match a keyword
+SELECT DISTINCT id, doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword = 'UMSI';
 
@@ -56,7 +60,7 @@ JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword = ANY(string_to_array('I want to learn', ' '));
 
 -- This can go sideways - (foreshadowing stop words)
-SELECT DISTINCT doc FROM docs AS D
+SELECT DISTINCT id, doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword = ANY(string_to_array('Search for Lemons and Neons', ' '));
 
@@ -64,7 +68,6 @@ WHERE G.keyword = ANY(string_to_array('Search for Lemons and Neons', ' '));
 -- PostgreSQL already knows how to do this using the GIN index
 
 DROP TABLE docs cascade;
-DROP INDEX gin1;
 CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
 
 -- The GIN (General Inverted Index) thinks about columns that contain arrays
@@ -72,6 +75,8 @@ CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
 -- array_ops (_text_ops for PostgreSQL 9) means that it is expecting
 -- text[] (arrays of strings) and WHERE clauses will use array
 -- operators (i.e. like <@ )
+
+DROP INDEX gin1;
 
 -- PostgreSQL 9
 CREATE INDEX gin1 ON docs USING gin(string_to_array(doc, ' ')  _text_ops);
@@ -163,6 +168,7 @@ JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword = lower('and');
 
 -- Add stemming
+-- https://www.pg4e.com/lectures/05-FullText.sql
 
 -- We can make the index even smaller
 -- (3) Only store the "stems" of words
@@ -240,13 +246,14 @@ SELECT * FROM docs_gin;
 SELECT COALESCE((SELECT stem FROM docs_stem WHERE word=lower('SQL')), lower('SQL'));
 
 -- Handling the stems in queries.  Use the keyword if there is no stem
-SELECT DISTINCT doc FROM docs AS D
+SELECT DISTINCT id, doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword = COALESCE((SELECT stem FROM docs_stem WHERE word=lower('SQL')), lower('SQL'));
 
 -- Prefer the stem over the actual keyword
 SELECT COALESCE((SELECT stem FROM docs_stem WHERE word=lower('teaching')), lower('teaching'));
-SELECT DISTINCT doc FROM docs AS D
+
+SELECT DISTINCT id, doc FROM docs AS D
 JOIN docs_gin AS G ON D.id = G.doc_id
 WHERE G.keyword = COALESCE((SELECT stem FROM docs_stem WHERE word=lower('teaching')), lower('teaching'));
 
@@ -256,6 +263,7 @@ WHERE G.keyword = COALESCE((SELECT stem FROM docs_stem WHERE word=lower('teachin
 
 
 -- Using PostgreSQL built-in features (much easier and more efficient)
+-- https://www.pg4e.com/lectures/05-FullText.sql
 
 -- ts_vector is an special "array" of stemmed words, passed throug a stop-word
 -- filter + positions within the document
@@ -287,6 +295,7 @@ SELECT to_tsquery('english', 'teaching') @@
 
 
 -- Lets do an english language inverted index using a tsvector index.
+-- https://www.pg4e.com/lectures/05-FullText.sql
 
 DROP TABLE docs cascade;
 DROP INDEX gin1;
@@ -299,6 +308,9 @@ INSERT INTO docs (doc) VALUES
 ('More people should learn SQL from UMSI'),
 ('UMSI also teaches Python and also SQL');
 
+-- Filler rows
+INSERT INTO docs (doc) SELECT 'Neon ' || generate_series(10000,20000);
+
 SELECT id, doc FROM docs WHERE
     to_tsquery('english', 'learn') @@ to_tsvector('english', doc);
 EXPLAIN SELECT id, doc FROM docs WHERE
@@ -306,7 +318,7 @@ EXPLAIN SELECT id, doc FROM docs WHERE
 
 
 
--- Using natural language on an email corpus
+-- Using a natural language index on an email corpus
 
 -- wget https://www.pg4e.com/code/gmane.py
 -- wget https://www.pg4e.com/code/datecompat.py
