@@ -148,6 +148,7 @@ function pg4e_unlock($LAUNCH) {
 }
 
 function pg4e_user_db_load($LAUNCH) {
+    global $CFG;
     global $pdo_database, $pdo_host, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     if ( U::get($_POST,'default') ) {
