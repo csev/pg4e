@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
 <title>PG4E - Full Text Search - Lecture Notes</title>
 <style>
