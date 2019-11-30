@@ -316,8 +316,6 @@ SELECT id, doc FROM docs WHERE
 EXPLAIN SELECT id, doc FROM docs WHERE
     to_tsquery('english', 'learn') @@ to_tsvector('english', doc);
 
-
-
 -- Using a natural language index on an email corpus
 
 -- wget https://www.pg4e.com/code/gmane.py
@@ -425,6 +423,31 @@ WHERE to_tsquery('english', '! personal & learning') @@ to_tsvector('english', b
 SELECT id, subject, sender FROM messages
 WHERE websearch_to_tsquery('english', '-personal learning') @@ to_tsvector('english', body)
 LIMIT 10;
+
+
+-- Indexing within structured data - Email messages from address (advanced)
+
+SELECT substring(headers, '\nFrom: [^\n]*<([^>]*)') FROM messages LIMIT 10;
+
+--- Extract from the headers and make a new column
+ALTER TABLE messages ADD COLUMN sender TEXT;
+UPDATE messages SET sender=substring(headers, '\nFrom: [^\n]*<([^>]*)');
+
+CREATE INDEX messages_from ON messages (substring(headers, '\nFrom: [^\n]*<([^>]*)'));
+
+SELECT sender,subject FROM messages WHERE substring(headers, '\nFrom: [^\n]*<([^>]*)') = 'john@caret.cam.ac.uk';
+
+EXPLAIN ANALYZE SELECT sent_at FROM messages WHERE substring(headers, '\nFrom: [^\n]*<([^>]*)') = 'john@caret.cam.ac.uk';
+
+SELECT subject, substring(headers, '\nLines: ([0-9]*)') AS lines FROM messages LIMIT 100;
+SELECT AVG(substring(headers, '\nLines: ([0-9]*)')::integer) FROM messages;
+
+-- A variable - actually more like a macro - escaping is tricky
+\set zap 'substring(headers, \'\\nFrom: [^\\n]*<([^>]*)\')'
+DROP INDEX messages_from;
+EXPLAIN ANALYZE SELECT :zap FROM messages where :zap = 'john@caret.cam.ac.uk';
+CREATE INDEX messages_from ON messages (:zap);
+EXPLAIN ANALYZE SELECT :zap FROM messages where :zap = 'john@caret.cam.ac.uk';
 
 -- https://www.postgresql.org/docs/11/textsearch-indexes.html
 

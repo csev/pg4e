@@ -1,34 +1,30 @@
 
--- Indexing within structured data - Email messages from address
+-- Using Python
 
--- wget https://www.pg4e.com/code/gmane.py
--- python3 gmane.py
--- Pulls data and puts it into messages table
+-- Get a book from Gutenberg
 
--- CREATE TABLE IF NOT EXISTS messages
+-- wget http://www.gutenberg.org/cache/epub/19337/pg19337.txt
 
--- CREATE TABLE IF NOT EXISTS messages
---    (id SERIAL, email TEXT, sent_at TIMESTAMPTZ,
---     subject TEXT, headers TEXT, body TEXT)
+-- wget https://www.pg4e.com/code/loadbook.py
+-- wget https://www.pg4e.com/code/hidden-dist.py
+-- mv hidden-dist.py hidden.py
+-- edit hidden.py and put in your credentials
 
-SELECT substring(headers, '\nFrom: [^\n]*<([^>]*)') FROM messages LIMIT 10;
+-- python3 loadbook.py
+-- Enter book file (i.e. pg19337.txt): pg19337.txt
+-- DROP TABLE IF EXISTS pg19337 CASCADE;
+-- CREATE TABLE pg19337 (id SERIAL, body TEXT);
+-- 100 loaded...
 
---- Extract from the headers and make a new column
-ALTER TABLE messages ADD COLUMN sender TEXT;
-UPDATE messages SET sender=substring(headers, '\nFrom: [^\n]*<([^>]*)');
+-- Loaded 814 paragraphs 3853 lines 178898 characters
 
-CREATE INDEX messages_from ON messages (substring(headers, '\nFrom: [^\n]*<([^>]*)'));
+-- We could have done this before we did all the inserts..
+CREATE INDEX pg19337_gin ON pg19337 USING gin(to_tsvector('english', body));
 
-SELECT sender,subject FROM messages WHERE substring(headers, '\nFrom: [^\n]*<([^>]*)') = 'john@caret.cam.ac.uk';
+-- It might take a little while before explain uses the GIN
+SELECT body FROM pg19337  WHERE to_tsquery('english', 'goose') @@ to_tsvector('english', body) LIMIT 5;
+EXPLAIN ANALYZE SELECT body FROM pg19337  WHERE to_tsquery('english', 'goose') @@ to_tsvector('english', body);
 
-EXPLAIN ANALYZE SELECT sent_at FROM messages WHERE substring(headers, '\nFrom: [^\n]*<([^>]*)') = 'john@caret.cam.ac.uk';
+SELECT count(body) FROM pg19337  WHERE to_tsquery('english', 'tiny <-> tim') @@ to_tsvector('english', body);
+SELECT body FROM pg19337  WHERE to_tsquery('english', 'tiny <-> tim') @@ to_tsvector('english', body) LIMIT 5;
 
-SELECT subject, substring(headers, '\nLines: ([0-9]*)') AS lines FROM messages LIMIT 100;
-SELECT AVG(substring(headers, '\nLines: ([0-9]*)')::integer) FROM messages;
-
--- A variable - actually more like a macro - escaping is tricky
-\set zap 'substring(headers, \'\\nFrom: [^\\n]*<([^>]*)\')'
-DROP INDEX messages_from;
-EXPLAIN ANALYZE SELECT :zap FROM messages where :zap = 'john@caret.cam.ac.uk';
-CREATE INDEX messages_from ON messages (:zap);
-EXPLAIN ANALYZE SELECT :zap FROM messages where :zap = 'john@caret.cam.ac.uk';
