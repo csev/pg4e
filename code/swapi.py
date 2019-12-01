@@ -18,7 +18,7 @@ cur = conn.cursor()
 
 defaulturl = 'https://swapi.co/api/films/1/'
 print('If you want to restart the spider, run')
-print('DROP TABLE swapi CASCADE;')
+print('DROP TABLE IF EXISTS swapi CASCADE;')
 print(' ')
 
 sql = '''
