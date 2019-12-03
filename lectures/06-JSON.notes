@@ -1,0 +1,31 @@
+
+https://en.wikipedia.org/wiki/NoSQL
+
+https://www.theguardian.com/info/2018/nov/30/bye-bye-mongo-hello-postgres
+
+https://developer.olery.com/blog/goodbye-mongodb-hello-postgresql/
+
+http://blog.shippable.com/why-we-moved-from-nosql-mongodb-to-postgressql
+
+https://developer.olery.com/blog/goodbye-mongodb-hello-postgresql/
+
+https://www.3pillarglobal.com/insights/short-history-databases-rdbms-nosql-beyond
+
+https://dzone.com/articles/mysql-is-a-great-nosql-1
+
+Here are some of our other usage patterns to get great performance from MySQL:
+
+    Do not have queries with joins; only query by primary key or index.
+
+    Do not use sequential primary keys (auto-increment) because they introduce locks. Instead, use client-generated keys, such as GUIDs. Also, when you have master-master replication, auto-increment causes conflicts, so you will have to create key ranges for each instance.
+
+    Any field that is not indexed has no right to exist. Instead, we fold such fields into a single text field (JSON is a good choice).
+
+
+UUID
+
+https://dba.stackexchange.com/questions/122623/default-value-for-uuid-column-in-postgres
+
+https://www.linuxjournal.com/content/postgresql-nosql-database
+
+
