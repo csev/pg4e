@@ -10,7 +10,9 @@ CREATE TABLE IF NOT EXISTS jtrack (id SERIAL, body JSONB);
 
 -- http://adpgtech.blogspot.com/2014/09/importing-json-data.html
 
-\copy jtrack (body) FROM 'library.json' WITH CSV QUOTE E'\x01' DELIMITER E'\x02';
+-- https://ww.wpg4e.com/code/library.jstext
+
+\copy jtrack (body) FROM 'library.jstext' WITH CSV QUOTE E'\x01' DELIMITER E'\x02';
 
 SELECT * FROM jtrack LIMIT 5;
 SELECT pg_typeof(body) FROM jtrack LIMIT 1;
