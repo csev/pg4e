@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS jtrack (id SERIAL, body JSONB);
 
 -- https://ww.wpg4e.com/code/library.jstext
 
-\copy jtrack (body) FROM 'library.jstext' WITH CSV QUOTE E'\x01' DELIMITER E'\x02';
+\copy jtrack (body) FROM 'library.jstxt' WITH CSV QUOTE E'\x01' DELIMITER E'\x02';
 
 SELECT * FROM jtrack LIMIT 5;
 SELECT pg_typeof(body) FROM jtrack LIMIT 1;
