@@ -154,7 +154,59 @@ https://www.pg4e.com/code/loadbook.py</a></li>
 <li><a href="https://www.pg4e.com/code/myutils.py"  target="_blank">
 https://www.pg4e.com/code/myutils.py</a></li>
 </ul>
-<p>Make sure the <b>hidden.py</b> is set up as above and has your credentials.
+<p>Make sure the <b>hidden.py</b> is set up as above and has your credentials.</p>
+<p>Download a book from the Gutenberg project using <b>wget</b> or <b>curl</b>:</p>
+<pre>
+wget http://www.gutenberg.org/cache/epub/19337/pg19337.txt
+</pre>
+Then run the loadbook code:
+<pre>
+python3 loadbook.py
+</pre>
+The program makes a document database, reads through the book text,
+breaking it into "paragraphs" and inserting each paragraph into a row
+of the database.  The table is automatically <em>created by the code</em>
+and named the same as the book file so you can have more than one
+book in your database at one time.
+<pre>
+CREATE TABLE pg19337 (id SERIAL, body TEXT);
+</pre>
+<p>
+You can watch the progress of the load using <b>pgsql</b> in another window:
+<pre>
+pg4e=&gt; select count(*) from pg19337;
+ count
+-------
+    50
+(1 row)
+
+pg4e=&gt; select count(*) from pg19337;
+ count
+-------
+   150
+(1 row)
+</pre>
+You will notice that it always is a multiple of 50 until the load finishes because
+we are flushing the connection using a <b>con.commit()</b> every 50 inserts.
+</p>
+<p>
+Once the load is complete, you will create the <b>GIN</b> index and play with some queries:
+<pre>
+CREATE INDEX pg19337_gin ON pg19337 USING gin(to_tsvector('english', body));
+
+EXPLAIN ANALYZE SELECT body FROM pg19337  WHERE to_tsquery('english', 'goose') @@ to_tsvector('english', body);
+
+                                                     QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on pg19337  (cost=12.03..24.46 rows=4 width=225) (actual time=0.027..0.029 rows=6 loops=1)
+   Recheck Cond: ('''goos'''::tsquery @@ to_tsvector('english'::regconfig, body))
+   Heap Blocks: exact=1
+   -&gt;  Bitmap Index Scan on pg19337_gin  (cost=0.00..12.03 rows=4 width=0) (actual time=0.016..0.016 rows=6 loops=1)
+         Index Cond: ('''goos'''::tsquery @@ to_tsvector('english'::regconfig, body))
+ Planning Time: 0.523 ms
+ Execution Time: 0.070 ms
+</pre>
+
 
 <footer style="margin-top: 50px;">
 <hr/>

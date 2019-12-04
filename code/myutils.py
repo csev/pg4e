@@ -20,10 +20,3 @@ def doQuery(cur, sql, fields=None) :
     row = cur.execute(sql, fields)
     return row
 
-def summary(cur) :
-    total = queryValue(cur, 'SELECT COUNT(*) FROM swapi;')
-    todo = queryValue(cur, 'SELECT COUNT(*) FROM swapi WHERE status IS NULL;')
-    good = queryValue(cur, 'SELECT COUNT(*) FROM swapi WHERE status = 200;')
-    error = queryValue(cur, 'SELECT COUNT(*) FROM swapi WHERE status != 200;')
-    print(f'Total={total} todo={todo} good={good} error={error}')
-

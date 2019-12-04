@@ -17,6 +17,7 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 import re
 import hidden
+import myutils
 import datecompat
 
 import dateutil.parser as parser # If this import fails - just comment it out
@@ -46,17 +47,8 @@ cur.execute('''CREATE TABLE IF NOT EXISTS messages
      subject TEXT, headers TEXT, body TEXT)''')
 
 # Pick up where we left off
-start = None
-cur.execute('SELECT max(id) FROM messages' )
-try:
-    row = cur.fetchone()
-    if row is None :
-        start = 0
-    else:
-        start = row[0]
-except:
-    start = 0
-
+sql = 'SELECT max(id) FROM messages'
+start = queryValue(cur, sql)
 if start is None : start = 0
 
 many = 0
@@ -70,12 +62,11 @@ while True:
         many = int(sval)
 
     start = start + 1
-    cur.execute('SELECT id FROM messages WHERE id=%s', (start,) )
-    try:
-        row = cur.fetchone()
-        if row is not None : continue
-    except:
-        row = None
+
+    # Skip rows that are already retrieved
+    sql = 'SELECT id FROM messages WHERE id=%s')
+    row = queryValue(cur, sql, (start,) )
+    if row is not None : continue     # Skip rows that already exist
 
     many = many - 1
     url = baseurl + str(start) + '/' + str(start + 1)

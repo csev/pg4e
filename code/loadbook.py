@@ -12,7 +12,6 @@
 
 # python3 loadbook.py
 
-
 import psycopg2
 import hidden
 import time

@@ -5,6 +5,13 @@ import myutils
 import requests
 import json
 
+def summary(cur) :
+    total = myutils.queryValue(cur, 'SELECT COUNT(*) FROM swapi;')
+    todo = myutils.queryValue(cur, 'SELECT COUNT(*) FROM swapi WHERE status IS NULL;')
+    good = myutils.queryValue(cur, 'SELECT COUNT(*) FROM swapi WHERE status = 200;')
+    error = myutils.queryValue(cur, 'SELECT COUNT(*) FROM swapi WHERE status != 200;')
+    print(f'Total={total} todo={todo} good={good} error={error}')
+
 # Load the secrets
 secrets = hidden.secrets()
 
@@ -45,7 +52,7 @@ many = 0
 count = 0
 chars = 0
 fail = 0
-myutils.summary(cur)
+summary(cur)
 while True:
     if ( many < 1 ) :
         conn.commit()
@@ -105,7 +112,7 @@ while True:
 print(' ')
 print(f'Loaded {count} documents, {chars} characters')
 
-myutils.summary(cur)
+summary(cur)
 
 print('Closing database connection...')
 conn.commit()
