@@ -1,21 +1,17 @@
 import json
 
-data = '''
-[
-  { "id" : "001",
-    "x" : "2",
-    "name" : "Chuck"
-  } ,
-  { "id" : "009",
-    "x" : "7",
-    "name" : "Brent"
-  }
-]'''
+data = []
 
-info = json.loads(data)
-print('User count:', len(info))
+entry = {}
+entry['id'] = '001'
+entry['x'] = '2'
+entry['name'] = 'Chuck'
+data.append(entry)
 
-for item in info:
-    print('Name', item['name'])
-    print('Id', item['id'])
-    print('X', item['x'])
+entry = {}
+entry['id'] = '009'
+entry['x'] = '7'
+entry['name'] = 'Brent'
+data.append(entry)
+
+print(json.dumps(data, indent=4))
