@@ -13,9 +13,9 @@ body {
 <?php
 $sections = array(
 "psycopg2",
-"python-connect",
+"connect",
 "loadbook",
-"gmane",
+"gmane"
 );
 
 function doNav($position) {
@@ -80,8 +80,8 @@ on your operating system / virtual environment / python installation pattern.
     </li>
 </ul>
 </p>
-<h2 id="python-connect">SQL Commands in Python
-<?php doNav('python-connect'); ?>
+<h2 id="connect">SQL Commands in Python
+<?php doNav('connect'); ?>
 </h2>
 <p>
 In this section we will be talking about 
@@ -142,7 +142,7 @@ using methods like <b>fetchone()</b>.
 </ul>
 
 <h2 id="loadbook">Sample Code: Loading The Text of a Book
-<?php doNav('psycopg2'); ?>
+<?php doNav('loadbook'); ?>
 </h2>
 <p>
 In this sample code walkthrough, we will download the text of a book from 
@@ -210,7 +210,7 @@ EXPLAIN ANALYZE SELECT body FROM pg19337  WHERE to_tsquery('english', 'goose') @
 </pre>
 
 <h2 id="gmane">Sample Code: Loading Email Data
-<?php doNav('psycopg2'); ?>
+<?php doNav('gmane'); ?>
 </h2>
 <p>
 In this example, we download some historical email data and do some parsing and cleanup
