@@ -1,6 +1,7 @@
 
 # https://www.pg4e.com/code/gmane.py
 # https://www.pg4e.com/code/datecompat.py
+# https://www.pg4e.com/code/myutils.py
 
 # https://www.pg4e.com/code/hidden-dist.py
 # copy hidden-dist.py to hidden.py

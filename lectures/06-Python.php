@@ -14,6 +14,8 @@ body {
 $sections = array(
 "psycopg2",
 "python-connect",
+"loadbook",
+"gmane",
 );
 
 function doNav($position) {
@@ -187,7 +189,7 @@ pg4e=&gt; select count(*) from pg19337;
 (1 row)
 </pre>
 You will notice that it always is a multiple of 50 until the load finishes because
-we are flushing the connection using a <b>con.commit()</b> every 50 inserts.
+we are flushing the connection using a <b>conn.commit()</b> every 50 inserts.
 </p>
 <p>
 Once the load is complete, you will create the <b>GIN</b> index and play with some queries:
@@ -206,6 +208,110 @@ EXPLAIN ANALYZE SELECT body FROM pg19337  WHERE to_tsquery('english', 'goose') @
  Planning Time: 0.523 ms
  Execution Time: 0.070 ms
 </pre>
+
+<h2 id="gmane">Sample Code: Loading Email Data
+<?php doNav('psycopg2'); ?>
+</h2>
+<p>
+In this example, we download some historical email data and do some parsing and cleanup
+of the data and insert it into a table.  Then we use regular expressions to make an index
+that looks deep into the text field to allow indexed searches on data within the field.
+</p>
+<p>
+This example shows some of the real-world challenges you will find when you have 
+a historical data source that is not "perfect" in its formatting or approach and
+you must make use of the data regardless of its lack of consistency.  As you look
+at it you quickly can see that Python was the only way to clean up this data.
+</p>
+<p><b>Download these files</b></p>
+<ul>
+<li><a href="https://www.pg4e.com/code/gmane.py" target="_blank">
+https://www.pg4e.com/code/gmane.py</a></li>
+<li><a href="https://www.pg4e.com/code/myutils.py"  target="_blank">
+https://www.pg4e.com/code/myutils.py</a></li>
+<li><a href="https://www.pg4e.com/code/datecompat.py"  target="_blank">
+https://www.pg4e.com/code/datecompat.py</a></li>
+</ul>
+<p>Make sure the <b>hidden.py</b> is set up as above and has your credentials.
+The <b>datecompat.py</b> is needed because certain needed date parsing / conversion
+routines are only available in later versions of Python and is there to allow the code
+to run across many versions of Python.
+</p>
+<p>
+The code creates a table to store the email messages:
+<pre>
+CREATE TABLE IF NOT EXISTS messages
+    (id SERIAL, email TEXT, sent_at TIMESTAMPTZ,
+     subject TEXT, headers TEXT, body TEXT)
+</pre>
+And then retrieves email messages from a copy of a message archive at
+<a href="http://mbox.dr-chuck.net/sakai.devel/" target="_blank">
+http://mbox.dr-chuck.net/sakai.devel/</a>.  It turns out that email
+data is particularly wonky because so many different products send,
+receive, and process email and they treat certain fields ever so slightly
+differently.
+</p>
+<p>
+The mail messages are in a format called 
+<a href="https://en.wikipedia.org/wiki/Mbox" target="_blank">Mbox</a>.
+This format is a flat file where each message starts with a line
+"From ," followed by a set of headers, followed by one blank line,
+followed by the actual message text.
+<pre>
+<a href="http://mbox.dr-chuck.net/sakai.devel/4/6" target="_blank">http://mbox.dr-chuck.net/sakai.devel/4/6</a>
+
+<b>From news@gmane.org Tue Mar 04 03:33:20 2003</b>
+From: "Feldstein, Michael" &lt;Michael.Feldstein@suny.edu&gt;
+Subject: RE: LMS/VLE rants/comments
+Date: Fri, 09 Dec 2005 09:43:12 -0500
+
+Yup, I think this is spot-on. Either/or, in reality, is actually neither
+and both. We've had many discussions internally at SUNY about just how
+loose our coupling can be. You start ...
+
+<b>From news@gmane.org Tue Mar 04 03:33:20 2003</b>
+From: John Norman &lt;john@caret.cam.ac.uk&gt;
+Subject: RE: LMS/VLE rants/comments
+Date: Fri, 9 Dec 2005 13:32:29 -0000
+
+I should chip in here as Dan's PHB :)
+
+Our strategy at Cambridge is to try and get the best of both worlds. I am
+dismayed by the either/or tone of many discussions...
+</pre>
+You can look through the output and see both how simple and how complex
+the mail messages can be.  And how much fun we were having in the 
+<a href="https://www.sakailms.org" target="_blank">
+Sakai Project</a> developing an Open Source Learning Management
+System in 2005.
+</p>
+<p>
+This application is retrieving data across a slow network, talking to possibly
+overloaded servers with a possibility of
+<a href="https://en.wikipedia.org/wiki/Rate_limiting" target="_blank">
+Rate Limits</a> on those servers.  So we use a strategy similar to 
+<a href="https://en.wikipedia.org/wiki/Web_crawler" target="_blank">
+Web Crawlers</a> where we make a restartable process that can be aborted
+part-way through and then next time the application runs, it picks up
+where it left off.
+</p>
+<p>
+Like a web crawler, our goal is to make a complete copy of the data in our
+fast database, and clean it up and so we can releatedly do very fast
+data analysis on our copy of the data.
+</p>
+<p>
+This is a complex bit of sample code and took more than a week of trial and
+error to develop, so as you look at this code, don't feel like somehow
+every trick and technique to clean the data, recover form errors or build
+a restartable process is somwthing you just write from scratch and it works
+perfectly the first time.  
+</p>
+<p>Code like this evolves based on your data analysis needs and the vagaries
+of your data and data source.  You start to build code, run it and when it
+fails, you adapt and improvise.  Eventually you transform the raw data into
+a pretty form in the database so the rest of your analysis works smoothly.
+</p>
 
 
 <footer style="margin-top: 50px;">
