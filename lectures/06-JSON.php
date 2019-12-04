@@ -13,7 +13,10 @@ body {
 <?php
 $sections = array(
 "serialize",
-"json"
+"json",
+"python",
+"postgres",
+"swapi",
 );
 
 function doNav($position) {
@@ -86,6 +89,11 @@ If for example, we want to send a dictionary from Python to PHP we would take th
 <li>Within PHP we would read the file and convert it to an associative array 
 de-serialization).
 </ol>
+Another term for serialization and deserialization is 
+<a href="https://en.wikipedia.org/wiki/Marshalling_(computer_science)" target="_blank">
+marshalling</a> and 
+<a href="https://en.wikipedia.org/wiki/Unmarshalling" target="_blank">
+unmarshalling</a>.
 </p>
 <p>A long time ago....  We used XML as this "format to move data structures between various languages":
 <pre>
@@ -145,13 +153,16 @@ who = {
 console.log(who);
 &lt;/script&gt;
 </pre>
-It turned out to be easier to add libraries to the back end languages like Python, PHP, and Java
-to convert their data structures to JavaScript-formatted thatn to use XML to serialize data.
+It turned out to be easier to add libraries to the back-end languages like Python, PHP, and Java
+to convert their data structures to JSON than to use XML to serialize data because the back-end
+languages were already good at XML.  The reason was really because XML did a bad job of representing
+linear or key/value structures that are widely used across all languages.
 </p>
 <p>
-Douglas Crockford write a simple specification for "JSON", and put it up at 
+To help spur adoption,
+Douglas Crockford wrote a simple specification for "JSON", and put it up at 
 <a href="https://www.json.org" target="_new">www.json.org</a> and programmers
-started to use it in thier software development.
+started to use it in thier software development.  
 </p>
 <p>
 In order to make parsing and generating JSON simpler, JSON required all of the keys of 
@@ -159,16 +170,21 @@ key value pairs be surrounded by double quotes.
 </p>
 <p>
 For those familiar with Python, JSON looks almost exactly like nested Python list and dictionary
-constants.  And while Python was not so polular in 2001, at this point with Python and JavaScript emerging
-as the most widely used languages, it makes reading JSON pretty natural for those skilled
-in either language.
+constants.  And while Python was not so popular in 2001, now almost 20 years later,
+with Python and JavaScript emerging as the most widely used languages, it makes
+reading JSON pretty natural for those skilled in either language.
 </p>
 <p>
 JSON has quickly become the dominant way to store and transfer data structures between programs. 
 JSON is sent across networks, stored on files, and stored in databases.  As JavaScript became an emerging server
-language and JSON specific databases like
+language with the development of the 
+<a href="https://nodejs.org/en/" target="_blank">NodeJS</a> web server
+and JSON specific databases like
 <a href="https://www.mongodb.com/" target="_blank">MongoDB</a> were developed,
-JSON has been used in more and more places.   
+JSON is now used for all but a few data serialization use cases.  For those document-oriented
+use cases like
+<a href="https://en.wikipedia.org/wiki/Microsoft_Office_XML_formats" target="_blank">
+Microsoft Office XML formats</a>, XML is still the superior solution.
 </p>
 <p>
 Database systems like Oracle, SQLServer, PostgreSQL, and MySQL have been adding native JSON
@@ -181,6 +197,26 @@ columns to suport document-style storage in traditional relational databases.
     Interview with Douglas Crockford</a>
     </li>
 </ul>
+
+<h2 id="python">JSON in Python
+<?php doNav('python'); ?>
+</h2>
+<p>JSON in Python</p>
+
+
+
+
+
+
+<h2 id="postgres">JSON in PostgreSQL
+<?php doNav('postgres'); ?>
+</h2>
+<p>JSON in PostgreSQL</p>
+
+<h2 id="swapi">Sample Code: Loading JSON from an API
+<?php doNav('swapi'); ?>
+</h2>
+<p>JSON in PostgreSQL</p>
 
 <br clear="all"/>
 <footer style="margin-top: 50px;">
