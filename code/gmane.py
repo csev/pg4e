@@ -1,5 +1,13 @@
 
 # https://www.pg4e.com/code/gmane.py
+# https://www.pg4e.com/code/datecompat.py
+
+# https://www.pg4e.com/code/hidden-dist.py
+# copy hidden-dist.py to hidden.py
+# edit hidden.py and put in your credentials 
+
+# python3 gmane.py
+# Pulls data from the web and puts it into messages table
 
 import psycopg2
 import time

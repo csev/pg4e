@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-<title>PG4E - Python and JSON - Lecture Notes</title>
+<title>PG4E - Python and PostgreSQL - Lecture Notes</title>
 <style>
 body {
     font-family: sans-serif;
@@ -32,11 +32,11 @@ function doNav($position) {
 ?>
     </head>
     <body>
-<h1 id="lecture">PostgreSQL / Python / JSON Lecture Notes</h1>
+<h1 id="lecture">PostgreSQL / Python Lecture Notes</h1>
 <p>
 In this lecture we will continue to look at ways to store complex data in PostgreSQL,
 create indexes on that data and then use the data.  We will look at how we connect to 
-a PostgreSQL database from within Python Python.
+a PostgreSQL database from within Python.
 </p>
 
 <h2 id="psycopg2">Connecting Python and PostgreSQL
@@ -74,7 +74,7 @@ on your operating system / virtual environment / python installation pattern.
 <ul>
     <li>
 <a href="https://pypi.org/project/psycopg2/" target="_blank">
-    Python-PostgreSQL Database Adapter</a> (Blog Post)
+    Python-PostgreSQL Database Adapter</a>
     </li>
 </ul>
 </p>
@@ -138,7 +138,23 @@ using methods like <b>fetchone()</b>.
 </a> 
     </li>
 </ul>
-</p>
+
+<h2 id="loadbook">Sample Code: Loading The Text of a Book
+<?php doNav('psycopg2'); ?>
+</h2>
+<p>
+In this sample code walkthrough, we will download the text of a book from 
+<a href="https://www.gutenberg.org/" target="_blank">Project Gutenberg</a>
+and parse the contents of the book and put it into a PostgreSQL database and set up
+a full-text GIN index on the book text.</p>
+<p><b>Download these files</b></p>
+<ul>
+<li><a href="https://www.pg4e.com/code/loadbook.py" target="_blank">
+https://www.pg4e.com/code/loadbook.py</a></li>
+<li><a href="https://www.pg4e.com/code/myutils.py"  target="_blank">
+https://www.pg4e.com/code/myutils.py</a></li>
+</ul>
+<p>Make sure the <b>hidden.py</b> is set up as above and has your credentials.
 
 <footer style="margin-top: 50px;">
 <hr/>

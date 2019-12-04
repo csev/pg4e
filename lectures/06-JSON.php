@@ -34,7 +34,7 @@ function doNav($position) {
     <body>
 <h1 id="lecture">JSON Lecture Notes</h1>
 <p>
-JSON is a very common format for storing and transmitting structured data between programs.
+JSON is a very common format for storing and transmitting structured data <em>between</em> programs.
 </p>
 <h2 id="serialize">Data Serialization
 <?php doNav('serialize'); ?>
@@ -84,7 +84,7 @@ If for example, we want to send a dictionary from Python to PHP we would take th
 (<a href="https://en.wikipedia.org/wiki/Serialization" target="_blank">serialization</a>)
  and write it to a file.
 <li>Within PHP we would read the file and convert it to an associative array 
-(<a href="https://en.wikipedia.org/wiki/DeSerialization" target="_blank">de-serialization</a>).
+de-serialization).
 </ol>
 </p>
 <p>A long time ago....  We used XML as this "format to move data structures between various languages":

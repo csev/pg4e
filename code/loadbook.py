@@ -1,3 +1,18 @@
+
+# https://www.pg4e.com/code/loadbook.py
+# https://www.pg4e.com/code/myutils.py
+
+# Download a book
+# wget http://www.gutenberg.org/cache/epub/19337/pg19337.txt
+
+# (If needed)
+# https://www.pg4e.com/code/hidden-dist.py
+# copy hidden-dist.py to hidden.py
+# edit hidden.py and put in your credentials
+
+# python3 loadbook.py
+
+
 import psycopg2
 import hidden
 import time
