@@ -23,7 +23,7 @@ stuff = ET.parse(fname)
 all = stuff.findall('dict/dict/dict')
 print('Dict count:', len(all))
 
-jsonfile = open('library.jstext', 'w', newline='')
+jsonfile = open('library.jstxt', 'w', newline='')
 
 for entry in all:
     if ( lookup(entry, 'Track ID') is None ) : continue
@@ -39,13 +39,15 @@ for entry in all:
         continue
 
     if length is None : length = 0;
+    if count is None : count = 0;
+    if rating is None : rating = 0;
 
     entry = {'name': name, 'artist': artist, 'album': album,
-            'count': count, 'rating': rating, 'length': length}
+            'count': int(count), 'rating': int(rating), 'length': int(length)}
 
     # Don't indent - we want this to be all one line
     jsonfile.write(json.dumps(entry))
     jsonfile.write('\n');
 
-print("Results are in library.jstext")
+print("Results are in library.jstxt")
 jsonfile.close()

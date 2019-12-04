@@ -431,6 +431,18 @@ within PostgreSQL.
 </h2>
 <p>JSON in PostgreSQL</p>
 
+https://bitnine.net/blog-postgresql/postgresql-internals-jsonb-type-and-its-indexes/
+
+https://www.postgresql.org/docs/current/functions-json.html
+
+@> 	jsonb 	Does the left JSON value contain the right JSON path/value entries at the top level? 	'{"a":1, "b":2}'::jsonb @> '{"b":2}'::jsonb
+<@ 	jsonb 	Are the left JSON path/value entries contained at the top level within the right JSON value? 	'{"b":2}'::jsonb <@ '{"a":1, "b":2}'::jsonb
+? 	text 	Does the string exist as a top-level key within the JSON value? 	'{"a":1, "b":2}'::jsonb ? 'b'
+?| 	text[] 	Do any of these array strings exist as top-level keys? 	'{"a":1, "b":2, "c":3}'::jsonb ?| array['b', 'c']
+?& 	text[] 	Do all of these array strings exist as top-level keys? 	'["a", "b"]'::jsonb ?& array['a', 'b']
+|| 	jsonb
+
+
 <br clear="all"/>
 <footer style="margin-top: 50px;">
 <hr/>
