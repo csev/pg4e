@@ -23,7 +23,7 @@ stuff = ET.parse(fname)
 all = stuff.findall('dict/dict/dict')
 print('Dict count:', len(all))
 
-jsonfile = open('library.json', 'w', newline='')
+jsonfile = open('library.jstext', 'w', newline='')
 
 for entry in all:
     if ( lookup(entry, 'Track ID') is None ) : continue
@@ -47,5 +47,5 @@ for entry in all:
     jsonfile.write(json.dumps(entry))
     jsonfile.write('\n');
 
-print("Results are in library.json")
+print("Results are in library.jstext")
 jsonfile.close()
