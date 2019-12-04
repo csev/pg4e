@@ -15,7 +15,8 @@ $sections = array(
 "serialize",
 "json",
 "python",
-"postgres",
+"history",
+"jsonb",
 "swapi",
 );
 
@@ -328,10 +329,102 @@ have reasonable names.
 
 
 
-<h2 id="postgres">JSON in PostgreSQL
-<?php doNav('postgres'); ?>
+<h2 id="history">Structured Data in PostgreSQL
+<?php doNav('history'); ?>
 </h2>
-<p>JSON in PostgreSQL</p>
+<p>
+A key to understanding JSON support in PostgreSQL is that it has evolved.  The great news is
+that since you are probably using PostgreSQL 10 or later - we will only talk about the historical
+perspective as history rather than having to use the old (somewhat clunky) support.
+</p>
+<p>
+There are three supported column types in PostgreSQL that handle key/value or JSON data:
+<ul>
+<li>
+<p>
+<a href="https://www.postgresql.org/docs/12/hstore.html" target="_blank">
+HSTORE</a> is column that can store keys and values.  It frankly looks like
+a column that is a PHP Array / Python dictionary without support for 
+nested data structures.
+<pre>
+pg4e=> SELECT 'a=>1,b=>2'::hstore;
+       hstore
+--------------------
+ "a"=>"1", "b"=>"2"
+(1 row)
+</pre>
+HSTORE stores key/value pairs efficiently and has good support for indexes
+to allow <b>WHERE</b> clauses to look <em>inside</em> the column efficiently.
+Indexes on HSTORE columns were easy to create and use (unlike the regular
+expression based indexes we manually created in the
+<a href="https://www.pg4e.com/code/gmane.py" target="_blank">gmane.py</a>
+code).
+</p>
+</li>
+<li>
+<p>
+<a href="https://www.postgresql.org/docs/9.3/functions-json.html" target="_blank">
+JSON</a> (from PostgreSQL 9.3) is best thought of as a pre-release of JSONB.  
+A <b>JSON</b> column was a glorified <b>TEXT</b> column with some really nifty built-in
+functions that kept application developers from "hacking up" their own JSON-like
+TEXT columns.  Things like JSON operators and functions were nicely carried
+over into JSONB bring the best of JSON forward.  This "layer of functions and indexes"
+on top of a TEXT column is a strategy that has been used by relational databases
+to quckly build and release JSON support to counter the move to NoSQL databases
+(more about that later).
+</p></li>
+<li>
+<p>
+<a href="https://www.postgresql.org/docs/current/functions-json.html" target="_blank">
+JSONB</a> completely new column type that stores the parsed JSON densely
+to save space, make indexing more effective, and make query / retrieval efficient.
+The "B" stands for "better", but I like to think of it as "binary", ackmowledging that
+it is no longer a big TEXT column that happens to contain a JSON string.
+</p>
+</li>
+</ul>
+<p>
+In a sense, the JSONB support in PostgreSQL is a merger of the efficient storage
+and indexing of the HSTORE merged with the rich operator
+and function support of JSON.
+</p>
+<p>
+But there are still some situations where HSTORE or JSON has an advantage over
+JSONB - you can research that question online.  But for most aplications, 
+just use JSONB even for simple key/value applications that might work well
+with HSTORE.  It is less to remember and there will be a lot of investment
+and performance tuning that goes into JSONB in future versions of PostgreSQL
+as it competes with all the NoSQL databases.
+</p>
+
+<b>References</b>
+<ul>
+    <li>
+<a href="https://www.citusdata.com/blog/2016/07/14/choosing-nosql-hstore-json-jsonb/" target="_blank">
+    When to use unstructured datatypes in Postgres–Hstore vs. JSON vs. JSONB</a> (Blog Post)
+    </li>
+<li>
+<a href="https://stackoverflow.com/questions/30800685/how-do-i-make-postgres-extension-available-to-non-superuser/59181721#59181721" target="_blank">
+How do I make Postgres extension like hstore available to non superuser</a>
+</li>
+<li>
+<a href="http://blog.shippable.com/why-we-moved-from-nosql-mongodb-to-postgressql" target="_blank">
+Why we Moved From NoSQL MongoDB to PostgreSQL</a> (Blog Post)
+</li>
+<li>
+<a href="https://www.linuxjournal.com/content/postgresql-nosql-database" target="_blank">
+ PostgreSQL, the NoSQL Database
+</a> (Linux Journal)
+</li>
+</ul>
+
+<h2 id="jsonb">JSONB in PostgreSQL
+<?php doNav('jsonb'); ?>
+</h2>
+<p>Now we <em>finally</em> get to talk about JSONB support in PostgreSQL. Like many of things
+with PostgreSQL, the lead up / background is more complex to understand than the support
+within PostgreSQL.
+</p>
 
 <h2 id="swapi">Sample Code: Loading JSON from an API
 <?php doNav('swapi'); ?>

@@ -1,6 +1,33 @@
 
 -- https://www.pg4e.com/lectures/06-JSON.sql
 
+DROP TABLE IF EXISTS jtrack;
+
+CREATE TABLE IF NOT EXISTS jtrack (id SERIAL, body JSONB);
+
+-- JSON import with copy, is odten easier with Python, but for 
+-- simple JSON without embedded newlines in the content, this is good enough.
+
+-- http://adpgtech.blogspot.com/2014/09/importing-json-data.html
+
+\copy jtrack (body) FROM 'library.json' WITH CSV QUOTE E'\x01' DELIMITER E'\x02';
+
+SELECT * FROM jtrack LIMIT 5;
+SELECT pg_typeof(body) FROM jtrack LIMIT 1;
+
+SELECT body->>'name' FROM JTRACK LIMIT 5;
+
+-- Could we use parenthesis and cast to convert to text?
+SELECT pg_typeof(body->'name') FROM JTRACK LIMIT 1;
+SELECT pg_typeof(body->'name'::text) FROM JTRACK LIMIT 1;
+SELECT pg_typeof(body->'name')::text FROM JTRACK LIMIT 1;
+SELECT pg_typeof((body->'name')::text) FROM JTRACK LIMIT 1;
+
+-- Yes we could, but why even try?
+SELECT pg_typeof(body->>'name') FROM JTRACK LIMIT 1;
+
+-- Pull data from an API
+
 -- wget https://www.pg4e.com/code/swapi.py
 -- wget https://www.pg4e.com/code/myitils.py
 
@@ -8,6 +35,10 @@
 
 --- To restart the spider
 DROP TABLE IF EXISTS swapi CASCADE;
+
+CREATE TABLE IF NOT EXISTS swapi
+(id SERIAL, url VARCHAR(2048) UNIQUE, status INTEGER, body JSONB,
+created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ);
 
 SELECT url, status FROM SWAPI where URL like '%film%';
 

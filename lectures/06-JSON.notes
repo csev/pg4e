@@ -1,4 +1,21 @@
 
+-- https://stackoverflow.com/questions/30800685/how-do-i-make-postgres-extension-available-to-non-superuser
+
+\c pg4e
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";  
+ALTER EXTENSION "uuid-ossp" SET SCHEMA public;
+
+GRANT ALL ON ALL FUNCTIONS IN SCHEMA public TO pg4e_user_8087f; 
+ 
+
+CREATE EXTENSION IF NOT EXISTS "hstore";
+ALTER EXTENSION "hstore" SET SCHEMA public;
+
+\dn - List all schemas
+\dx - List all extensions
+\du - List users
+
 https://en.wikipedia.org/wiki/NoSQL
 
 https://www.theguardian.com/info/2018/nov/30/bye-bye-mongo-hello-postgres
@@ -6,8 +23,6 @@ https://www.theguardian.com/info/2018/nov/30/bye-bye-mongo-hello-postgres
 https://developer.olery.com/blog/goodbye-mongodb-hello-postgresql/
 
 http://blog.shippable.com/why-we-moved-from-nosql-mongodb-to-postgressql
-
-https://developer.olery.com/blog/goodbye-mongodb-hello-postgresql/
 
 https://www.3pillarglobal.com/insights/short-history-databases-rdbms-nosql-beyond
 
