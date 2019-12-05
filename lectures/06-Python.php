@@ -61,7 +61,7 @@ construct the SQL statements as strings in Python and send them to your PostgreS
 server.
 </p>
 <p>
-It is important to note that Python is just another client like pgsql or pgadmin.
+It is important to note that Python is just another client like psql or pgadmin.
 It makes a network connection to the database server using login credentials and
 sends SQL commands and receives results from the server.
 </p>
@@ -121,7 +121,7 @@ and putting in your host, user, password, and database values.
 Normally, we don't actually send SQL commands using the <b>connection</b>. For that
 we generally get a <b>cursor</b>.  The cursor allows us to send an SQL command and then
 retrieve the results, perhaps in a loop. We can ue the cursor over and over in our
-program. You can think of the cursor as the equivalent of the "pgsql" command prompt
+program. You can think of the cursor as the equivalent of the "psql" command prompt
 but inside your Python program. You can have more than one cursor open at a time.
 <pre>
 cur = conn.cursor()
@@ -183,7 +183,7 @@ book in your database at one time.
 CREATE TABLE pg19337 (id SERIAL, body TEXT);
 </pre>
 <p>
-You can watch the progress of the load using <b>pgsql</b> in another window:
+You can watch the progress of the load using <b>psql</b> in another window:
 <pre>
 pg4e=&gt; select count(*) from pg19337;
  count
