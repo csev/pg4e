@@ -5,7 +5,7 @@
 # If needed:
 # https://www.pg4e.com/code/hidden-dist.py
 # copy hidden-dist.py to hidden.py
-# edit hidden.py and put in your credentials 
+# edit hidden.py and put in your credentials
 
 # python3 swapi.py
 # Pulls data from the swapi.co API and puts it into our swapi table
@@ -106,13 +106,12 @@ while True:
 
     # Look through all of the "linked data" for other urls to retrieve
     links = ['films', 'species', 'vehicles', 'starships', 'characters']
-    for link in links: 
+    for link in links:
         stuff = js.get(link, None)
-        if not isinstance(stuff, list ) : continue
+        if not isinstance(stuff, list) : continue
         for item in stuff:
             sql = 'INSERT INTO swapi (url) VALUES ( %s ) ON CONFLICT (url) DO NOTHING;';
             myutils.doQuery(cur, sql, (item, ))
-            conn.commit()
 
     many = many - 1
     if count % 25 == 0 :
