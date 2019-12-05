@@ -40,6 +40,13 @@ function doNav($position) {
 <p>
 JSON is a very common format for storing and transmitting structured data <em>between</em> programs.
 </p>
+<p><b>Additional Materials</b>
+<ul>
+<li><a href="06-JSON.sql" target="_blank">Sample SQL commands for this lecture</a></li>
+<li>URL for these notes: <a href="https://www.pg4e.com/lectures/06-JSON" target="_blank">
+https://www.pg4e.com/lectures/06-JSON</a></li>
+</ul>
+</p>
 <h2 id="serialize">Data Serialization
 <?php doNav('serialize'); ?>
 </h2>

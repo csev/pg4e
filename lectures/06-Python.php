@@ -40,6 +40,14 @@ In this lecture we will continue to look at ways to store complex data in Postgr
 create indexes on that data and then use the data.  We will look at how we connect to 
 a PostgreSQL database from within Python.
 </p>
+<p><b>Additional Materials</b>
+<ul>
+<li><a href="06-Python.sql" target="_blank">Sample SQL commands for this lecture</a></li>
+<li>URL for these notes: <a href="https://www.pg4e.com/lectures/06-Python" target="_blank">
+https://www.pg4e.com/lectures/06-Python</a></li>
+</ul>
+</p>
+
 
 <h2 id="psycopg2">Connecting Python and PostgreSQL
 <?php doNav('psycopg2'); ?>
