@@ -220,7 +220,7 @@ and dictionaries.
 <p>
 The
 <a href="https://docs.python.org/3/library/json.html#json.dumps" target="_blank">
-json.dumps()</a> library takes a python object and serializses it into JSON.
+json.dumps()</a> library takes a python object and serializes it into JSON.
 <pre>
 <a href="../code/json1.py">https://www.pg4e.com/code/json1.py</a>
 
