@@ -15,7 +15,8 @@ $sections = array(
 "psycopg2",
 "connect",
 "loadbook",
-"gmane"
+"gmane",
+"ranking",
 );
 
 function doNav($position) {
@@ -320,6 +321,53 @@ of your data and data source.  You start to build code, run it and when it
 fails, you adapt and improvise.  Eventually you transform the raw data into
 a pretty form in the database so the rest of your analysis works smoothly.
 </p>
+
+
+<h2 id="ranking">Ranking The Results
+<?php doNav('ranking'); ?>
+</h2>
+<p>
+The key benefit of a GIN / Natural Language index is to speed up the look up and retrieval
+of the rows selected in the <b>WHERE</b> clause.  When we have a set of rows, what we do with
+those rows is relatively inexpensive.
+</p>
+<p>
+Ranking of the "how well" a row (ts_vector) matches the query (ts_query) is something we compute
+directly from the data in the <b>ts_query</b> and the <b>ts_vector</b> in each row.  We can use different fields
+in the ranking computation than the fields we use in the <b>WHERE</b> clause.   The <b>WHERE</b> clause dominates
+the cost of a query as it decides how to gather the matching rows.
+<pre>
+SELECT id, subject, sender,
+  ts_rank(to_tsvector('english', body), to_tsquery('english', 'personal &amp; learning')) as ts_rank
+FROM messages
+WHERE to_tsquery('english', 'personal &amp; learning') @@ to_tsvector('english', body)
+ORDER BY ts_rank DESC;
+
+ id |          subject           |           sender           | ts_rank
+----+----------------------------+----------------------------+----------
+  4 | re: lms/vle rants/comments | Michael.Feldstein@suny.edu | 0.282352
+  5 | re: lms/vle rants/comments | john@caret.cam.ac.uk       |  0.09149
+  7 | re: lms/vle rants/comments | john@caret.cam.ac.uk       |  0.09149
+
+SELECT id, subject, sender,
+  ts_rank_cd(to_tsvector('english', body), to_tsquery('english', 'personal &amp; learning')) as ts_rank
+FROM messages
+WHERE to_tsquery('english', 'personal &amp; learning') @@ to_tsvector('english', body)
+ORDER BY ts_rank DESC;
+
+ id |          subject           |           sender           |  ts_rank
+----+----------------------------+----------------------------+-----------
+  4 | re: lms/vle rants/comments | Michael.Feldstein@suny.edu |  0.130951
+  5 | re: lms/vle rants/comments | john@caret.cam.ac.uk       | 0.0218605
+  7 | re: lms/vle rants/comments | john@caret.cam.ac.uk       | 0.0218605
+</pre>
+</p>
+<p>
+There are two at least two ranking functions <b>ts_rank</b> and <b>ts_rank_cd</b>.  There is also
+the ability to weight different elements of a <b>ts_query</b> that influence how the relative ranking
+is computed.
+</p>
+
 
 
 <footer style="margin-top: 50px;">

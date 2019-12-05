@@ -112,6 +112,7 @@ while True:
         if fail > 5 : break
         continue
 
+    # Accept with or without < >
     email = None
     x = re.findall('\nFrom: .* <(\S+@\S+)>\n', hdr)
     if len(x) == 1 :
@@ -126,7 +127,7 @@ while True:
             email = email.replace('<','')
 
     sent_at = None
-    y = re.findall('\Date: .*, (.*)\n', hdr)
+    y = re.findall('\nDate: .*, (.*)\n', hdr)
     if len(y) == 1 :
         tdate = y[0]
         tdate = tdate[:26]
@@ -140,7 +141,7 @@ while True:
             continue
 
     subject = None
-    z = re.findall('\Subject: (.*)\n', hdr)
+    z = re.findall('\nSubject: (.*)\n', hdr)
     if len(z) == 1 : subject = z[0].strip().lower()
 
     # Reset the fail counter

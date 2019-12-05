@@ -76,7 +76,6 @@ EXPLAIN ANALYZE SELECT body FROM pg19337  WHERE to_tsquery('english', 'tiny <-> 
 
 -- Making a language oriented inverted index in mail messages
 
--- https://www.postgresql.org/docs/current/textsearch-indexes.html
 CREATE INDEX messages_gin ON messages USING gin(to_tsvector('english', body));
 
 SELECT to_tsvector('english', body) FROM messages LIMIT 1;
@@ -89,7 +88,7 @@ FROM messages LIMIT 10;
 SELECT id, to_tsquery('english', 'easier') @@ to_tsvector('english', body)
 FROM messages LIMIT 10;
 
---- Extract from the headers and make a new column
+--- Extract from the headers and make a new column for display purposes
 ALTER TABLE messages ADD COLUMN sender TEXT;
 UPDATE messages SET sender=substring(headers, '\nFrom: [^\n]*<([^>]*)');
 
@@ -99,13 +98,15 @@ WHERE to_tsquery('english', 'monday') @@ to_tsvector('english', body) LIMIT 10;
 EXPLAIN ANALYZE SELECT subject, sender FROM messages
 WHERE to_tsquery('english', 'monday') @@ to_tsvector('english', body);
 
--- We did not make a Spainish index
+-- We did not make a Spanish index
 EXPLAIN ANALYZE SELECT subject, sender FROM messages
 WHERE to_tsquery('spanish', 'monday') @@ to_tsvector('spanish', body);
 
 DROP INDEX messages_gin;
 CREATE INDEX messages_gist ON messages USING gist(to_tsvector('english', body));
 DROP INDEX messages_gist;
+
+---
 
 SELECT subject, sender FROM messages
 WHERE to_tsquery('english', 'monday') @@ to_tsvector('english', body);
@@ -119,6 +120,7 @@ WHERE to_tsquery('english', 'personal & learning') @@ to_tsvector('english', bod
 SELECT id, subject, sender FROM messages
 WHERE to_tsquery('english', 'learning & personal') @@ to_tsvector('english', body);
 
+-- Both words but in order
 SELECT id, subject, sender FROM messages
 WHERE to_tsquery('english', 'personal <-> learning') @@ to_tsvector('english', body);
 
