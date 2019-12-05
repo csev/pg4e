@@ -91,7 +91,7 @@ of collections.
 In order to move structured data between applications, we need a "language independent" syntax to move the data.
 If for example, we want to send a dictionary from Python to PHP we would take the following steps:
 <ol>
-<li>Within Python, we would convert the dictonary to this "independent format"
+<li>Within Python, we would convert the dictionary to this "independent format"
 (<a href="https://en.wikipedia.org/wiki/Serialization" target="_blank">serialization</a>)
  and write it to a file.
 <li>Within PHP we would read the file and convert it to an associative array
