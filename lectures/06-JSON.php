@@ -396,7 +396,7 @@ with HSTORE.  It is less to remember and there will be a lot of investment
 and performance tuning that goes into JSONB in future versions of PostgreSQL
 as it competes with all the NoSQL databases.
 </p>
-
+<p>
 <b>References</b>
 <ul>
     <li>
@@ -417,6 +417,7 @@ Why we Moved From NoSQL MongoDB to PostgreSQL</a> (Blog Post)
 </a> (Linux Journal)
 </li>
 </ul>
+</p>
 
 <h2 id="jsonb">JSONB in PostgreSQL
 <?php doNav('jsonb'); ?>
@@ -425,23 +426,96 @@ Why we Moved From NoSQL MongoDB to PostgreSQL</a> (Blog Post)
 with PostgreSQL, the lead up / background is more complex to understand than the support
 within PostgreSQL.
 </p>
+<p>
+In this section, we will be going back to our music data except we will now be using
+<a href="../code/library.jstxt" target="_blank">JSON data</a>.  If you are interested,
+you can see the 
+<a href="../code/librarytojson.py">Python code</a> 
+which is used to convert the original 
+<a href="../code/Library.xml" target="_blank">XML data</a> is 
+converted to JSON format.
+<pre>
+{"name": "Another One Bites The Dust", "artist": "Queen", "album": "Greatest Hits", "count": 55, "rating": 100, "length": 217103}
+{"name": "Beauty School Dropout", "artist": "Various", "album": "Grease", "count": 48, "rating": 100, "length": 239960}
+{"name": "Circles", "artist": "Bryan Lee", "album": "Blues Is", "count": 54, "rating": 60, "length": 355369}
+</pre>
+</p>
+<p>
+Separately, we will go over a detailed walkthrough of
+<a href="06-JSON.sql">SQL statements</a> using JSONB, so we will just show some of the highlights here.
+</p>
+<p>
+We will create a table and import the above JSON file into the table as follows:
+<pre>
+CREATE TABLE IF NOT EXISTS jtrack (id SERIAL, body JSONB);
+
+\copy jtrack (body) FROM 'library.jstxt' WITH CSV QUOTE E'\x01' DELIMITER E'\x02';
+</pre>
+The <b>\copy</b> command above is somewhat inelegant but it got our data in with a single
+command.  In the 
+<a href="#swapi">next section</a> of these notes, we will insert our JSON data using
+Python which gives us a lot more flexibility.
+</p>
+<p>
+When using JSONB it is important to know the types of data and use the cast (::) operator
+where appropriate.  You can extract field data from the JSON using queries that use the "retrieve field
+and convert from jsonb to text" operator (-&gt;&gt;).
+<pre>
+SELECT (body-&gt;&gt;'count')::int FROM jtrack WHERE body-&gt;&gt;'name' = 'Summer Nights';
+</pre>
+</p>
+<p>
+You can query JSONB fields by comparing them to other JSONB documents or document fragments
+using the contains (@&gt;) operator.
+<pre>
+SELECT (body-&gt;&gt;'count')::int FROM jtrack WHERE body @&gt; '{"name": "Summer Nights"}';
+</pre>
+</p>
+<p>
+You can check to see if a JSONB document contains a key:
+<pre>
+SELECT COUNT(*) FROM jtrack WHERE body ? 'favorite';
+</pre>
+</p>
+<p>
+You can use JSONB expressions most anywhere you can use a column in your SQL,
+making sure to cast the results where appropriate.
+<pre>
+SELECT body-&gt;&gt;'name' AS name FROM jtrack ORDER BY (body-&gt;&gt;'count')::int DESC;
+</pre>
+</p>
+<h3>Indexes</h3>
+<p>
+Part of the benefit of using JSONB is the way you can easily add indexes to the whole column
+or portions of the column using BTREE, HASH, Gin and other types of PostgresSQL indexes:
+<pre>
+CREATE INDEX jtrack_btree ON jtrack USING BTREE ((body-&gt;&gt;'name'));
+CREATE INDEX jtrack_gin ON jtrack USING gin (body);
+CREATE INDEX jtrack_gin_path_ops ON jtrack USING gin (body jsonb_path_ops);
+</pre>
+We will look at the kinds of <b>WHERE</b> clauses that make use of the 
+various indexes.
+</p>
+<p>
+<b>References</b>
+<ul>
+<li>
+<a href="https://www.postgresql.org/docs/current/functions-json.html" target="_blank">
+JSON Functions and Operators</a>
+</li>
+    <li>
+<a href="https://bitnine.net/blog-postgresql/postgresql-internals-jsonb-type-and-its-indexes/" target="_blank">
+    PostgreSQL internals: JSONB type and its indexes</a> (Blog Post)
+    </li>
+</li>
+</ul>
+</p>
+
 
 <h2 id="swapi">Sample Code: Loading JSON from an API
 <?php doNav('swapi'); ?>
 </h2>
 <p>JSON in PostgreSQL</p>
-
-https://bitnine.net/blog-postgresql/postgresql-internals-jsonb-type-and-its-indexes/
-
-https://www.postgresql.org/docs/current/functions-json.html
-
-@> 	jsonb 	Does the left JSON value contain the right JSON path/value entries at the top level? 	'{"a":1, "b":2}'::jsonb @> '{"b":2}'::jsonb
-<@ 	jsonb 	Are the left JSON path/value entries contained at the top level within the right JSON value? 	'{"b":2}'::jsonb <@ '{"a":1, "b":2}'::jsonb
-? 	text 	Does the string exist as a top-level key within the JSON value? 	'{"a":1, "b":2}'::jsonb ? 'b'
-?| 	text[] 	Do any of these array strings exist as top-level keys? 	'{"a":1, "b":2, "c":3}'::jsonb ?| array['b', 'c']
-?& 	text[] 	Do all of these array strings exist as top-level keys? 	'["a", "b"]'::jsonb ?& array['a', 'b']
-|| 	jsonb
-
 
 <br clear="all"/>
 <footer style="margin-top: 50px;">
