@@ -61,8 +61,8 @@ In order to connect to
 <pre>
 $ python3
 Python 3.6.0 (v3.6.0:41df79263a11, Dec 22 2016, 17:23:13)
->>> import psycopg2
->>>
+&gt;&gt;&gt; import psycopg2
+&gt;&gt;&gt;
 </pre>
 If the <b>import</b> fails you need to install the library using a command like:
 <pre>

@@ -515,7 +515,119 @@ JSON Functions and Operators</a>
 <h2 id="swapi">Sample Code: Loading JSON from an API
 <?php doNav('swapi'); ?>
 </h2>
-<p>JSON in PostgreSQL</p>
+<p>
+In this sample code walkthrough, we will use the
+<a href="https://swapi.co/" target="_blank">Star Wars API</a>
+to spider a JSON data source, and pull it into a database and then work
+with the data using SQL.
+</p>
+and parse the contents of the book and put it into a PostgreSQL database and set up
+a full-text GIN index on the book text.</p>
+<p><b>Download these files</b></p>
+<ul>
+<li><a href="https://www.pg4e.com/code/swapi.py" target="_blank">
+https://www.pg4e.com/code/swapi.py</a></li>
+<li><a href="https://www.pg4e.com/code/myutils.py"  target="_blank">
+https://www.pg4e.com/code/myutils.py</a></li>
+</ul>
+<p>Make sure the <b>hidden.py</b> is set up and has your credentials.</p>
+
+<p>
+The database for this program is more complex.  In addition to a column
+for the JSON data we have fields to help make our data spidering process
+"smart" so it only retrieves a particular document once.
+<pre>
+CREATE TABLE IF NOT EXISTS swapi (
+  id SERIAL, body JSONB, 
+  url VARCHAR(2048) UNIQUE, status INTEGER,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), 
+  updated_at TIMESTAMPTZ
+);
+</pre>
+This application works somewhat like Google search because each time
+it retrieves a JSON document, it scans the document for urls to other
+documents available from the API, and adds these URLs to the database 
+in a state of "to be retrieved".  The program runs over and over,
+reading an unread URL, parsing the data, inserting it into the database
+and checking for new URLs in the document and iterating.
+</p>
+<p>
+If you run the program long enough, it finds all of the documents 
+available in this API (turns out to be just over 200) and stops.
+As you are only retrieving a few hundred documents, you 
+probablly will not run into the 
+<a href="https://swapi.co/documentation" target="_blank">
+rate limit</a> of this API.  If you do you will have to wait a bit
+and restart the program.
+</p>
+<p>
+This is an example of the first run with an empty database:
+<pre>
+python3 swapi.py
+
+INSERT INTO swapi (url) VALUES ( 'https://swapi.co/api/films/1/' )
+INSERT INTO swapi (url) VALUES ( 'https://swapi.co/api/species/1/' )
+INSERT INTO swapi (url) VALUES ( 'https://swapi.co/api/people/1/' )
+Total=3 todo=3 good=0 error=0
+How many documents:10
+200 2201 https://swapi.co/api/films/1/ 2
+200 1883 https://swapi.co/api/species/1/ 34
+200 702 https://swapi.co/api/people/1/ 39
+200 505 https://swapi.co/api/species/5/ 41
+200 661 https://swapi.co/api/species/3/ 40
+200 750 https://swapi.co/api/species/2/ 39
+200 473 https://swapi.co/api/species/4/ 38
+200 478 https://swapi.co/api/vehicles/4/ 37
+200 433 https://swapi.co/api/vehicles/6/ 36
+200 443 https://swapi.co/api/vehicles/7/ 35
+How many documents:
+
+Loaded 10 documents, 8529 characters
+Total=45 todo=35 good=10 error=0
+Closing database connection...
+</pre>
+At the end of this run, it has retrieved ten documents and has 35 documents
+on the to-do list.
+</p>
+<p>
+Any time during or after the run, you can use <b>psql</b>
+in another window and check the progress of the job using commands
+like:
+<pre>
+-- How many urls total?
+SELECT COUNT(url) FROM swapi;
+
+-- What are the unretrieved URLs?
+SELECT url FROM swapi WHERE status != 200;
+</pre>
+<p>
+Since it is a "spider" and restartable, you can run the
+program again and it will pick up where it left off and
+work on retrieving documents on the "to do list".
+<pre>
+python3 swapi.py
+
+Total=45 todo=35 good=10 error=0
+How many documents:5
+200 524 https://swapi.co/api/vehicles/8/ 34
+200 560 https://swapi.co/api/starships/2/ 33
+200 574 https://swapi.co/api/starships/3/ 32
+200 533 https://swapi.co/api/starships/5/ 31
+200 581 https://swapi.co/api/starships/9/ 30
+How many documents:
+
+Loaded 5 documents, 2772 characters
+Total=45 todo=30 good=15 error=0
+Closing database connection...
+</pre>
+<p>
+When you have all 200+ documents loaded, when you run the spider
+it will just shut down because it has nothing on its to-do list.
+</p>
+<p>
+At that point, we start playing with our retrieved JSON 
+using SQL.
+</p>
 
 <br clear="all"/>
 <footer style="margin-top: 50px;">
