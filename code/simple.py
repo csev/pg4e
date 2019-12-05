@@ -10,7 +10,7 @@
 
 # python3 simple.py
 
-# To check the results, use pgsql and look at the
+# To check the results, use psql and look at the
 # pythonfun table
 
 import psycopg2
