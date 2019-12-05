@@ -5,12 +5,12 @@ DROP TABLE IF EXISTS jtrack CASCADE;
 
 CREATE TABLE IF NOT EXISTS jtrack (id SERIAL, body JSONB);
 
--- JSON import with copy, is odten easier with Python, but for 
--- simple JSON without embedded newlines in the content, this is good enough.
+-- JSON import with copy, is often easier with Python, but for 
+-- simple JSON without embedded newlines in the JSON values, this is good enough.
 
 -- http://adpgtech.blogspot.com/2014/09/importing-json-data.html
 
--- https://ww.wpg4e.com/code/library.jstext
+-- wget https://www.pg4e.com/code/library.jstxt
 
 \copy jtrack (body) FROM 'library.jstxt' WITH CSV QUOTE E'\x01' DELIMITER E'\x02';
 
@@ -41,6 +41,7 @@ SELECT COUNT(*) FROM jtrack WHERE body->>'name' = 'Summer Nights';
 
 -- Ask if the body contains a key/value pair
 SELECT COUNT(*) FROM jtrack WHERE body @> '{"name": "Summer Nights"}';
+SELECT COUNT(*) FROM jtrack WHERE body @> ('{"name": "Summer Nights"}'::jsonb);
 
 -- Adding something to the JSONB column
 UPDATE jtrack SET body = body || '{"favorite": "yes"}' WHERE (body->'count')::int > 200;
@@ -95,9 +96,11 @@ DROP TABLE IF EXISTS jtrack CASCADE;
 
 -- Pull data from a JSON API
 
+-- https://swapi.co/
+
 -- wget https://www.pg4e.com/code/swapi.py
 -- wget https://www.pg4e.com/code/myutils.py
--- wget https://www.pg4e.com/code/hidden-dist.py
+-- Make sure hidden.py is set up
 
 -- python3 swapi.py
 
@@ -113,9 +116,11 @@ SELECT url, status FROM SWAPI where URL like '%film%';
 
 SELECT COUNT(url) FROM swapi;
 
-SELECT url FROM swapi WHERE status != 200;
--- Load complete...
+-- While load is happening :)
+SELECT url FROM swapi WHERE status = 200;
+SELECT url FROM swapi WHERE status IS NULL;
 
+-- Load completed...
 SELECT body->>'url' FROM swapi LIMIT 1;
 
 SELECT body->>'url' FROM swapi WHERE body @> '{"director": "George Lucas"}';
@@ -175,6 +180,7 @@ SELECT body->>'url', body->>'name' FROM swapi WHERE body @> '{"type": "species"}
 EXPLAIN SELECT body->>'url', body->>'name' FROM swapi WHERE body @> '{"type": "species"}'  LIMIT 10;
 
 -- The payoff
-EXPLAIN SELECT url FROM swapi WHERE body @> '{"director": "George Lucas", "type": "films"}';
+SELECT url FROM swapi WHERE body @> '{"type": "films"}' AND NOT(body @> '{"director": "George Lucas"}');
+EXPLAIN SELECT url FROM swapi WHERE body @> '{"type": "films"}' AND NOT(body @> '{"director": "George Lucas"}');
 
 
