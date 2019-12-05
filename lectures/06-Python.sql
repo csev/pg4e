@@ -144,7 +144,16 @@ WHERE to_tsquery('english', 'I <-> think') @@ to_tsvector('english', body);
 SELECT id, subject, sender FROM messages
 WHERE phraseto_tsquery('english', 'I think') @@ to_tsvector('english', body);
 
+-- websearch_to_tsquery is in PostgreSQL > 11
+SELECT id, subject, sender FROM messages
+WHERE to_tsquery('english', '! personal & learning') @@ to_tsvector('english', body);
+
+SELECT id, subject, sender FROM messages
+WHERE websearch_to_tsquery('english', '-personal learning') @@ to_tsvector('english', body)
+LIMIT 10;
+
 -- https://www.postgresql.org/docs/12/textsearch-controls.html#TEXTSEARCH-RANKING
+
 SELECT id, subject, sender,
   ts_rank(to_tsvector('english', body), to_tsquery('english', 'personal & learning')) as ts_rank
 FROM messages
@@ -157,15 +166,6 @@ SELECT id, subject, sender,
 FROM messages
 WHERE to_tsquery('english', 'personal & learning') @@ to_tsvector('english', body)
 ORDER BY ts_rank DESC;
-
-SELECT id, subject, sender FROM messages
-WHERE to_tsquery('english', '! personal & learning') @@ to_tsvector('english', body);
-
--- websearch_to_tsquery is in PostgreSQL > 11
-SELECT id, subject, sender FROM messages
-WHERE websearch_to_tsquery('english', '-personal learning') @@ to_tsvector('english', body)
-LIMIT 10;
-
 
 -- Indexing within structured data - Email messages from address (advanced)
 
