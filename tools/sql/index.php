@@ -40,7 +40,10 @@ $oldsettings = Settings::linkGetAll();
 
 $assn = Settings::linkGet('exercise');
 
+$tunnel = $LAUNCH->link->settingsGet('tunnel');
+
 $custom = LTIX::ltiCustomGet('exercise');
+
 if ( $assn && isset($assignments[$assn]) ) {
     // Configured
 } else if ( strlen($custom) > 0 && isset($assignments[$custom]) ) {
@@ -89,8 +92,14 @@ SettingsForm::button();
 $OUTPUT->exitButton();
 echo('</div>');
 
+$tunnelopts = array(
+    "no" => __('Not using a tunnel'),
+    "yes" => __('Using a tunnel'),
+);
+
 SettingsForm::start();
 SettingsForm::select("exercise", __('Please select an assignment'),$assignments);
+SettingsForm::select("tunnel", __('Are you using a tunnel'),$tunnelopts);
 SettingsForm::dueDate();
 SettingsForm::done();
 SettingsForm::end();

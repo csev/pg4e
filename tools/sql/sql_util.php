@@ -199,6 +199,7 @@ function pg4e_user_db_load($LAUNCH) {
 function pg4e_user_db_form($LAUNCH) {
     global $OUTPUT, $pdo_database, $pdo_host, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
+        $tunnel = $LAUNCH->link->settingsGet('tunnel');
         if ( ! $pdo_host || strlen($pdo_host) < 1 ) {
                 echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
     }
@@ -233,6 +234,20 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input ty
 </p>
 <p>
 Access commands:
+<?php if ( $tunnel == 'yes' ) { ?>
+<pre>
+Make sure you set up your port forwarding for port 5432 and then use the following commands:
+
+Command line:
+psql -h 127.0.0.1 -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
+
+
+Python Notebook:
+%load_ext sql
+%config SqlMagic.autocommit=False
+%sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@127.0.0.1/<?= htmlentities($pdo_database) ?>
+</pre>
+<?php } else { ?>
 <pre>
 Command line:
 psql -h <?= htmlentities($pdo_host) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
@@ -243,6 +258,7 @@ Python Notebook:
 %config SqlMagic.autocommit=False
 %sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@<?= htmlentities($pdo_host) ?>/<?= htmlentities($pdo_database) ?>
 </pre>
+<?php } ?>
 </p>
 <?php
 }
