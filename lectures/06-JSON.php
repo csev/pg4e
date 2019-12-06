@@ -528,8 +528,6 @@ In this sample code walkthrough, we will use the
 to spider a JSON data source, and pull it into a database and then work
 with the data using SQL.
 </p>
-and parse the contents of the book and put it into a PostgreSQL database and set up
-a full-text GIN index on the book text.</p>
 <p><b>Download these files</b></p>
 <ul>
 <li><a href="https://www.pg4e.com/code/swapi.py" target="_blank">
