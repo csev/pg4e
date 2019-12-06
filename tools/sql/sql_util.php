@@ -236,7 +236,7 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input ty
 Access commands:
 <?php if ( $tunnel == 'yes' ) { ?>
 <pre>
-Make sure you set up your port forwarding for port 5432 and then use the following commands:
+Make sure you are forwarding port 5432 to <?= htmlentities($pdo_host) ?> and then use the following commands:
 
 Command line:
 psql -h 127.0.0.1 -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>

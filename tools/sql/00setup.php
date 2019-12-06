@@ -74,7 +74,14 @@ echo('Status: <span id="status">'.$spinner.'</span>');
 echo("</pre>\n");
 echo("<p>To access this in a command line / terminal use:</p>\n");
 echo("<pre>\n");
+$tunnel = $LAUNCH->link->settingsGet('tunnel');
+if ( $tunnel == 'yes' ) {
+echo('Make sure your port 5432 is forwarded to <span id="server2">'.$spinner.'</span> and then:');
+echo("\n\n");
+echo('psql -h 127.0.0.1 -U <span id="user2">'.$spinner."</span>\n");
+} else {
 echo('psql -h <span id="server2">'.$spinner.'</span> -U <span id="user2">'.$spinner."</span>\n");
+}
 echo("</pre>\n");
 echo("<p id=\"access_delay\">It usually takes about a minute to create your database the first time...</p>\n");
 echo('<div id="access_instructions" style="display:none;">'."\n");
