@@ -9,94 +9,23 @@ WEEK 1 - FULL TEXT SEARCHES
 WEEK 2 - JSON / KEY-VALUE DATA
 ==============================
 
-https://stackoverflow.com/questions/18404055/index-for-finding-an-element-in-a-json-array
-
-JSON - Text + some functions.
-JSOB - Parsed objects - More awesome.
-@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
-
-With the new binary JSON data type jsonb, Postgres 9.4 introduced largely improved index options. You can now have a GIN index on a jsonb array directly:
-
-CREATE TABLE tracks (id serial, artists jsonb);
-CREATE INDEX tracks_artists_gin_idx ON tracks USING gin (artists);
-
-No need for a function to convert the array. This would support a query:
-
-SELECT * FROM tracks WHERE artists @> '[{"name": "The Dirty Heads"}]';
-
-@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
-
-Or you use the more specialized, non-default GIN operator class jsonb_path_ops for the index:
-
-CREATE INDEX tracks_artists_gin_idx ON tracks
-USING  gin (artists jsonb_path_ops);
-
-Same query.
-
-Currently jsonb_path_ops only supports the @> operator. But it's typically much smaller and faster. There are more index options, details in the manual.
-
-https://stackoverflow.com/questions/24006291/postgresql-return-result-set-as-json-array
-
-create table t (a int primary key, b text);
-
-insert into t values (1, 'value1');
-insert into t values (2, 'value2');
-insert into t values (3, 'value3');
-
-select row_to_json(row) from (select * from t) row;
-
-Store Types:
-HSTORE
-JSON
-JSONB
-
-
-Casting using :: or CAST(value AS type)
-https://stackoverflow.com/questions/15537709/what-does-do-in-postgresql
-https://stackoverflow.com/questions/5758499/double-colon-notation-in-sql
-
-Operators @>
-https://www.postgresql.org/docs/9.5/functions-json.html
-
-Contain
-
-'{"a":1, "b":2}'::jsonb @> '{"b":2}'::jsonb
-
-https://blog.hagander.net/json-field-constraints-228/
-https://www.postgresql.org/docs/9.5/datatype-json.html#JSON-INDEXING
-
-CREATE TABLE jsontable (j jsonb NOT NULL);
--- All of the keys - a bit of overkill
-CREATE INDEX j_idx ON jsontable USING gin(j jsonb_path_ops);
--- Just one key
 CREATE UNIQUE INDEX j_uuid_idx ON jsontable(((j->>'uuid')::uuid));
 CREATE INDEX idxgintags ON api USING gin ((jdoc -> 'tags'));
 ALTER TABLE jsontable ADD CONSTRAINT uuid_must_exist CHECK (j ? 'uuid');
 
-SELECT count(*) FROM cards WHERE data->>'finished' = 'true';
-
--> and --> operators
-
-jsonb_path_ops means index can only handle @>
-The technical difference between a jsonb_ops and a jsonb_path_ops GIN index is that
-jsonb_ops creates independent index items for each key and value in the data,
-while jsonb_path_ops creates index items only for each value in the data. 
-Basically, each jsonb_path_ops index item is a hash of the value and the
-key(s) leading to it.
-
-https://stackoverflow.com/questions/18404055/index-for-finding-an-element-in-a-json-array
-
-CREATE TABLE tracks (id serial, artists jsonb);
-CREATE INDEX tracks_artists_gin_idx ON tracks USING gin (artists);
-
-No need for a function to convert the array. This would support a query:
-
-SELECT * FROM tracks WHERE artists @> '[{"name": "The Dirty Heads"}]';
-
-@> being the new jsonb "contains" operator, which can use the GIN index. (Not for type json, only jsonb!)
-
 WEEK 3 - ELASTIC SEARCH
 =======================
+
+Data model as continuum
+Car model, fuel tank size, tank type, fuel type, 
+Sometimes new columns, and new tables and foreign keys are not the answer.
+Casandra, Elastic, Mongo
+
+Tags as application?
+
+ACID
+
+SQL strikes back
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html
 
