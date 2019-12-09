@@ -1,0 +1,4 @@
+This is *not* "practice - Use this to log into Coursera Labs to do your assignments
+
+This item will be your gateway to jupyter labs, where you can find access to a terminal as demonstrated in the course videos.   You will do your homework in this terminal but this is not an actual assignment itself - just a way to access the the system to login and do your assignments.
+

@@ -1,0 +1,4 @@
+Important: Getting Past the Coursera Firewall
+
+The Jupyter environemnt that we are using on Coursera is behind a firewall.  The database servers that you need to use are beyond the firewall so for you to access you databases, you will need to use the ssh command and "port forwarding" or you will never be able to connect to your database.  You will need to forward your traffic through a login server hosted at the University of Michigan.
+

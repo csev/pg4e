@@ -1,0 +1,11 @@
+How to Do Your Assignments
+
+At this point , you should have received your ssh credentials so that you can set up port forwarding.   You cannot do any of the homework unless you have port forwarding running in one of your terminal tabs in Coursera.
+If you log out and come back, here are the basic steps to get started doing your homework:
+Launch the Assignment in a tab in your browser - it will show you what you are to do for the assignment, and it will provide a link to check your assignment. 
+Then in another tab in your browser, go to "Week 1" and launch "Practice Programming Assignment: This is *not* "practice - Use this to log into Coursera Labs to do your assignments"*
+Then from Jupyter notebook,  launch a terminal in a third tab and set up the port forwarding as described in "Running PostgreSQL With SSH Port Forwarding In Coursera Labs"
+The launch a second terminal from Jupyter notebook in a fourth tab and run the psql command to the 127.0.0.1 host and run your SQL commands.
+* We can't remove the word "practice" from the Coursera User Interface.
+
+

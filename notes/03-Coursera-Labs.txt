@@ -1,0 +1,45 @@
+Running PostgreSQL In Coursera Labs
+Running PostgreSQL With SSH Port Forwarding In Coursera Labs
+For this course you will need a PostgreSQL client to enter your SQL commands and communicate with the PostgreSQL server that we will provide.  You will also need to access your PostgreSQL server from Python. Your server details will be a server, account, and password as follows:
+Server: 35.239.58.248
+User: postgres
+Password: EwhRrj1lviopNp0
+or
+Server: 35.239.58.248
+User: pg4e_user_9e123
+Password: pg4e_pass_e1234
+We provide a Coursera Labs Jupyter notebook for you to run the example code and do your assignments.  You can install all of the tools to do most of the homework for this course on your local computer and there are some brief notes on running this locally at the end of this document.
+The Coursera Labs notebooks run behind a firewall to keep you from accessing unauthorised servers.   Your Postgres servers run in Amazon and not inside Jupyter labs, so we need to build a "small virtual private network" to make it so your Coursera Labs terminal can access your server using a technique called "ssh port forwarding" or "ssh tunnelling" as we are opening a small "tunnel" through a firewall just for our traffic. 
+If there was no firewall you could access pg4e database in the above server using the following command and entering your password.  
+psql -h 35.239.58.248 -U pg4e_user_93123 pg4e  
+But if you are behind a firewall, this won't work.  Luckily, the entire University of Michigan campus is authorized and so using ssh port forwarding we can bounce packets through the University of Michigan. 
+Activating your Linux Account at UM
+ First you need to get access to the University of Michigan Linux login servers by requesting an account:  
+https://ifsprovisioning.its.umich.edu/ifs_storage/request  
+It takes few hours for your account to be active and it happens between 8-5 on weekdays in Eastern time - so make the request and be patient.  Ignore all the links to "MFile" on that page.   Mfile is another UM service available to you but we won't be using it.  
+You will know that your account is activated when you can log in to the Linux Server with your password:  
+ssh csev@login.itd.umich.edu  
+Use your account instead of "csev".  This login uses your UMich password. Until your account is active this will simply refuse to log you in.  It is a Linux system, you can logout by typing "logout".
+Port Forwarding through University of Michigan  
+Now we will go into Coursera and find the "ungraded" assignment called "Access to Terminal" - you will use this throughout the course to do your homework.   Launch the Jupyter Notebook and open two terminals in two separate tabs.  Note that you might want to check the "Running" tab in your notebook in case you already have running terminals.  If you already have terminals - just use those terminals - don't start new ones.  In one of the tabs/terminals, type the following command:  
+ssh -4 -L 5432:35.239.58.248:5432 csev@login.itd.umich.edu  
+Use your server IP address and your account instead of "csev". The 5432 are the port numbers that are used for PostgreSQL traffic.  You will be asked for your UMich password and be logged into login.itd.umich.edu.  It is a bit weird, but the port forwarding is a side-effect of being logged in.  You will leave this terminal logged in as long as you want to use port forwarding.  
+If you log out of your UMich account or destroy a Jupyter window, port forwarding will stop working.  Once port forwarding is up and running, switch to the other tab and type the following command:  
+psql -h 127.0.0.1 -U pg4e_user_93123 pg4e  
+Enter your PostgresSQL password.  What is happening is quite simple.  Your first tab is "listening" on port 5432 on the local computer (inside Coursera). When it gets a connection, it tells login.itd.umich.edu to open a connection to your server and then ssh simply passes all data back and forth through the ssh tunnel.  To take the tunnel down, either log out from the UMich login server in the tunnel tab using "logout" or close the terminal from Jupyter.  
+Interestingly, if you close the tab and don't log out, Jupyter will keep it running for a while.  Eventually it will get shut down if you don't use it for a while.  You can always check to see what terminals are running by looking at the "Running" tab in the notebook.
+Running PostgreSQL on your Computer
+You can do the SQL homework for this class from any PostgreSQL client.  You can install the "pgsql" command or a UI-based tool like "pgadmin" and enter the server information in the command line on whatever system you are using. 
+You don't need a PostgreSQL server on your computer, just the PostgreSQL client.  Google things like "install pgsql on macos" to get some instructions.  There are so many options and variations that we are not going to attempt to write documentation for every option.
+Adding PostgreSQL to Python
+Some of the assignments will talk to the PostgreSQL server from Python. You can check to see if it is already installed as follows:
+$ python3
+Python 3.6.0 (v3.6.0:41df79263a11, Dec 22 2016, 17:23:13)
+>>> import psycopg2
+>>>  
+If the import works, you are all set.  If you need to install it, you need to go into whatever Python environment you normally use and do something like:
+pip install psycopg2    # (or pip3)
+Again, there are so many different environments, that we won't try to build instructions for every situation.  Search for something like "install psycopg2 on macos". 
+
+ 
+
