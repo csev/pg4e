@@ -1,0 +1,26 @@
+The Easy Way - PythonAnywhere
+If you don't want to do any set up or alteration of your personal environment, there is a very nice, free online system setup with everything you need pre-installed at www.pythonanywhere.com.  Just make a free account, login and then start a bash shell and all the sample psql commands will work.  
+Do not upgrade to the pay pythonanywhere account just because we are using PostgreSQL - that upgrade would get you your own server.   We are separately providing the server for you and so the free account is quite sufficient.
+DIY: Install software on your computer
+In this course you will need a system where you need the following setup:
+Install a PostgreSQL client.  This can be psql at the command line or pgadmin as an application on your computer.  The pgadmin too is much more powerful and pretty - but all of the course examples will be don in psql as it is the least common denominator.
+Have access to python3 and pip3 and have the psycopg2 python extension installed
+Have access to curl, wget or another way to download files from the web and get them into your environment.
+We will have abbreviated instructions for each of the options above but feel free to just use a search engine and type "how to install pgsql on macos".  Personal environments have a wide range of current configurations and there is no way we can great a "magic script" that works in all cases - so in many situations you are on your own once we give you a goal.
+Installing psql
+On Macos and WIndows, it seems liek the easiest way to get pgsql is to do a full install including the server https://www.postgresql.org/download/ - this stack overflow article talks about how to use brew on a Mac to install only pgsql.
+On linux you can install just the psql client using these instructions.
+Installing pgadmin
+Installing pgadmin is simpler at https://www.pgadmin.org/download/
+Installing psycopg2
+First check if psycopg2 is already installed using the python interpreter:
+python3
+>>> import psycopg2
+If this works, you are good.   If you need to install it, it depends whot package manager (i.e. like conda) or virtual environment you are using.  The command to do the installation is usually:
+pip3 install psycopg2
+After it is installed you can again check if it works.
+
+Installing curl or wget 
+
+This is best done just by searching for "How to install wget on macos"
+

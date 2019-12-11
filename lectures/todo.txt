@@ -27,6 +27,8 @@ ACID
 
 SQL strikes back
 
+https://blog.patricktriest.com/text-search-docker-elasticsearch/
+
 https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html
 
 
