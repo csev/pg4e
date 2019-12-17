@@ -52,7 +52,7 @@ if ( isset($_SESSION['id']) ) {
         $set->addRight(htmlentities($_SESSION['displayname']), $submenu);
     }
 } else {
-    $set->addLeft('Autograder', $T.'store');
+    // $set->addLeft('Autograder', $T.'store');
     // $set->addRight('Login', $T.'login.php');
 }
 $set->addRight('Instructor', 'http://www.dr-chuck.com');
