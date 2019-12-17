@@ -198,6 +198,17 @@ function pg4e_user_db_load($LAUNCH) {
         }
     }
 
+    // Store in the database...
+    $json = $LAUNCH->result->getJSON();
+    $new = json_encode(array(
+        'pdo_host' => $pdo_host,
+        'pdo_port' => $pdo_port,
+        'pdo_database' => $pdo_database,
+        'pdo_user' => $pdo_user,
+        'pdo_pass' => $pdo_pass,
+    ));
+    if ( $new != $json ) $LAUNCH->result->setJSON($new);
+
     if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) {
         $_SESSION['pdo_host'] = $pdo_host;
         $_SESSION['pdo_port'] = $pdo_port;
