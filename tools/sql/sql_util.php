@@ -149,10 +149,11 @@ function pg4e_unlock($LAUNCH) {
 
 function pg4e_user_db_load($LAUNCH) {
     global $CFG;
-    global $pdo_database, $pdo_host, $pdo_user, $pdo_pass, $info, $pdo_connection;
+    global $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     if ( U::get($_POST,'default') ) {
                 unset($_SESSION['pdo_host']);
+                unset($_SESSION['pdo_port']);
                 unset($_SESSION['pdo_database']);
                 unset($_SESSION['pdo_user']);
                 unset($_SESSION['pdo_pass']);
@@ -163,10 +164,27 @@ function pg4e_user_db_load($LAUNCH) {
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
 
-    $pdo_database = U::get($_POST, 'pdo_database',U::get($_SESSION,'pdo_database', 'pg4e') );
-    $pdo_host = U::get($_POST, 'pdo_host', U::get($_SESSION,'pdo_host'));
-    $pdo_user = U::get($_POST, 'pdo_user', U::get($_SESSION,'pdo_user', getDbUser($unique)) );
-    $pdo_pass = U::get($_POST, 'pdo_pass', U::get($_SESSION,'pdo_pass', getDbPass($unique)) );
+    $pdo_database = U::get($_POST, 'pdo_database');
+    $pdo_host = U::get($_POST, 'pdo_host');
+    $pdo_port = U::get($_POST, 'pdo_port');
+    $pdo_user = U::get($_POST, 'pdo_user');
+    $pdo_pass = U::get($_POST, 'pdo_pass');
+
+    if ( $pdo_database && $pdo_host  && $pdo_user && $pdo_pass ) {
+        setcookie("pdo_database", $pdo_database, time()+31556926 ,'/');
+        setcookie("pdo_host", $pdo_host, time()+31556926 ,'/');
+        setcookie("pdo_port", $pdo_port, time()+31556926 ,'/');
+        setcookie("pdo_user", $pdo_user, time()+31556926 ,'/');
+        setcookie("pdo_pass", $pdo_pass, time()+31556926 ,'/');
+    } else {
+        $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_COOKIE, 'pdo_database', 'pg4e'));
+        $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_COOKIE, 'pdo_host'));
+        $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port'));
+        $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_COOKIE, 'pdo_user', getDbUser($unique)));
+        $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_COOKIE, 'pdo_pass', getDbPass($unique)));
+    }
+
+    if ( strlen($pdo_port) < 1 ) $pdo_port = '5432';
 
     if ( ! $pdo_host && isset($CFG->pg4e_api_key) ) {
         $retval = pg4e_request($project, 'info/pg');
@@ -174,18 +192,22 @@ function pg4e_user_db_load($LAUNCH) {
         if ( is_object($retval) ) {
             $info = pg4e_extract_info($retval);
              if ( isset($info->ip) ) $pdo_host = $info->ip;
+             if ( isset($info->port) ) $pdo_port = $info->port;
             $_SESSION['pdo_host'] = $pdo_host;
+            $_SESSION['pdo_port'] = $pdo_port;
         }
     }
 
     if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) {
         $_SESSION['pdo_host'] = $pdo_host;
+        $_SESSION['pdo_port'] = $pdo_port;
         $_SESSION['pdo_database'] = $pdo_database;
         $_SESSION['pdo_user'] = $pdo_user;
         $_SESSION['pdo_pass'] = $pdo_pass;
     }
 
-    $pdo_connection = "pgsql:host=$pdo_host;dbname=$pdo_database";
+    if ( strlen($pdo_port) < 1 ) $pdo_port = 5432;
+    $pdo_connection = "pgsql:host=$pdo_host;port=$pdo_port;dbname=$pdo_database";
     
 
     if ( ! $pdo_host && ! $LAUNCH->user->instructor ) {
@@ -198,25 +220,45 @@ function pg4e_user_db_load($LAUNCH) {
 
 function pg4e_user_db_form($LAUNCH) {
 	global $CFG;
-    global $OUTPUT, $pdo_database, $pdo_host, $pdo_user, $pdo_pass, $info, $pdo_connection;
+    global $OUTPUT, $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
         $tunnel = $LAUNCH->link->settingsGet('tunnel');
         if ( ! $pdo_host || strlen($pdo_host) < 1 ) {
                 echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
     }
+    if ( strlen($pdo_port) < 1 ) $pdo_port = "5432";
 ?>
 <form name="myform" method="post" >
 <p>
 <?php if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) { ?>
-Host: <input type="text" name="pdo_host" value="<?= htmlentities($pdo_host) ?>"><br/>
-Database: <input type="text" name="pdo_database" value="<?= htmlentities($pdo_database) ?>"><br/>
+Host: <input type="text" name="pdo_host" value="<?= htmlentities($pdo_host) ?>" id="pdo_host" onchange="setPGAdminCookies();"><br/>
+Port: <input type="text" name="pdo_port" value="<?= htmlentities($pdo_port) ?>" id="pdo_port" onchange="setPGAdminCookies();"><br/>
+Database: <input type="text" name="pdo_database" value="<?= htmlentities($pdo_database) ?>" id="pdo_database" onchange="setPGAdminCookies();"><br/>
 User: <input type="text" name="pdo_user" value="<?= htmlentities($pdo_user) ?>"><br/>
 Password: <span id="pass" style="display:none"><input type="text" name="pdo_pass" id="pdo_pass" value="<?= htmlentities($pdo_pass) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($pdo_pass) ?>');return false;">copy</a>) <br/>
 </pre>
+<script>
+function setPGAdminCookies() {
+    var host = $("#pdo_host").val();
+    var port = $("#pdo_port").val();
+    var database = $("#pdo_database").val();
+    console.log(port, host, database);
+    var now = new Date();
+    var time = now.getTime();
+    var expireTime = time + 1000*36000;
+    now.setTime(expireTime);
+
+    document.cookie = 'pg4e_desc='+database+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
+    document.cookie = 'pg4e_port='+port+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
+    document.cookie = 'pg4e_host='+host+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
+}
+</script>
 <?php } else { ?>
 <p>
 <pre>
 Host: <?= $pdo_host ?>
+
+Port: <?= $pdo_port ?>
 
 Database: <?= $pdo_database ?>
 
@@ -239,24 +281,24 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input ty
 or run the <b>psql</b> client in your command line:
 <?php if ( $tunnel == 'yes' ) { ?>
 <pre>
-Make sure you are forwarding port 5432 to <?= htmlentities($pdo_host) ?> and then use the following commands:
+Make sure you are forwarding port <?= htmlentities($pdo_port) ?> to <?= htmlentities($pdo_host) ?>:<?= htmlentities($pdo_port) ?> and then use the following commands:
 
-psql -h 127.0.0.1 -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
+psql -h 127.0.0.1 -p <?= htmlentities($pdo_port) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
 <!--
 Python Notebook:
 %load_ext sql
 %config SqlMagic.autocommit=False
-%sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@127.0.0.1/<?= htmlentities($pdo_database) ?>
+%sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@127.0.0.1:<?= htmlentities($pdo_port) ?>/<?= htmlentities($pdo_database) ?>
 -->
 </pre>
 <?php } else { ?>
 <pre>
-psql -h <?= htmlentities($pdo_host) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
+psql -h <?= htmlentities($pdo_host) ?> -p <?= htmlentities($pdo_port) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
 <!--
 Python Notebook:
 %load_ext sql
 %config SqlMagic.autocommit=False
-%sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@<?= htmlentities($pdo_host) ?>/<?= htmlentities($pdo_database) ?>
+%sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@<?= htmlentities($pdo_host) ?>:<?= htmlentities($pdo_port) ?>/<?= htmlentities($pdo_database) ?>
 -->
 </pre>
 <?php } ?>
