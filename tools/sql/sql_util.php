@@ -102,7 +102,8 @@ function pg4e_extract_info($info) {
         $retval = new \stdClass();
          $retval->user = base64_decode($info->auth->data->POSTGRES_USER);
          $retval->password = base64_decode($info->auth->data->POSTGRES_PASSWORD);
-         $retval->ip = $info->svc->status->loadBalancer->ingress[0]->ip ?? null;
+         $retval->ip = $info->ing->status->loadBalancer->ingress[0]->ip ?? null;
+         $retval->port = $info->svc->metadata->labels->port ?? null;
         return $retval;
     } catch(Exception $e) {
         return null;
@@ -158,7 +159,7 @@ function pg4e_user_db_load($LAUNCH) {
                 unset($_SESSION['pdo_user']);
                 unset($_SESSION['pdo_pass']);
         header( 'Location: '.addSession('index.php') ) ;
-                return false;
+        return false;
     }
 
     $unique = getUnique($LAUNCH);
@@ -208,6 +209,11 @@ function pg4e_user_db_load($LAUNCH) {
         'pdo_pass' => $pdo_pass,
     ));
     if ( $new != $json ) $LAUNCH->result->setJSON($new);
+
+	// Set up the cookies
+    setcookie("pg4e_desc", $pdo_database, time()+31556926 ,'/');
+    setcookie("pg4e_host", $pdo_host, time()+31556926 ,'/');
+    setcookie("pg4e_port", $pdo_port, time()+31556926 ,'/');
 
     if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) {
         $_SESSION['pdo_host'] = $pdo_host;
@@ -287,23 +293,28 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input ty
 </form>
 </p>
 <p>
-<p>You can do this assignment in your browser using our
-<a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a>
-or run the <b>psql</b> client in your command line:
-<?php if ( $tunnel == 'yes' ) { ?>
+<p>You can do basic SQL commands using the
+<a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
+For batch loading or to run Python programs, you will need to access to <b>psql</b> on the command line:</p>
 <pre>
-Make sure you are forwarding port <?= htmlentities($pdo_port) ?> to <?= htmlentities($pdo_host) ?>:<?= htmlentities($pdo_port) ?> and then use the following commands:
+<?php if ( $tunnel == 'yes' ) { ?>
+You may need to set up SSH port forwarding through a server that you have assess to
+to connect to the database.  In one window, run
+
+ssh -4 -L <?= htmlentities($pdo_port) ?>:<?= htmlentities($pdo_host) ?>:<?= htmlentities($pdo_port) ?> your-account@your-login-server
+
+In a second window, run:
 
 psql -h 127.0.0.1 -p <?= htmlentities($pdo_port) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
+
 <!--
 Python Notebook:
 %load_ext sql
 %config SqlMagic.autocommit=False
 %sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@127.0.0.1:<?= htmlentities($pdo_port) ?>/<?= htmlentities($pdo_database) ?>
 -->
-</pre>
-<?php } else { ?>
-<pre>
+If you have psql running somewhere that is not behind a firewall, use the command:
+<?php } ?>
 psql -h <?= htmlentities($pdo_host) ?> -p <?= htmlentities($pdo_port) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
 <!--
 Python Notebook:
@@ -312,7 +323,6 @@ Python Notebook:
 %sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@<?= htmlentities($pdo_host) ?>:<?= htmlentities($pdo_port) ?>/<?= htmlentities($pdo_database) ?>
 -->
 </pre>
-<?php } ?>
 </p>
 <?php
 }

@@ -66,6 +66,7 @@ echo("<p>You get a grade for this assignment once your environment has been crea
 echo("<p>Postgres superuser details for project: ".htmlentities($dbname)."</p>\n");
 echo("<pre>\n");
 echo('Server: <span id="server">'.$spinner."</span>\n");
+echo('Port: <span id="port">'.$spinner."</span>\n");
 echo('User: <span id="user">'.$spinner."</span>\n");
 echo("Password: ");
 echo('<span id="pass" style="display:none">'.$spinner.'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show</a> ');
@@ -74,25 +75,33 @@ echo(')'."\n");
 echo('Status: <span id="status">'.$spinner.'</span>');
 ?>
 </pre>
-<p>You can also use our
+<p id="access_delay">It usually takes about a two minutes to create your database the first time...</p>
+<div id="access_instructions" style="display:none;">
+<p>You can do basic SQL commands using the
 <a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
-If you have access to <b>psql</b> on the command line, you can use this command to connect:</p>
+For batch loading or to run Python programs, you will need to access to <b>psql</b> on the command line, using this command to connect:</p>
 <pre>
 <?php
 $tunnel = $LAUNCH->link->settingsGet('tunnel');
 if ( $tunnel == 'yes' ) {
-echo('Make sure your port 5432 is forwarded to <span id="server2">'.$spinner.'</span> and then:');
-echo("\n\n");
-echo('psql -h 127.0.0.1 -U <span id="user2">'.$spinner."</span>\n");
-} else {
-echo('psql -h <span id="server2">'.$spinner.'</span> -U <span id="user2">'.$spinner."</span>\n");
-}
-echo("</pre>\n");
-echo("\n");
-echo("<p id=\"access_delay\">It usually takes about a minute to create your database the first time...</p>\n");
-echo('<div id="access_instructions" style="display:none;">'."\n");
 ?>
+You may need to set up SSH port forwarding to connect to the database through a
+login server that you can access.  In one window, run
 
+ssh -4 -L <span id="port2"><?= $spinner ?></span>:<span id="server2"><?= $spinner ?></span>:<span id="port3"><?= $spinner ?></span> account@login-server
+
+In a second window, run:
+
+psql -h 127.0.0.1 -p <span id="port4"><?= $spinner ?></span> -U <span id="user2"><?= $spinner ?></span>
+
+If your commmand line is not behind a fire wall you can skip port forwarding and type:
+
+<?php }  ?>
+psql -h <span id="server3"><?= $spinner ?></span> -p <span id="port5"><?= $spinner ?></span> -U <span id="user3"><?= $spinner ?></span>
+</pre>
+<p>If you just created your database for the very first time, it might take an extra minute
+or so after you have an IP address
+before you can actually connect.  Please give it another try if it does not respond instantly.
 </p>
 <p>To prepare for the upcoming assignments, use the above credentials to create
 a user <b><?= htmlentities($dbuser) ?></b> and then create a
@@ -127,6 +136,7 @@ function clearFields() {
   $("#user3").html('(tbd)');
   $("#pass").html('');
   $("#server").html('');
+  $("#port").html('');
   $("#server").html('(tbd)');
 }
 
@@ -173,11 +183,18 @@ function updateMsg() {
               now.setTime(expireTime);
               document.cookie = 'pg4e_desc=<?= $dbname ?>;expires='+now.toGMTString()+';path=/;SameSite=Secure';
               document.cookie = 'pg4e_host='+retval.ip+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
+              document.cookie = 'pg4e_port='+retval.port+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
               console.log(document.cookie);
 
               $("#server").html(retval.ip);
               $("#server2").html(retval.ip);
               $("#server3").html(retval.ip);
+              $("#server4").html(retval.ip);
+              $("#port").html(retval.port);
+              $("#port2").html(retval.port);
+              $("#port3").html(retval.port);
+              $("#port4").html(retval.port);
+              $("#port5").html(retval.port);
               $("#access_instructions").show();
               $("#access_delay").hide();
               $("#client1").hide();
