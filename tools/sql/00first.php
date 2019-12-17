@@ -39,11 +39,13 @@ if ( $dueDate->message ) {
 ?>
 <h1>Our First Tables</h1>
 <p>
-At this point you should have your <b><?= $pdo_database ?></b> database created
-and have given access to the specified role.  You will now create a few tables
-that the autograder will use to communicate with you.  You <b>cannot</b> do this assignment
-using the superuser account.  You must use the role and database you created using the superuser
-for this assignment.
+At this point you should have a database created
+and have given access to a role that you have created.  You will now create a few tables
+that the autograder will use to communicate with you.
+</p>
+<p>You <b>cannot</b> do this assignment
+using the superuser account.  You must use the <b><?= $pdo_user ?></b> role
+you created using the superuser for this assignment.
 </p>
 <?php pg4e_user_db_form($LAUNCH); ?>
 <p>The <b>pg4e_debug</b> table will let you see the queries that were run by the

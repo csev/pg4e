@@ -197,6 +197,7 @@ function pg4e_user_db_load($LAUNCH) {
 }
 
 function pg4e_user_db_form($LAUNCH) {
+	global $CFG;
     global $OUTPUT, $pdo_database, $pdo_host, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
         $tunnel = $LAUNCH->link->settingsGet('tunnel');
@@ -233,30 +234,30 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input ty
 </form>
 </p>
 <p>
-Access commands:
+<p>You can do this assignment in your browser using our
+<a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a>
+or run the <b>psql</b> client in your command line:
 <?php if ( $tunnel == 'yes' ) { ?>
 <pre>
 Make sure you are forwarding port 5432 to <?= htmlentities($pdo_host) ?> and then use the following commands:
 
-Command line:
 psql -h 127.0.0.1 -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
-
-
+<!--
 Python Notebook:
 %load_ext sql
 %config SqlMagic.autocommit=False
 %sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@127.0.0.1/<?= htmlentities($pdo_database) ?>
+-->
 </pre>
 <?php } else { ?>
 <pre>
-Command line:
 psql -h <?= htmlentities($pdo_host) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
-
-
+<!--
 Python Notebook:
 %load_ext sql
 %config SqlMagic.autocommit=False
 %sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@<?= htmlentities($pdo_host) ?>/<?= htmlentities($pdo_database) ?>
+-->
 </pre>
 <?php } ?>
 </p>
