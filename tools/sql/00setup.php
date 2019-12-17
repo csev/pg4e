@@ -60,6 +60,7 @@ if ( is_string($retval) ) {
     return;
 }
 
+// Note grade is sent from load_info.php
 $spinner = '<img src="'.$OUTPUT->getSpinnerUrl().'">';
 echo("<p>You get a grade for this assignment once your environment has been created.</p>\n");
 echo("<p>Postgres superuser details for project: ".htmlentities($dbname)."</p>\n");
@@ -72,7 +73,7 @@ echo('<a href="#" onclick="copyToClipboard(this, $(\'#pass\').text());return fal
 echo(')'."\n");
 echo('Status: <span id="status">'.$spinner.'</span>');
 echo("</pre>\n");
-echo("<p>To access this in a command line / terminal use:</p>\n");
+echo("<p>If you have access to <b>psql</b> on the command line, you can use this command to connect:</p>\n");
 echo("<pre>\n");
 $tunnel = $LAUNCH->link->settingsGet('tunnel');
 if ( $tunnel == 'yes' ) {
@@ -83,27 +84,26 @@ echo('psql -h 127.0.0.1 -U <span id="user2">'.$spinner."</span>\n");
 echo('psql -h <span id="server2">'.$spinner.'</span> -U <span id="user2">'.$spinner."</span>\n");
 }
 echo("</pre>\n");
+echo("\n");
 echo("<p id=\"access_delay\">It usually takes about a minute to create your database the first time...</p>\n");
 echo('<div id="access_instructions" style="display:none;">'."\n");
 ?>
-<p>Before going on to the next step, use your super user credentials to create a role
-with the following details:
-<pre>
-User: <?= htmlentities($dbuser) ?>
 
-Password: <span id="dbpass" style="display:none"><?= htmlentities($dbpass) ?></span> (<a href="#" onclick="$('#dbpass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, $('#dbpass').text());return false;">copy</a>)
-</pre>
-And create a database named <b>pg4e</b> and give the new role access to that database.  This database and role
-will be used to complete and grade the rest of your assignments in this class.
+<p>You can also use our
+<a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
+</p>
+<p>To prepare for the upcoming assignments, use the above credentials to log into your SQL server and create
+a user <b><?= htmlentities($dbuser) ?></b> and then create a
+database named <b>pg4e</b> and give the user access to that database.  This database and role
+will be used to complete the rest of your assignments in this class.  The only use of the your superuser
+credentials is to create the database and role.
 </p>
 <pre>
-postgres=# CREATE USER <?= htmlentities($dbuser) ?> WITH PASSWORD 'replacewithsecret';
-CREATE ROLE
-postgres=# CREATE DATABASE pg4e WITH OWNER '<?= htmlentities($dbuser) ?>';
-CREATE DATABASE
-postgres=# \q
+CREATE USER <?= htmlentities($dbuser) ?> WITH PASSWORD '<span id="dbpass2" style="display:none"><?= htmlentities($dbpass) ?></span>';  -- (<a href="#" onclick="$('#dbpass2').toggle();return false;">hide/show</a>)
+CREATE DATABASE pg4e WITH OWNER '<?= htmlentities($dbuser) ?>';
 </pre>
-If you make a mistake and want to reset or recreate the user or database, use:
+If you make a mistake and want to reset or recreate the user or database, use the following SQL commands
+while logged in with your superuser credentials:
 <pre>
 DROP DATABASE pg4e;
 DROP USER <?= htmlentities($dbuser) ?>;
@@ -128,7 +128,7 @@ function clearFields() {
 }
 
 function updateMsg() {
-  window.console && console.log('Requesting JSON'); 
+  window.console && console.log('Requesting JSON');
   $.getJSON('<?= $ajax_url ?>', function(retval){
       load_tries = load_tries + 1;
       window.console && console.log(load_tries);
@@ -163,13 +163,23 @@ function updateMsg() {
       if ( retval.ip && retval.ip.length > 0 ) {
           $("#status").html("Environment created");
           if ( retval.ip ) {
+
+              var now = new Date();
+              var time = now.getTime();
+              var expireTime = time + 1000*36000;
+              now.setTime(expireTime);
+              document.cookie = 'pg4e_host='+retval.ip+';expires='+now.toGMTString()+';path=/';
+              document.cookie = 'pg4e_desc=<?= $dbname ?>;expires='+now.toGMTString()+';path=/';
+
               $("#server").html(retval.ip);
               $("#server2").html(retval.ip);
               $("#server3").html(retval.ip);
               $("#access_instructions").show();
               $("#access_delay").hide();
+              $("#client1").hide();
+              $("#client2").show();
           }
-      } else { 
+      } else {
           $("#status").html("Waiting on environment creation ("+load_tries+")");
           setTimeout('updateMsg()', 5000);
       }
