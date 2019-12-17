@@ -88,11 +88,11 @@ if ( $tunnel == 'yes' ) {
 You may need to set up SSH port forwarding to connect to the database through a
 login server that you can access.  In one window, run
 
-ssh -4 -L <span id="port2"><?= $spinner ?></span>:<span id="server2"><?= $spinner ?></span>:<span id="port3"><?= $spinner ?></span> account@login-server
+ssh -4 -L <span id="localport1"><?= $spinner ?></span>:<span id="server2"><?= $spinner ?></span>:<span id="port3"><?= $spinner ?></span> account@login-server
 
 In a second window, run:
 
-psql -h 127.0.0.1 -p <span id="port4"><?= $spinner ?></span> -U <span id="user2"><?= $spinner ?></span>
+psql -h 127.0.0.1 -p <span id="localport2"><?= $spinner ?></span> -U <span id="user2"><?= $spinner ?></span>
 
 If your commmand line is not behind a fire wall you can skip port forwarding and type:
 
@@ -195,6 +195,8 @@ function updateMsg() {
               $("#port3").html(retval.port);
               $("#port4").html(retval.port);
               $("#port5").html(retval.port);
+              $("#localport1").html(retval.port < 10000 ? Number(retval.port) + 10000 : retval.port);
+              $("#localport2").html(retval.port < 10000 ? Number(retval.port) + 10000 : retval.port);
               $("#access_instructions").show();
               $("#access_delay").hide();
               $("#client1").hide();

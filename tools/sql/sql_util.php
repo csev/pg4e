@@ -297,15 +297,18 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input ty
 <a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
 For batch loading or to run Python programs, you will need to access to <b>psql</b> on the command line:</p>
 <pre>
-<?php if ( $tunnel == 'yes' ) { ?>
-You may need to set up SSH port forwarding through a server that you have assess to
+<?php if ( $tunnel == 'yes' ) { 
+    $localport = $pdo_port;
+    if ( $pdo_port < 10000 ) $localport = $pdo_port + 10000;
+?>
+You may need to set up SSH port forwarding through a server that you have access to
 to connect to the database.  In one window, run
 
-ssh -4 -L <?= htmlentities($pdo_port) ?>:<?= htmlentities($pdo_host) ?>:<?= htmlentities($pdo_port) ?> your-account@your-login-server
+ssh -4 -L <?= htmlentities($localport) ?>:<?= htmlentities($pdo_host) ?>:<?= htmlentities($pdo_port) ?> your-account@your-login-server
 
 In a second window, run:
 
-psql -h 127.0.0.1 -p <?= htmlentities($pdo_port) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
+psql -h 127.0.0.1 -p <?= htmlentities($localport) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
 
 <!--
 Python Notebook:
