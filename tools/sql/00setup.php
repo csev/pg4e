@@ -72,9 +72,13 @@ echo('<span id="pass" style="display:none">'.$spinner.'</span> (<a href="#" oncl
 echo('<a href="#" onclick="copyToClipboard(this, $(\'#pass\').text());return false;">copy</a>');
 echo(')'."\n");
 echo('Status: <span id="status">'.$spinner.'</span>');
-echo("</pre>\n");
-echo("<p>If you have access to <b>psql</b> on the command line, you can use this command to connect:</p>\n");
-echo("<pre>\n");
+?>
+</pre>
+<p>You can also use our
+<a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
+If you have access to <b>psql</b> on the command line, you can use this command to connect:</p>
+<pre>
+<?php
 $tunnel = $LAUNCH->link->settingsGet('tunnel');
 if ( $tunnel == 'yes' ) {
 echo('Make sure your port 5432 is forwarded to <span id="server2">'.$spinner.'</span> and then:');
@@ -89,14 +93,13 @@ echo("<p id=\"access_delay\">It usually takes about a minute to create your data
 echo('<div id="access_instructions" style="display:none;">'."\n");
 ?>
 
-<p>You can also use our
-<a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
 </p>
-<p>To prepare for the upcoming assignments, use the above credentials to log into your SQL server and create
+<p>To prepare for the upcoming assignments, use the above credentials to create
 a user <b><?= htmlentities($dbuser) ?></b> and then create a
 database named <b>pg4e</b> and give the user access to that database.  This database and role
 will be used to complete the rest of your assignments in this class.  The only use of the your superuser
-credentials is to create the database and role.
+credentials is to create the database and role.  Make sure to run these two commands in two executions
+if you are using the online client.
 </p>
 <pre>
 CREATE USER <?= htmlentities($dbuser) ?> WITH PASSWORD '<span id="dbpass2" style="display:none"><?= htmlentities($dbpass) ?></span>';  -- (<a href="#" onclick="$('#dbpass2').toggle();return false;">hide/show</a>)
@@ -168,8 +171,9 @@ function updateMsg() {
               var time = now.getTime();
               var expireTime = time + 1000*36000;
               now.setTime(expireTime);
-              document.cookie = 'pg4e_host='+retval.ip+';expires='+now.toGMTString()+';path=/';
-              document.cookie = 'pg4e_desc=<?= $dbname ?>;expires='+now.toGMTString()+';path=/';
+              document.cookie = 'pg4e_desc=<?= $dbname ?>;expires='+now.toGMTString()+';path=/;SameSite=Secure';
+              document.cookie = 'pg4e_host='+retval.ip+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
+              console.log(document.cookie);
 
               $("#server").html(retval.ip);
               $("#server2").html(retval.ip);
