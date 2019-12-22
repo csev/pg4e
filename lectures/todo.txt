@@ -16,6 +16,10 @@ ALTER TABLE jsontable ADD CONSTRAINT uuid_must_exist CHECK (j ? 'uuid');
 WEEK 3 - ELASTIC SEARCH
 =======================
 
+Lecture 1 - SQL / noSQL
+
+Lecture 2 - Elastic Search
+
 Data model as continuum
 Car model, fuel tank size, tank type, fuel type, 
 Sometimes new columns, and new tables and foreign keys are not the answer.
@@ -24,12 +28,48 @@ Casandra, Elastic, Mongo
 Tags as application?
 
 ACID
+BASE
 
 SQL strikes back
 
 https://blog.patricktriest.com/text-search-docker-elasticsearch/
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html
+
+https://www.guru99.com/sql-vs-nosql.html
+
+https://www.youtube.com/watch?v=rRoy6I4gKWU
+
+https://blog.timescale.com/blog/why-sql-beating-nosql-what-this-means-for-future-of-data-time-series-database-348b777b847a/
+
+https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/46103.pdf
+
+Tech Loop
+
+https://www.youtube.com/watch?v=7Pg5AMSInJ0
+
+SELECT FOR UPDATE
+
+SELECT FOR UPDATE NOWAIT
+
+https://www.postgresql.org/docs/current/transaction-iso.html
+
+INSERT with an ON CONFLICT DO NOTHING
+
+https://www.postgresql.org/docs/current/sql-set-transaction.html
+
+    ISOLATION LEVEL { SERIALIZABLE | REPEATABLE READ | READ COMMITTED | READ UNCOMMITTED }
+    READ WRITE | READ ONLY
+    [ NOT ] DEFERRABLE
+
+https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PostgreSQL.Replication.ReadReplicas.html
+
+2013:
+
+https://www.intervision.com/5-best-practices-database-scaling/
+
+https://www.red-gate.com/simple-talk/cloud/cloud-data/designing-highly-scalable-database-architectures/
+
 
 
 WEEK 4 - PANDAS AND SQL
