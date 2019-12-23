@@ -3,7 +3,9 @@
 # https://www.pg4e.com/code/myutils.py
 
 # Download a book
-# wget http://www.gutenberg.org/cache/epub/19337/pg19337.txt
+# wget http://www.gutenberg.org/cache/epub/14091/pg14091.txt
+# wget https://www.gutenberg.org/files/2591/2591-0.txt
+# wget https://www.gutenberg.org/files/11/11-0.txt
 
 # (If needed)
 # https://www.pg4e.com/code/hidden-dist.py
@@ -17,8 +19,8 @@ import time
 import copy
 import hidden
 
-bookfile = input("Enter book file (i.e. pg19337.txt): ")
-if bookfile == '' : bookfile = 'pg19337.txt';
+bookfile = input("Enter book file (i.e. 2591-0.txt): ")
+if bookfile == '' : bookfile = '2591-0.txt';
 base = bookfile.split('.')[0]
 
 # Make sure we can open the file
@@ -81,7 +83,7 @@ for line in fhand:
         if pcount % 100 == 0 : 
             print(pcount, 'loaded...')
             time.sleep(1)
-            break
+
         para = ''
         continue
 
