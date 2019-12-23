@@ -71,6 +71,75 @@ https://www.intervision.com/5-best-practices-database-scaling/
 https://www.red-gate.com/simple-talk/cloud/cloud-data/designing-highly-scalable-database-architectures/
 
 
+***********
+https://www.youtube.com/watch?v=60UsHHsKyN4
+Getting Started with Elastic Search
+
+geo_distance
+
+
+Your own little Google search
+
+Lucene - Inverted index
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html
+
+https://stackoverflow.com/questions/32229255/elasticsearch-match-with-stemming
+
+Languages 
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-lang-analyzer.html
+
+Mapping / Types 
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
+
+
+
+    a simple type like text, keyword, date, long, double, boolean or ip.
+    a type which supports the hierarchical nature of JSON such as object or nested.
+    or a specialised type like geo_point, geo_shape, or completion.
+
+
+https://qbox.io/blog/elasticsearch-english-analyzer-customize
+
+curl -XPUT 'localhost:9200/english_analyzer_index -d'{
+  "mappings": {
+    "book": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "analyzer": "english"        
+        }
+      }
+    }
+  }
+}'
+
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/analyzer.html
+
+PUT /my_index
+{
+  "mappings": {
+    "properties": {
+      "text": { 
+        "type": "text",
+        "fields": {
+          "english": { 
+            "type":     "text",
+            "analyzer": "english"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+http://localhost:9200/places/museum
+                      index  type
+
 
 WEEK 4 - PANDAS AND SQL
 =======================

@@ -13,6 +13,7 @@ es = Elasticsearch(
     [secrets['host']],
     http_auth=(secrets['user'], secrets['pass']),
     scheme="http",
+    port=secrets['port']
 )
 
 # Start fresh
