@@ -1,11 +1,10 @@
+# Example from:
+# https://elasticsearch-py.readthedocs.io/en/master/
 
-# 
 from datetime import datetime
 from elasticsearch import Elasticsearch
 
 import hidden
-
-es = Elasticsearch()
 
 secrets = hidden.elastic()
 
@@ -18,11 +17,11 @@ es = Elasticsearch(
 
 # Start fresh
 # https://elasticsearch-py.readthedocs.io/en/master/api.html#indices
-
 res = es.indices.delete(index='test-index', ignore=[400, 404])
 print("Dropped index")
 print(res)
 
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/properties.html
 settings = {
         "mappings": {
             "tweet": {
