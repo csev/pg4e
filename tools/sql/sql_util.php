@@ -463,3 +463,136 @@ function pg4e_load_csv($filename) {
     return $retval;
 }
 
+function pg4e_user_es_load($LAUNCH) {
+    global $CFG;
+    global $es_host, $es_port, $es_user, $es_pass, $info, $es_connection;
+
+    if ( U::get($_POST,'default') ) {
+                unset($_SESSION['es_host']);
+                unset($_SESSION['es_port']);
+                unset($_SESSION['es_user']);
+                unset($_SESSION['es_pass']);
+        header( 'Location: '.addSession('index.php') ) ;
+        return false;
+    }
+
+    $unique = getUnique($LAUNCH);
+    $project = getDbName($unique);
+
+    $es_host = U::get($_POST, 'es_host');
+    $es_port = U::get($_POST, 'es_port');
+    $es_user = U::get($_POST, 'es_user');
+    $es_pass = U::get($_POST, 'es_pass');
+
+    if ( $es_host  && $es_user && $es_pass ) {
+        setcookie("es_host", $es_host, time()+31556926 ,'/');
+        setcookie("es_port", $es_port, time()+31556926 ,'/');
+        setcookie("es_user", $es_user, time()+31556926 ,'/');
+        setcookie("es_pass", $es_pass, time()+31556926 ,'/');
+    } else {
+        $es_host = U::get($_SESSION, 'es_host', U::get($_COOKIE, 'es_host'));
+        $es_port = U::get($_SESSION, 'es_port', U::get($_COOKIE, 'es_port'));
+        $es_user = U::get($_SESSION, 'es_user', U::get($_COOKIE, 'es_user'));
+        $es_pass = U::get($_SESSION, 'es_pass', U::get($_COOKIE, 'es_pass'));
+    }
+
+    if ( strlen($es_port) < 1 ) $es_port = '5432';
+
+    if ( ! $es_host && isset($CFG->pg4e_api_key) ) {
+        $retval = pg4e_request($project, 'info/es');
+        $info = false;
+        if ( is_object($retval) ) {
+            $info = pg4e_extract_es_info($retval);
+             if ( isset($info->ip) ) $es_host = $info->ip;
+             if ( isset($info->port) ) $es_port = $info->port;
+             if ( isset($info->user) ) $es_user = $info->user;
+             if ( isset($info->password) ) $es_pass = $info->password;
+            $_SESSION['es_host'] = $es_host;
+            $_SESSION['es_port'] = $es_port;
+            $_SESSION['es_user'] = $es_user;
+            $_SESSION['es_pass'] = $es_pass;
+        }
+    }
+
+    // Store in the database...
+    $json = $LAUNCH->result->getJSON();
+    $new = json_encode(array(
+        'es_host' => $es_host,
+        'es_port' => $es_port,
+        'es_user' => $es_user,
+        'es_pass' => $es_pass,
+    ));
+    if ( $new != $json ) $LAUNCH->result->setJSON($new);
+
+    if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) {
+        $_SESSION['es_host'] = $es_host;
+        $_SESSION['es_port'] = $es_port;
+        $_SESSION['es_user'] = $es_user;
+        $_SESSION['es_pass'] = $es_pass;
+    }
+
+    if ( ! $es_host && ! $LAUNCH->user->instructor ) {
+        echo("<p>You have not yet set up your database server for project <b>".htmlentities($project)."</b></p>\n");
+        echo("<p>Make sure to run the setup process before attempting this assignment..</p>\n");
+        return false;
+    }
+    return true;
+}
+
+function pg4e_extract_es_info($info) {
+    $user = false;
+    $password = false;
+    $ip = false;
+    try {
+        $retval = new \stdClass();
+         $retval->user = base64_decode($info->auth->data->ADMIN_USERNAME);
+         $retval->password = base64_decode($info->auth->data->ADMIN_PASSWORD);
+         $retval->ip = $info->ing->status->loadBalancer->ingress[0]->ip ?? null;
+         $retval->port = $info->svc->metadata->labels->port ?? null;
+        return $retval;
+    } catch(Exception $e) {
+        return null;
+    }
+}
+
+function pg4e_user_es_form($LAUNCH) {
+	global $CFG;
+    global $OUTPUT, $es_host, $es_port, $es_user, $es_pass, $info, $es_connection;
+
+        $tunnel = $LAUNCH->link->settingsGet('tunnel');
+        if ( ! $es_host || strlen($es_host) < 1 ) {
+                echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
+    }
+    if ( strlen($es_port) < 1 ) $es_port = "5432";
+?>
+<form name="myform" method="post" >
+<p>
+<?php if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) { ?>
+Host: <input type="text" name="es_host" value="<?= htmlentities($es_host) ?>" id="es_host"><br/>
+Port: <input type="text" name="es_port" value="<?= htmlentities($es_port) ?>" id="es_port"><br/>
+User: <input type="text" name="es_user" value="<?= htmlentities($es_user) ?>"><br/>
+Password: <span id="pass" style="display:none"><input type="text" name="es_pass" id="es_pass" value="<?= htmlentities($es_pass) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($es_pass) ?>');return false;">copy</a>) <br/>
+</pre>
+<?php } else { ?>
+<p>
+<pre>
+Host: <?= $es_host ?>
+
+Port: <?= $es_port ?>
+
+Account: <?= $es_user ?>
+
+Password: <span id="pass" style="display:none"><?= $es_pass ?></span> <input type="hidden" name="es_pass" id="es_pass" value="<?= htmlentities($es_pass) ?>"/> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($es_pass) ?>');return false;">copy</a>)
+</pre>
+</p>
+<?php } ?>
+<input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
+<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<?php if ( $LAUNCH->user->instructor) { ?>
+<input type="submit" name="default" value="Default Values">
+<?php } ?>
+</form>
+</p>
+</p>
+<?php
+}
