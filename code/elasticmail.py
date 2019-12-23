@@ -23,6 +23,16 @@ import json
 import copy
 import hidden
 
+import dateutil.parser as parser # If this import fails - just comment it out
+
+def parsemaildate(md) :
+    try:
+        pdate = parser.parse(tdate)
+        test_at = pdate.isoformat()
+        return test_at
+    except:
+        return datecompat.parsemaildate(md)
+
 # Ignore SSL certificate errors
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
@@ -44,6 +54,12 @@ settings = {
         "mappings": {
             "message": {
                 "properties": {
+                    "offset": {
+                        "type": "long"
+                    },
+                    "headers.date": {
+                        "type": "date"
+                    },
                     "body": {
                         "type": "text",
                         "analyzer" : "english"
@@ -68,13 +84,15 @@ baseurl = 'http://mbox.dr-chuck.net/sakai.devel/'
 
 agg = {
     "aggs" : {
-        "max_id" : { "max" : { "field" : "id" } }
+        "max_id" : { "max" : { "field" : "offset" } }
     }
 }
 query = json.dumps(agg)
 res = es.search(index='gmane', body=agg)
+# print(res)
 start = res['aggregations']['max_id']['value']
 if start is None : start = 0
+start = int(start)
 print('start:', start)
 
 many = 0
@@ -153,6 +171,22 @@ while True:
             email = email.strip().lower()
             email = email.replace('<','')
 
+    # Hack the date
+    sent_at = None
+    y = re.findall('\nDate: .*, (.*)\n', hdr)
+    if len(y) == 1 :
+        tdate = y[0]
+        tdate = tdate[:26]
+        try:
+            sent_at = parsemaildate(tdate)
+        except:
+            print(text)
+            print('Parse fail',tdate)
+            fail = fail + 1
+            if fail > 5 : break
+            continue
+
+    # Make the headers into a dictionary
     hdrlines = hdr.split('\n')
     hdrdict = dict()
     for line in hdrlines:
@@ -161,19 +195,21 @@ while True:
         if len(y) != 1 : continue
         tup = y[0]
         if len(tup) != 2 : continue
-        print(tup)
+        # print(tup)
         key = tup[0].lower()
         value = tup[1].lower()
         hdrdict[key] = value
 
-    print(hdrdict)
+    # Override the date field
+    hdrdict['date'] = sent_at
+
     # Reset the fail counter
     fail = 0
-    print('   ',email)
-
-    # cur.execute('''INSERT INTO Messages (id, email, sent_at, subject, headers, body)
-    #    VALUES ( %s, %s, %s, %s, %s, %s ) ON CONFLICT DO NOTHING''',
-    #           ( start, email, sent_at, subject, hdr, body))
+    doc = {'offset': start, 'sender': email, 'headers' : hdrdict, 'body': body}
+    res = es.index(index='gmane', doc_type='message', id=start, body=doc)
+    print('   ',start, email, sent_at)
+    # print('Added document...')
+    # print(res['result'])
 
     if count % 100 == 0 : time.sleep(1)
 

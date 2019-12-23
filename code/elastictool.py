@@ -83,6 +83,18 @@ while True:
         print(text)
         continue
 
+    if pieces[0] == 'get' and len(pieces) == 3 :
+        queryurl = url + '/' + pieces[1] + '/' + pieces[2] + '?pretty'
+        prurl = queryurl.replace(secrets['pass'],'*****')
+        print(prurl)
+
+        response = requests.get(queryurl)
+        text = response.text
+        status = response.status_code
+        print(status)
+        print(text)
+        continue
+
     if pieces[0] == 'search' and len(pieces) == 3 :
         queryurl = url + '/' + pieces[1] + '/_search?pretty'
         prurl = queryurl.replace(secrets['pass'],'*****')
@@ -105,9 +117,10 @@ while True:
     print('Invalid command, please try:')
     print('')
     print('  detail')
+    print('  get indexname/doctype id')
+    print('  search indexname/doctype string')
     print('  search indexname string')
     print('  mapping indexname')
     print('  match_all indexname')
     print('  delete indexname')
-    print('  search indexname/doctype string')
 
