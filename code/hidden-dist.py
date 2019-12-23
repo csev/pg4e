@@ -1,13 +1,15 @@
-
-# https://www.pg4e.com/code/hidden-dist.py
+# Keep this file separate
 
 def secrets():
-    return {'host': '35.123.23.37',
-            'user': 'pg4e_user_42',
-            'pass': 'pg4e_pass_42',
-            'database': 'pg4e'}
+    return {"host": "35.222.5.70",
+            "port": 1009,
+            "user": "pg4e_user_83fe8",
+            "pass": "pg4e_pass_292ea",
+            "database": "pg4e"}
 
-def elastic() :
-    return {"host": "35.123.148.52",
+def elastic():
+    return {"host": "35.239.113.162",
+            "port": 13009,
             "user": "admin",
-            "pass": "sakaiger"}
+            "pass": "uytrejh5"}
+
