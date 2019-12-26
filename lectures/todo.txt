@@ -75,6 +75,9 @@ https://www.red-gate.com/simple-talk/cloud/cloud-data/designing-highly-scalable-
 https://www.youtube.com/watch?v=60UsHHsKyN4
 Getting Started with Elastic Search
 
+http://localhost:9200/index/doctype
+
+
 geo_distance
 
 
