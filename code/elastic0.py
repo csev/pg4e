@@ -1,6 +1,8 @@
 # Example from:
 # https://elasticsearch-py.readthedocs.io/en/master/
 
+# pip3 install elasticsearch
+
 from datetime import datetime
 from elasticsearch import Elasticsearch
 
