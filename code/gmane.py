@@ -11,11 +11,8 @@
 # Pulls data from the web and puts it into messages table
 
 import psycopg2
+import requests
 import time
-import ssl
-import urllib.request, urllib.parse, urllib.error
-from urllib.parse import urljoin
-from urllib.parse import urlparse
 import re
 import hidden
 import myutils
@@ -31,14 +28,10 @@ def parsemaildate(md) :
     except:
         return datecompat.parsemaildate(md)
 
-# Ignore SSL certificate errors
-ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
-
 secrets = hidden.secrets()
 
-conn = psycopg2.connect(host=secrets['host'],database=secrets['database'], user=secrets['user'], password=secrets['pass'])
+conn = psycopg2.connect(host=secrets['host'],port=secrets['port'], connect_timeout=5,
+        database=secrets['database'], user=secrets['user'], password=secrets['pass'])
 cur = conn.cursor()
 
 baseurl = 'http://mbox.dr-chuck.net/sakai.devel/'
@@ -75,10 +68,11 @@ while True:
     text = 'None'
     try:
         # Open with a timeout of 30 seconds
-        document = urllib.request.urlopen(url, None, 30, context=ctx)
-        text = document.read().decode()
-        if document.getcode() != 200 :
-            print('Error code=',document.getcode(), url)
+        response = requests.get(url)
+        text = response.text
+        status = response.status_code
+        if status != 200 :
+            print('Error code=',status, url)
             break
     except KeyboardInterrupt:
         print('')

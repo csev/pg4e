@@ -8,10 +8,8 @@
 # python3 elasticmail.py
 # Pulls data from the web and puts it into gmane index
 
-import ssl
-import urllib.request, urllib.parse, urllib.error
-from urllib.parse import urljoin
-from urllib.parse import urlparse
+import requests
+
 import re
 import hidden
 import myutils
@@ -32,11 +30,6 @@ def parsemaildate(md) :
         return test_at
     except:
         return datecompat.parsemaildate(md)
-
-# Ignore SSL certificate errors
-ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
 
 secrets = hidden.elastic()
 
@@ -120,10 +113,11 @@ while True:
     text = 'None'
     try:
         # Open with a timeout of 30 seconds
-        document = urllib.request.urlopen(url, None, 30, context=ctx)
-        text = document.read().decode()
-        if document.getcode() != 200 :
-            print('Error code=',document.getcode(), url)
+        response = requests.get(url)
+        text = response.text
+        status = response.status_code
+        if status != 200 :
+            print('Error code=',status, url)
             break
     except KeyboardInterrupt:
         print('')
