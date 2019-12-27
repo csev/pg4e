@@ -34,8 +34,8 @@ $assignments = array(
     '05sqlstop.php' => 'Inverted index with stop words using SQL',
     '05ginstring.php' => 'Inverted string index using GIN',
     '05fulltext.php' => 'Full text GIN using tsvector',
-    '06tweet.php' => 'Elastic Search Tweets',
-    '06book.php' => 'Elastic Search Book Text',
+    '07tweet.php' => 'Elastic Search Tweets',
+    '07book.php' => 'Elastic Search Book Text',
 );
 
 $oldsettings = Settings::linkGetAll();
