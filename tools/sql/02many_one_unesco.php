@@ -160,7 +160,7 @@ to skip the first line in the CSV file.  The <b>\copy</b> command must be one lo
 </pre>
 Normalize the data in the <b>unesco_raw</b> table by adding the entries to each of
 the lookup tables (category, etc.) and then adding the foreign key columns
-to the <b>unesco_raw</b> table.  The make a new table called <b>unesco</b> that
+to the <b>unesco_raw</b> table.  Then make a new table called <b>unesco</b> that
 removes all of the un-normalized redundant text columns like <b>category</b>.
 </p>
 <p>
