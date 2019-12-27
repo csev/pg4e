@@ -118,8 +118,9 @@ foreach($lines as $line) {
 </pre>
 </p>
 <p>
-You can start with this code
-<a href="https://www.pg4e.com/code/elastic0.py" target="_blank">https://www.pg4e.com/code/elastic0.py</a>
+You can build your application by starting with this code -
+<a href="https://www.pg4e.com/code/elastic0.py" target="_blank">https://www.pg4e.com/code/elastic0.py</a>.
+You will need to setup the <b>hidden.py</b> with your elastic search host/port/account/password values.
 </p>
 <p>
 This autograder will run a command equivalent to using the <b>elastictool.py</b> command as follows:
@@ -132,12 +133,30 @@ searchguard / 0
 tweet-index / 5
 
 Enter command: <b>search tweet-index information</b>
+
+{
+  ...
+  "hits" : {
+    "total" : 1,
+    "max_score" : 1.0024122,
+    "hits" : [
+      {
+         ...
+         "_index" : "tweet-index",
+          "author" : "kimchy",
+          "text" : "information that we will encounter in our lives When you first start",
+          "timestamp" : "2019-12-27T10:09:23.586741"
+        }
+      }
+    ]
+  }
 </pre>
 And expect to get at least one hit.
 </p>
 <p>
 You can download <b>elastictool.py</b> at 
-<a href="https://www.pg4e.com/code/elastictool.py" target="_blank">https://www.pg4e.com/code/elastictool.py</a>
+<a href="https://www.pg4e.com/code/elastictool.py" target="_blank">https://www.pg4e.com/code/elastictool.py</a>.
+You will need to setup the <b>hidden.py</b> with your elastic search host/port/account/password values.
 </p>
 <!--
 <?php
