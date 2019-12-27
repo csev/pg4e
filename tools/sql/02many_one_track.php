@@ -88,7 +88,7 @@ if ( $dueDate->message ) {
 <h1>Musical Tracks Many-to-One</h1>
 <p>
 This application will read an iTunes library in comma-separated-values (CSV)
-format and produce a properly normalized tables as specified below.
+format and produce properly normalized tables as specified below.
 Once you have placed the proper data in the tables, press the button below to
 check your answer.
 </p>
@@ -125,8 +125,8 @@ make sure to empty out the data before each run.
 Load this
 <a href=library.csv" target="_blank">
 CSV data
-</a>
-data file into the <b>track_raw</b> table using the <b>\copy</b> command.
+</a> 
+file into the <b>track_raw</b> table using the <b>\copy</b> command.
 Then write SQL commands to insert all of the distinct albums into the <b>album</b> table
 (creating their primary keys) and then set the <b>album_id</b> in the <b>track_raw</b>
 table using an SQL query like:
