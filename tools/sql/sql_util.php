@@ -158,6 +158,11 @@ function pg4e_user_db_load($LAUNCH) {
                 unset($_SESSION['pdo_database']);
                 unset($_SESSION['pdo_user']);
                 unset($_SESSION['pdo_pass']);
+                setcookie("pdo_database", '', time()+31556926 ,'/');
+                setcookie("pdo_host", '', time()+31556926 ,'/');
+                setcookie("pdo_port", '', time()+31556926 ,'/');
+                setcookie("pdo_user", '', time()+31556926 ,'/');
+                setcookie("pdo_pass", '', time()+31556926 ,'/');
         header( 'Location: '.addSession('index.php') ) ;
         return false;
     }
@@ -472,6 +477,10 @@ function pg4e_user_es_load($LAUNCH) {
                 unset($_SESSION['es_port']);
                 unset($_SESSION['es_user']);
                 unset($_SESSION['es_pass']);
+        setcookie("es_host", '', time()+31556926 ,'/');
+        setcookie("es_port", '', time()+31556926 ,'/');
+        setcookie("es_user", '', time()+31556926 ,'/');
+        setcookie("es_pass", '', time()+31556926 ,'/');
         header( 'Location: '.addSession('index.php') ) ;
         return false;
     }
