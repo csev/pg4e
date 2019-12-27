@@ -398,6 +398,7 @@ function pg4e_check_debug_table($LAUNCH, $pg_PDO) {
 }
 
 function pg4e_debug_note($pg_PDO, $note) {
+	if ( ! $pg_PDO ) return;
     $pg_PDO->queryReturnError(
         "INSERT INTO pg4e_debug (query, result) VALUES (:query, :result)",
         array(":query" => $note, ':result' => 'Note only')
@@ -447,15 +448,18 @@ function pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate) {
     } else {
                 $scorestr = "Unexpected return: ".json_encode($retval);
                 $_SESSION['error'] = "Unexpected return, see pg4e_result for detail";
-    }
+    } 
+
+	if ( $pg_PDO ) {
         $pg_PDO->queryReturnError(
         "INSERT INTO pg4e_result (link_id, score, note, title, debug_log)
                     VALUES (:link_id, :score, :note, :title, :debug_log)",
-        array(":link_id" => $LAUNCH->link->id, ":score" => $gradetosend,
+        	array(":link_id" => $LAUNCH->link->id, ":score" => $gradetosend,
                ":note" => $scorestr, ":title" => $LAUNCH->link->title,
                ":debug_log" => json_encode($debug_log)
-         )
-    );
+         	)
+    	);
+	}
 }
 
 function pg4e_load_csv($filename) {
