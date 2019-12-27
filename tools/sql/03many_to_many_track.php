@@ -99,7 +99,7 @@ check your answer.
 <p>
 We will do some things differently in this assignment.   We will not use
 a separate "raw" table, we will just use <b>ALTER TABLE</b> statements
-to remove coliumns after we don't need them
+to remove columns after we don't need them
 (i.e. we converted them into foreign keys).
 </p>
 <p>
@@ -108,7 +108,7 @@ We will use the same
 CSV track data
 </a>
 as in prior exercises - this time we will build a many-to-many relationship
-using a <i>junction/through/ join</i> table between tracks and artists.
+using a <i>junction/through/join</i> table between tracks and artists.
 
 <p>
 To grade this assignment, the program will run a query like this on
@@ -136,8 +136,8 @@ foreach($answer as $ans) {
 </table>
 </p>
 <p>
-In this we will give you a partial script with portions of some of the commands replaced by
-thre dots... 
+In this assignment we will give you a partial script with portions of some of the commands replaced by
+three dots... 
 <pre>
 DROP TABLE album CASCADE;
 CREATE TABLE album (
