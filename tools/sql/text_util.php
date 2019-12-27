@@ -2,11 +2,11 @@
 
 require_once('stem_util.php');
 
-function get_lines($code) {
+function get_lines($code, $count=10) {
     $fa = file('python-intro/01-intro.txt');
     $fpos = $code % (count($fa)-10);
     $lines = array();
-    for($i = 0; $i< 10; $i++) {
+    for($i = 0; $i< $count; $i++) {
         $lines[] = trim($fa[$fpos+$i]);
     }
     return $lines;

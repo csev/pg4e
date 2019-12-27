@@ -470,7 +470,7 @@ function pg4e_load_csv($filename) {
 
 function pg4e_user_es_load($LAUNCH) {
     global $CFG;
-    global $es_host, $es_port, $es_user, $es_pass, $info, $es_connection;
+    global $es_host, $es_port, $es_user, $es_pass, $info;
 
     if ( U::get($_POST,'default') ) {
                 unset($_SESSION['es_host']);
@@ -566,7 +566,7 @@ function pg4e_extract_es_info($info) {
 
 function pg4e_user_es_form($LAUNCH) {
 	global $CFG;
-    global $OUTPUT, $es_host, $es_port, $es_user, $es_pass, $info, $es_connection;
+    global $OUTPUT, $es_host, $es_port, $es_user, $es_pass, $info;
 
         $tunnel = $LAUNCH->link->settingsGet('tunnel');
         if ( ! $es_host || strlen($es_host) < 1 ) {
