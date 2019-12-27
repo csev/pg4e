@@ -3,6 +3,11 @@
 
 # pip3 install elasticsearch
 
+# (If needed)
+# https://www.pg4e.com/code/hidden-dist.py
+# copy hidden-dist.py to hidden.py
+# edit hidden.py and put in your credentials
+
 from datetime import datetime
 from elasticsearch import Elasticsearch
 
