@@ -121,6 +121,24 @@ foreach($lines as $line) {
 You can start with this code
 <a href="https://www.pg4e.com/code/elastic0.py" target="_blank">https://www.pg4e.com/code/elastic0.py</a>
 </p>
+<p>
+This autograder will run a command equivalent to using the <b>elastictool.py</b> command as follows:
+<pre>
+$ python3 elastictool.py 
+
+Index / document count
+----------------------
+searchguard / 0
+tweet-index / 5
+
+Enter command: <b>search tweet-index information</b>
+</pre>
+And expect to get at least one hit.
+</p>
+<p>
+You can download <b>elastictool.py</b> at 
+<a href="https://www.pg4e.com/code/elastictool.py" target="_blank">https://www.pg4e.com/code/elastictool.py</a>
+</p>
 <!--
 <?php
   if ( isset($_SESSION['last_parms']) ) {
