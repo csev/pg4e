@@ -70,7 +70,7 @@ if ( isset($_SESSION['debug']) ) {
 }
 ?>
 <h1>Instructions</h1>
-<p>In this assignment you will create a table, and insert a few rows.
+<p>In this assignment you will create a table and insert a few rows.
 <?php pg4e_user_db_form($LAUNCH); ?>
 Create this table:
 <pre>
@@ -80,8 +80,8 @@ CREATE TABLE ages (
 );
 </pre>
 <p>
-Then make sure the table is empty by deleting any rows that 
-you previously inserted, and insert these rows and only these rows 
+Make sure the table is empty by deleting any rows that 
+you previously inserted, then insert these rows (and only these rows) 
 with the following commands:
 <pre>
 <?php
