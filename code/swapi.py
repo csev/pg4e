@@ -28,6 +28,7 @@ def summary(cur) :
 secrets = hidden.secrets()
 
 conn = psycopg2.connect(host=secrets['host'],
+        port=secrets['port'],
         database=secrets['database'],
         user=secrets['user'],
         password=secrets['pass'],
