@@ -36,6 +36,7 @@ $assignments = array(
     '05fulltext.php' => 'Full text GIN using tsvector',
     '07tweet.php' => 'Elastic Search Tweets',
     '07book.php' => 'Elastic Search Book Text',
+    '07gmane.php' => 'Elastic Search Email',
 );
 
 $oldsettings = Settings::linkGetAll();

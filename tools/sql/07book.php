@@ -89,7 +89,7 @@ if ( $dueDate->message ) {
 ?>
 <h1>Elastic Search Book Load</h1>
 <p>
-In this search you will download a book from:
+In this assignment you will download a book from:
 <pre>
 <a href="<?= $book_url ?>" target="_blank"><?= $book_url ?></a>
 </pre>

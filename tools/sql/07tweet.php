@@ -83,7 +83,7 @@ if ( $dueDate->message ) {
 ?>
 <h1>Elastic Search Tweeets</h1>
 <p>
-In this search you will create an elastic search index called <b>tweet-index</b>
+In this assignment you will create an elastic search index called <b>tweet-index</b>
 in the following Elastic Search instance:
 <?php pg4e_user_es_form($LAUNCH); ?>
 </p>
