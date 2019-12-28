@@ -50,17 +50,21 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>Loading JSON from PokeAPI</h1>
-<p>In this assignment, you will ...
-</p>
-<p>
+<h1>Loading JSON from PokéAPI</h1>
+<p>In this assignment, you will load the first 100 Pokémon JSON documents from the 
+<a href="https://pokeapi.co/" target="_blank">PokéAPI</a> and store them in this table:
 <pre>
 CREATE TABLE IF NOT EXISTS pokeapi (id INTEGER, body JSONB);
-
-https://pokeapi.co/api/v2/pokemon/1
 </pre>
+</p>
 <?php pg4e_user_db_form($LAUNCH); ?>
-
+<p>
+This assignment is not an adaptation of any of the sample code we provide.  Instead it takes
+some of the JSON techniques from
+<a href="https://www.pg4e.com/code/swapi.py" target="_blank">https://www.pg4e.com/code/swapi.py</a> 
+but the application you write can be far simpler.  All you need to do is loop through and retrieve
+the API data for urls ending in 1..100.
+</p>
 <?php
 if ( $LAUNCH->user->instructor ) {
     echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");
