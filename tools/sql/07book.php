@@ -3,69 +3,74 @@
 use \Tsugi\Util\U;
 use \Tsugi\Util\Mersenne_Twister;
 
-// 05ginstring.php and 05fulltext.php are copies of each other
+// https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/quickstart.html
 require_once "names.php";
 require_once "text_util.php";
+require_once "es_util.php";
 
 if ( ! pg4e_user_es_load($LAUNCH) ) return;
+if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
 // Compute the stuff for the output
 $code = getCode($LAUNCH);
 
-$lines = get_lines($code);
-$gin = get_gin($lines);
+// http://www.gutenberg.org/cache/epub/22381/pg22381.txt
+$books = array(
+ '14091' => 'repose',
+ '18866' => 'eccentric',
+ '19337' => 'charitable',
+ '22381' => 'prometheus',
+ '20203' => 'pennsylvania',
+);
 
-$stop_words = get_stop_words();
-$gin_stop = get_gin($lines, $stop_words);
-ksort($gin);
+$book_ids = array_keys($books);
+$MT = new Mersenne_Twister($code);
+$pos = $MT->getNext(0,count($book_ids));
 
-// Find the longest word
-$word = '';
-foreach($gin as $keyword => $docs) {
-    if(strlen($keyword) > strlen($word)) $word = $keyword;
-}
-
-$fulltext = (strpos(__file__,"fulltext") !== false);
-if ( $fulltext ) {
-$sql = "SELECT id, doc FROM docs03 WHERE to_tsquery('english', '$word') @@ to_tsvector('english', doc);";
-} else {
-$sql = "SELECT id, doc FROM docs03 WHERE '{".$word."}' <@ string_to_array(lower(doc), ' ');";
-}
+$book_id = $book_ids[$pos];
+$book_url = 'http://www.gutenberg.org/cache/epub/'.$book_id.'/pg'.$book_id.'.txt';
+$word = $books[$book_id];
 
 $oldgrade = $RESULT->grade;
 
 if ( U::get($_POST,'check') ) {
+
+	// This may or may not work
     $pg_PDO = pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass);
-    if ( ! $pg_PDO ) return;
-    if ( ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
+	unset($_SESSION['error']);  // Ignore missing database connection
+    if ( $pg_PDO && ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
 
-    $stmt = pg4e_query_return_error($pg_PDO, $sql);
-    if ( ! $stmt ) return;
+	$client = get_es_connection();
+    if ( ! $client ) return;
 
-    // Get one row
-    $failure = false;
-    $row = $stmt->fetch(\PDO::FETCH_NUM);
-    if ( $row == false ) {
-        $_SESSION['error'] = "Unable to retrieve a row with the keyword '$word'";
-        $failure = true;
-    }
+	$params = [
+    	'index' => 'pg'.$book_id,
+    	'body'  => [
+        	'query' => [
+            	'match' => [
+                	'content' => $word
+            	]
+        	]
+    	]
+	];
+	$_SESSION['last_parms'] = $params;
+	pg4e_debug_note($pg_PDO, json_encode($params, JSON_PRETTY_PRINT));
 
-    $found = array();
-    $stmt = pg4e_query_return_error($pg_PDO, "EXPLAIN ".$sql);
-    if ( ! $stmt ) return;
-
-    echo("<pre>\n");
-    while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-        $line = $row[0];
-        pg4e_debug_note($pg_PDO, "Explain retrieved: ".$line);
-
-        if ( strpos($line, "Seq Scan") !== false ) {
-            $_SESSION['error'] = "EXPLAIN query found 'Seq Scan', check pg4e_debug for details.";
-            $failure = true;
-        }
-    }
-
-    if ( $failure ) {
+	try {
+		unset($_SESSION['last_response']);
+		$response = $client->search($params);
+		$_SESSION['last_response'] = $response;
+		pg4e_debug_note($pg_PDO, json_encode($response, JSON_PRETTY_PRINT));
+		// echo("<pre>\n");print_r($response);echo("</pre>\n");
+		$hits = $response['hits']['total'];
+		if ( $hits < 1 ) {
+			$_SESSION['error'] = 'Query / match did not find '.$word;
+        	header( 'Location: '.addSession('index.php') ) ;
+        	return;
+    	}
+			
+	} catch(Exception $e) {
+		$_SESSION['error'] = 'Error: '.$e->getMessage();
         header( 'Location: '.addSession('index.php') ) ;
         return;
     }
@@ -82,82 +87,91 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>String Array GIN Index</h1>
-<?php if ( $fulltext ) { ?>
-<p>In this assignment, you will create a table of documents and then
-produce a GIN-based <b>ts_vector</b> index on the documents.
-</p>
-<?php } else { ?>
-<p>In this assignment, you will create a table of documents and then
-produce a GIN-based <b>text[]</b> reverse index
-for those documents that identifies each document
-which contains a particular word using SQL.
-</p>
+<h1>Elastic Search Book Load</h1>
 <p>
-FYI: In <i>contrast</i> with the provided sample SQL, you will
-map all the words
-in the GIN index to lower case (i.e. Python, PYTHON, and python
-should all end up as "python" in the GIN index).
-</p>
-<?php } ?>
-<p>
-The goal of this assignment is to run these queries:
+In this search you will download a book from:
 <pre>
-<?= $sql ?>
-
-EXPLAIN <?= $sql ?>
+<a href="<?= $book_url ?>" target="_blank"><?= $book_url ?></a>
 </pre>
-and (a) get the correct document(s) and (b) use the GIN index (i.e. not use a sequential scan).
-<pre>
-CREATE TABLE docs03 (id SERIAL, doc TEXT, PRIMARY KEY(id));
-
-CREATE INDEX fulltext03 ON docs03 USING gin(...);
-</pre>
-</p>
-<?php if ( $fulltext ) { ?>
-<p>
-If you already have the <b>docs03</b> filled with the correct rows, you can just add the new index
-to the table.
-</p>
-<?php } else { ?>
-<p>
-If you get an <b>operator class</b> error on your <b>CREATE INDEX</b> check the instructions
-below for the solution.
-</p>
-<?php } ?>
-<p>
-Here are the one-line documents that you are to insert into <b>docs03</b>:
-<?php insert_docs('docs03', $lines); ?>
-<p>
-You should also insert a number of filler rows into the table to make sure
-PostgreSQL uses its index:
-<pre>
-INSERT INTO docs03 (doc) SELECT 'Neon ' || generate_series(10000,20000);
-</pre>
-</p>
+and
+create an elastic search index called <b>pg<?= $book_id ?></b>
+in the following Elastic Search instance:
 <?php pg4e_user_es_form($LAUNCH); ?>
-<?php if ( ! $fulltext ) { ?>
-<h2>Operator Class Errors</h2>
-<p>
-If you try to create the index using the <b>_text_ops</b> operator class
-and it fails as follows switch to using <b>array_ops</b> as the operator class:
+</p>
+Use the following mapping for your index:
 <pre>
-ERROR:  operator class "_text_ops" does not exist for access method "gin"
-</pre>
-PostgreSQL 9.6 uses <b>_text_ops</b> and PostgresSQL 11 has collapsed all the
-array operator classes into a more flexible <b>array_ops</b> operators
- class. To check to see which version of PostgreSQL you are using, use this command:
-<pre>
-pg4e=> select version();
-                                        version
----------------------------------------------------------------------------------------
- PostgreSQL 11.2 on x86_64-pc-linux-musl, compiled by gcc (Alpine 8.3.0) 8.3.0, 64-bit
+{
+    "mappings": {
+        "paragraph": {
+            "properties": {
+                "content": {
+                    "type": "text",
+                    "analyzer" : "english"
+                },
+            }
+        }
+    }
+}
 </pre>
 </p>
-<?php } ?>
+<p>
+You can build your application by starting with this code -
+<a href="https://www.pg4e.com/code/elasticbook.py" target="_blank">https://www.pg4e.com/code/elasticbook.py</a>.
+You will need to setup the <b>hidden.py</b> with your elastic search host/port/account/password values.
+</p>
+<p>
+This autograder will run a command equivalent to using the <b>elastictool.py</b> command as follows:
+<pre>
+$ python3 elastictool.py 
+
+Index / document count
+----------------------
+searchguard / 0
+pg<?= $book_id ?> / 514
+
+Enter command: <b>search pg<?= $book_id ?> <?= $word ?></b>
+
+{
+  ...
+  "hits" : {
+    "total" : 1,
+    "max_score" : 1.0024122,
+    "hits" : [
+      {
+         ...
+      }
+    ]
+  }
+</pre>
+And expect to get at least one hit.
+</p>
+<p>
+You can download <b>elastictool.py</b> at 
+<a href="https://www.pg4e.com/code/elastictool.py" target="_blank">https://www.pg4e.com/code/elastictool.py</a>.
+You will need to setup the <b>hidden.py</b> with your elastic search host/port/account/password values.
+</p>
+<!--
+<?php
+  if ( isset($_SESSION['last_parms']) ) {
+	$jsonstr = json_encode($_SESSION['last_parms'], JSON_PRETTY_PRINT);
+	unset($_SESSION['last_parms']);
+	echo("Last elastic search query:\n\n");
+	echo(htmlentities($jsonstr, ENT_NOQUOTES));
+	echo("\n\n");
+  }
+  if ( isset($_SESSION['last_response']) ) {
+	$jsonstr = json_encode($_SESSION['last_response'], JSON_PRETTY_PRINT);
+	unset($_SESSION['last_response']);
+	echo("Last elastic search response:\n\n");
+	echo(htmlentities($jsonstr, ENT_NOQUOTES));
+	echo("\n");
+ }
+
+?>
+-->
 <?php
 if ( $LAUNCH->user->instructor ) {
-    echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");
+  echo("<p>Note to instructors: Students can view source to see the last elastic search request and response</p>");
 }
 ?>
 
