@@ -5,6 +5,8 @@
 # copy hidden-dist.py to hidden.py (if necessary)
 # edit hidden.py and put in your credentials
 
+# http://mbox.dr-chuck.net/sakai.devel/100/101
+
 # python3 elasticmail.py
 # Pulls data from the web and puts it into gmane index
 
@@ -200,6 +202,7 @@ while True:
     doc = {'offset': start, 'sender': email, 'headers' : hdrdict, 'body': body}
     res = es.index(index='gmane', doc_type='message', id=start, body=doc)
     print('   ',start, email, sent_at)
+
     # print('Added document...')
     # print(res['result'])
 
