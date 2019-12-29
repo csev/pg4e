@@ -1,6 +1,8 @@
 # Some Python utility code for elasticsearch.
 # uses the requests library (low level) rather than the Python elasticsearch wrapper
 
+# https://www.pg4e.com/code/elastictool.py
+
 # (If needed)
 # https://www.pg4e.com/code/hidden-dist.py
 # copy hidden-dist.py to hidden.py

@@ -2,26 +2,24 @@
 # https://www.pg4e.com/code/elasticmail.py
 
 # https://www.pg4e.com/code/hidden-dist.py
-# copy hidden-dist.py to hidden.py
+# copy hidden-dist.py to hidden.py (if necessary)
 # edit hidden.py and put in your credentials
 
 # python3 elasticmail.py
 # Pulls data from the web and puts it into gmane index
 
 import requests
-
 import re
 import hidden
-import myutils
 import datecompat
-
-from elasticsearch import Elasticsearch
 import time
 import json
 import copy
 import hidden
 
 import dateutil.parser as parser # If this import fails - just comment it out
+
+from elasticsearch import Elasticsearch
 
 def parsemaildate(md) :
     try:

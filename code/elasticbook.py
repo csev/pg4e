@@ -1,6 +1,5 @@
 
-# https://www.pg4e.com/code/loadbook.py
-# https://www.pg4e.com/code/myutils.py
+# https://www.pg4e.com/code/elasticbook.py
 
 # Download a book
 # wget http://www.gutenberg.org/cache/epub/14091/pg14091.txt
@@ -12,7 +11,7 @@
 # copy hidden-dist.py to hidden.py
 # edit hidden.py and put in your credentials
 
-# python3 loadbook.py
+# python3 elasticbook.py
 
 from elasticsearch import Elasticsearch
 import time
@@ -21,7 +20,7 @@ import hidden
 
 bookfile = input("Enter book file (i.e. 2591-0.txt): ")
 if bookfile == '' : bookfile = '2591-0.txt';
-base = bookfile.split('.')[0]
+indexname = bookfile.split('.')[0]
 
 # Make sure we can open the file
 fhand = open(bookfile)
@@ -38,8 +37,8 @@ es = Elasticsearch(
 
 # Start fresh
 # https://elasticsearch-py.readthedocs.io/en/master/api.html#indices
-res = es.indices.delete(index=base, ignore=[400, 404])
-print("Dropped index", base)
+res = es.indices.delete(index=indexname, ignore=[400, 404])
+print("Dropped index", indexname)
 print(res)
 
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/properties.html
@@ -57,7 +56,7 @@ settings = {
         }
     }
 
-res = es.indices.create(index=base, body=settings)
+res = es.indices.create(index=indexname, body=settings)
 print("Created the index...")
 print(res)
 
@@ -76,7 +75,7 @@ for line in fhand:
         }
         pcount = pcount + 1
 
-        res = es.index(index=base, doc_type='paragraph', id=pcount, body=doc)
+        res = es.index(index=indexname, doc_type='paragraph', id=pcount, body=doc)
         # print('Added document...')
         # print(res['result'])
 
@@ -90,8 +89,8 @@ for line in fhand:
     para = para + ' ' + line
 
 # Tell it to recompute the index
-res = es.indices.refresh(index=base)
-print("Index refreshed", base)
+res = es.indices.refresh(index=indexname)
+print("Index refreshed", indexname)
 print(res)
 
 print(' ')
@@ -103,7 +102,7 @@ print('Loaded',pcount,'paragraphs',count,'lines',chars,'characters')
 while True:
     search = input('Enter search term:')
     if len(search.strip()) < 1 : break
-    res = es.search(index=base, body={"query": {"query_string": { "query": search, "default_field": "content" }}})
+    res = es.search(index=indexname, body={"query": {"query_string": { "query": search, "default_field": "content" }}})
 
     summary = copy.deepcopy(res)   # Make a copy for printing
     del(summary['hits']['hits'])   # delete the detail from the copy
