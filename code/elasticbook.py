@@ -18,6 +18,7 @@ from elasticsearch import Elasticsearch
 import time
 import copy
 import hidden
+import uuid
 
 bookfile = input("Enter book file (i.e. pg18866.txt): ")
 if bookfile == '' : bookfile = 'pg18866.txt';
@@ -71,12 +72,16 @@ for line in fhand:
     chars = chars + len(line)
     if line == '' and para == '' : continue
     if line == '' :
+        pcount = pcount + 1
         doc = {
+            'offset' : pcount,
             'content': para
         }
-        pcount = pcount + 1
 
-        res = es.index(index=indexname, doc_type='paragraph', id=pcount, body=doc)
+        # Use a GUID for the primary key
+        pkey = uuid.uuid4()
+        res = es.index(index=indexname, doc_type='paragraph', id=pkey, body=doc)
+
         # print('Added document...')
         # print(res['result'])
 
