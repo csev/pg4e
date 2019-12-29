@@ -86,7 +86,10 @@ for line in fhand:
         # Use a GUID for the primary key
         # pkey = uuid.uuid4()
 
-        # Compute a SHA1 of the entire document as the primary key
+        # Compute a SHA256 of the entire document as the primary key.
+        # Because the pkey is a based on the document contents
+        # the "index" is in effect INSERT ON CONFLICT UPDATE unless
+        # the document contents change
         m = hashlib.sha256()
         m.update(json.dumps(doc).encode())
         pkey = m.hexdigest()
@@ -96,7 +99,7 @@ for line in fhand:
         # print('Added document...')
         # print(res['result'])
 
-        if pcount % 100 == 0 : 
+        if pcount % 100 == 0 :
             print(pcount, 'loaded...')
             time.sleep(1)
 
