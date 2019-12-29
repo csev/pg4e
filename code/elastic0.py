@@ -69,14 +69,19 @@ res = es.get(index="test-index", doc_type='tweet', id='abc')
 print('Retrieved document...')
 print(res)
 
-# Tell it to recompute the index
+# Tell it to recompute the index - normally it would take up to 30 seconds
+# Refresh can be costly - we do it here for demo purposes
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html
 res = es.indices.refresh(index="test-index")
 print("Index refreshed")
 print(res)
 
-# Do a search
+# Read through all the documents...
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html
+
 # res = es.search(index="test-index", body={"query": {"match_all": {}}})
 
+# Read the documents with a search term
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 
 res = es.search(index="test-index", body={"query": {"match": { "text" : { "query": "bonsai" }}}})

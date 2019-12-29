@@ -35,7 +35,7 @@ while True:
     # print(text)
     print()
     cmd = input('Enter command: ').strip()
-    if len(cmd) < 1 : break
+
     if cmd.startswith('quit') : break
 
     if cmd.startswith('detail') : 
@@ -44,7 +44,7 @@ while True:
 
     pieces = cmd.split()
 
-    if pieces[0] == 'delete' and len(pieces) == 2 :
+    if len(pieces) == 2 and pieces[0] == 'delete' :
         if pieces[1] == 'searchguard' :
             print('')
             print("Don't do that...");
@@ -61,7 +61,7 @@ while True:
         continue
 
     # https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-mapping.html
-    if pieces[0] == 'mapping' and len(pieces) == 2 :
+    if len(pieces) == 2 and pieces[0] == 'mapping' :
         queryurl = url + '/' + pieces[1] + '/_mapping?pretty'
         prurl = queryurl.replace(secrets['pass'],'*****')
         print(prurl)
@@ -74,7 +74,7 @@ while True:
 
 
     # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html
-    if pieces[0] == 'match_all' and len(pieces) == 2 :
+    if len(pieces) == 2 and pieces[0] == 'match_all' :
         queryurl = url + '/' + pieces[1] + '/_search?pretty'
         prurl = queryurl.replace(secrets['pass'],'*****')
         print(prurl)
@@ -89,7 +89,7 @@ while True:
         print(text)
         continue
 
-    if pieces[0] == 'get' and len(pieces) == 3 :
+    if len(pieces) == 3 and pieces[0] == 'get' :
         queryurl = url + '/' + pieces[1] + '/' + pieces[2] + '?pretty'
         prurl = queryurl.replace(secrets['pass'],'*****')
         print(prurl)
@@ -101,7 +101,7 @@ while True:
         print(text)
         continue
 
-    if pieces[0] == 'search' and len(pieces) == 3 :
+    if len(pieces) == 3 and pieces[0] == 'search' :
         queryurl = url + '/' + pieces[1] + '/_search?pretty'
         prurl = queryurl.replace(secrets['pass'],'*****')
         print(prurl)
@@ -123,6 +123,7 @@ while True:
     print('Invalid command, please try:')
     print('')
     print('  detail')
+    print('  quit')
     print('  get indexname/doctype id')
     print('  search indexname/doctype string')
     print('  search indexname string')
