@@ -16,6 +16,7 @@ secrets = hidden.elastic()
 
 url = 'http://'+secrets['user']+':'+secrets['pass']+'@'+secrets['host']+':'+str(secrets['port']);
 
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-indices.html
 caturl = url + '/_cat/indices?format=json&pretty'
 prurl = caturl.replace(secrets['pass'],'*****')
 print(prurl)
@@ -48,6 +49,7 @@ while True:
 
     pieces = cmd.split()
 
+    # https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-delete-index.html
     if len(pieces) == 2 and pieces[0] == 'delete' :
         if pieces[1] == 'searchguard' :
             print('')
@@ -93,6 +95,7 @@ while True:
         print(text)
         continue
 
+    # https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-get.html
     if len(pieces) == 3 and pieces[0] == 'get' :
         queryurl = url + '/' + pieces[1] + '/' + pieces[2] + '?pretty'
         prurl = queryurl.replace(secrets['pass'],'*****')
@@ -105,6 +108,7 @@ while True:
         print(text)
         continue
 
+    # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
     if len(pieces) == 3 and pieces[0] == 'search' :
         queryurl = url + '/' + pieces[1] + '/_search?pretty'
         prurl = queryurl.replace(secrets['pass'],'*****')
