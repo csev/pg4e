@@ -19,6 +19,8 @@ import time
 import copy
 import hidden
 import uuid
+import json
+import hashlib
 
 bookfile = input("Enter book file (i.e. pg18866.txt): ")
 if bookfile == '' : bookfile = 'pg18866.txt';
@@ -78,8 +80,17 @@ for line in fhand:
             'content': para
         }
 
+        # Use the paragraph count as primary key
+        # pkey = pcount
+
         # Use a GUID for the primary key
-        pkey = uuid.uuid4()
+        # pkey = uuid.uuid4()
+
+        # Compute a SHA1 of the entire document as the primary key
+        m = hashlib.sha256()
+        m.update(json.dumps(doc).encode())
+        pkey = m.hexdigest()
+
         res = es.index(index=indexname, doc_type='paragraph', id=pkey, body=doc)
 
         # print('Added document...')
