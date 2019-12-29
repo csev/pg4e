@@ -2,6 +2,7 @@
 # https://www.pg4e.com/code/elasticbook.py
 
 # Download a book
+# wget http://www.gutenberg.org/cache/epub/18866/pg18866.txt
 # wget http://www.gutenberg.org/cache/epub/14091/pg14091.txt
 # wget https://www.gutenberg.org/files/2591/2591-0.txt
 # wget https://www.gutenberg.org/files/11/11-0.txt
@@ -18,8 +19,8 @@ import time
 import copy
 import hidden
 
-bookfile = input("Enter book file (i.e. 2591-0.txt): ")
-if bookfile == '' : bookfile = '2591-0.txt';
+bookfile = input("Enter book file (i.e. pg18866.txt): ")
+if bookfile == '' : bookfile = 'pg18866.txt';
 indexname = bookfile.split('.')[0]
 
 # Make sure we can open the file

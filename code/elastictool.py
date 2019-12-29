@@ -34,7 +34,11 @@ while True:
 
     # print(text)
     print()
-    cmd = input('Enter command: ').strip()
+    try:
+        cmd = input('Enter command: ').strip()
+    except:
+        print()
+        break
 
     if cmd.startswith('quit') : break
 
