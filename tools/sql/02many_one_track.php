@@ -136,7 +136,7 @@ UPDATE track_raw SET album_id = (SELECT album.id FROM album WHERE album.title = 
 </p>
 <p>
 Then use a <b>INSERT ... SELECT</b> statement to copy the corresponding data
-from the <b>album_raw</b> table to the <b>album</b> table, effectively dropping
+from the <b>track_raw</b> table to the <b>track</b> table, effectively dropping
 the <b>artist</b> and <b>album</b> text fields.
 </p>
 <p>
