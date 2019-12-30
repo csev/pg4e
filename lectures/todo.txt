@@ -20,130 +20,6 @@ Lecture 1 - SQL / noSQL
 
 Lecture 2 - Elastic Search
 
-Data model as continuum
-Car model, fuel tank size, tank type, fuel type, 
-Sometimes new columns, and new tables and foreign keys are not the answer.
-Casandra, Elastic, Mongo
-
-Tags as application?
-
-ACID
-BASE
-
-SQL strikes back
-
-https://blog.patricktriest.com/text-search-docker-elasticsearch/
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html
-
-https://www.guru99.com/sql-vs-nosql.html
-
-https://www.youtube.com/watch?v=rRoy6I4gKWU
-
-https://blog.timescale.com/blog/why-sql-beating-nosql-what-this-means-for-future-of-data-time-series-database-348b777b847a/
-
-https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/46103.pdf
-
-Tech Loop
-
-https://www.youtube.com/watch?v=7Pg5AMSInJ0
-
-SELECT FOR UPDATE
-
-SELECT FOR UPDATE NOWAIT
-
-https://www.postgresql.org/docs/current/transaction-iso.html
-
-INSERT with an ON CONFLICT DO NOTHING
-
-https://www.postgresql.org/docs/current/sql-set-transaction.html
-
-    ISOLATION LEVEL { SERIALIZABLE | REPEATABLE READ | READ COMMITTED | READ UNCOMMITTED }
-    READ WRITE | READ ONLY
-    [ NOT ] DEFERRABLE
-
-https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PostgreSQL.Replication.ReadReplicas.html
-
-2013:
-
-https://www.intervision.com/5-best-practices-database-scaling/
-
-https://www.red-gate.com/simple-talk/cloud/cloud-data/designing-highly-scalable-database-architectures/
-
-
-***********
-https://www.youtube.com/watch?v=60UsHHsKyN4
-Getting Started with Elastic Search
-
-http://localhost:9200/index/doctype
-
-
-geo_distance
-
-
-Your own little Google search
-
-Lucene - Inverted index
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html
-
-https://stackoverflow.com/questions/32229255/elasticsearch-match-with-stemming
-
-Languages 
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-lang-analyzer.html
-
-Mapping / Types 
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
-
-
-
-    a simple type like text, keyword, date, long, double, boolean or ip.
-    a type which supports the hierarchical nature of JSON such as object or nested.
-    or a specialised type like geo_point, geo_shape, or completion.
-
-
-https://qbox.io/blog/elasticsearch-english-analyzer-customize
-
-curl -XPUT 'localhost:9200/english_analyzer_index -d'{
-  "mappings": {
-    "book": {
-      "properties": {
-        "name": {
-          "type": "string",
-          "analyzer": "english"        
-        }
-      }
-    }
-  }
-}'
-
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/analyzer.html
-
-PUT /my_index
-{
-  "mappings": {
-    "properties": {
-      "text": { 
-        "type": "text",
-        "fields": {
-          "english": { 
-            "type":     "text",
-            "analyzer": "english"
-          }
-        }
-      }
-    }
-  }
-}
-
-
-http://localhost:9200/places/museum
-                      index  type
-
-
 WEEK 4 - PANDAS AND SQL
 =======================
 
@@ -151,7 +27,13 @@ https://pandas.pydata.org/pandas-docs/stable/getting_started/comparison/comparis
 
 https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html
 
+https://pythondata.com/quick-tip-sqlalchemy-for-mysql-and-pandas/
 
+https://datacarpentry.org/python-ecology-lesson/09-working-with-sql/index.html
+
+https://pythontic.com/pandas/serialization/mysql
+
+https://pandas.pydata.org/pandas-docs/stable/user_guide/visualization.html
 
 TODO
 ====
