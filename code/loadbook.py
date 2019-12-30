@@ -26,7 +26,7 @@ fhand = open(bookfile)
 # Load the secrets
 secrets = hidden.secrets()
 
-conn = psycopg2.connect(host=secrets['host'],
+conn = psycopg2.connect(host=secrets['host'], port=secrets['port'],
         database=secrets['database'], 
         user=secrets['user'], 
         password=secrets['pass'], 
