@@ -15,7 +15,9 @@ def elastic():
 
 def readonly():
     return {"host": "35.239.113.162",
-            "port": 13009,
+            "port": 10014,
             "user": "pg4e_data_read",
-            "pass": "tsugi"}
+            "pass": "pg4e_pass_9876d",
+            "database": "pg4e_data"}
+
 
