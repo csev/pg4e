@@ -72,6 +72,8 @@ while True:
     if row is None : break
     loaded.add(row[0])
 
+print('Pre loaded', len(loaded))
+
 print()
 limit = input('LIMIT (0 means all):')
 if ( len(limit) < 1 ) : quit()
@@ -90,7 +92,9 @@ start = time.time()
 
 insert = 0
 skip = 0
+oldinsert = 0
 
+print('Reading data...')
 while True:
     row = incur.fetchone()
     if row is None: break
@@ -165,7 +169,9 @@ while True:
     if diff > 5 : 
         start = now
         conn.commit()
-        print(insert, 'inserted / committed ...')
+        rate = (insert - oldinsert ) / diff
+        oldinsert = insert
+        print('At', row_id, 'insert count=', insert, 'rate=', int(rate))
         continue
 
 print(' ')
