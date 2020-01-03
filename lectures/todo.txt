@@ -23,6 +23,9 @@ Lecture 2 - Elastic Search
 WEEK 4 - PANDAS AND SQL
 =======================
 
+NBGrader
+https://www.youtube.com/watch?v=5WUm0QuJdFw
+
 https://pandas.pydata.org/pandas-docs/stable/getting_started/comparison/comparison_with_sql.html
 
 https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html
@@ -34,6 +37,10 @@ https://datacarpentry.org/python-ecology-lesson/09-working-with-sql/index.html
 https://pythontic.com/pandas/serialization/mysql
 
 https://pandas.pydata.org/pandas-docs/stable/user_guide/visualization.html
+
+https://stackoverflow.com/questions/38683709/python-pandas-how-to-set-dataframe-column-value-as-x-axis-labels
+
+ax = df['weight'].plot(kind='bar')
 
 TODO
 ====
@@ -77,8 +84,5 @@ TODO
 
 WITH / Common Table Expressions
 
-Doing it in Python
-
 PERCENT_RANK
 
-HSTORE :)
