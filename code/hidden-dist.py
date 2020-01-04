@@ -27,4 +27,28 @@ def readonly():
             "pass": "pg4e_pass_9876d",
             "database": "pg4e_data"}
 
+# Return a psycopg2 connection string
+
+# import hidden
+# secrets = hidden.readonly()
+# sql_string = hidden.psycopg2(hidden.readonly())
+
+# 'dbname=pg4e_data user=pg4e_data_read password=pg4e_pass_94e5d host=35.239.113.162 port=10001'
+
+def psycopg2(secrets) :
+     return ('dbname='+secrets['database']+' user='+secrets['user']+
+        ' password='+secrets['pass']+' host='+secrets['host']+
+        ' port='+str(secrets['port']))
+
+# Return an SQLAlchemy string
+
+# import hidden
+# secrets = hidden.readonly()
+# sql_string = hidden.alchemy(hidden.readonly())
+
+# postgresql://pg4e_data_read:pg4e_pass_94e5d@35.239.113.162:10001/pg4e_data
+
+def alchemy(secrets) :
+    return ('postgresql://'+secrets['user']+':'+secrets['pass']+'@'+secrets['host']+
+        ':'+str(secrets['port'])+'/'+secrets['database'])
 
