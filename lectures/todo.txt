@@ -2,29 +2,20 @@
 COURSE 2
 ========
 
-WEEK 1 - FULL TEXT SEARCHES
-===========================
-
-
-WEEK 2 - JSON / KEY-VALUE DATA
-==============================
-
-CREATE UNIQUE INDEX j_uuid_idx ON jsontable(((j->>'uuid')::uuid));
-CREATE INDEX idxgintags ON api USING gin ((jdoc -> 'tags'));
-ALTER TABLE jsontable ADD CONSTRAINT uuid_must_exist CHECK (j ? 'uuid');
-
-WEEK 3 - ELASTIC SEARCH
-=======================
-
-Lecture 1 - SQL / noSQL
-
-Lecture 2 - Elastic Search
-
 WEEK 4 - PANDAS AND SQL
 =======================
 
 NBGrader
 https://www.youtube.com/watch?v=5WUm0QuJdFw
+
+Hiw pandas represents data internally
+https://www.dataquest.io/blog/pandas-big-data/
+
+HDF Store
+https://pandas.pydata.org/pandas-docs/stable/reference/io.html#hdfstore-pytables-hdf5
+
+Changing Pandas Column Type
+https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.astype.html
 
 https://pandas.pydata.org/pandas-docs/stable/getting_started/comparison/comparison_with_sql.html
 

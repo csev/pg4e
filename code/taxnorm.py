@@ -3,6 +3,13 @@
 
 # python3 taxnorm.py
 
+# SELECT v.id as id, regionid, ym, ym_val, city, state, metro, county FROM home_value AS v
+# JOIN home_city ON city_id = home_city.id 
+# JOIN home_state ON state_id = home_state.id
+# JOIN home_metro ON metro_id = home_metro.id
+# JOIN home_county ON county_id = home_county.id
+# LIMIT 5;
+
 import psycopg2
 import hidden
 import time
