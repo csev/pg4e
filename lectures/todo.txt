@@ -33,6 +33,24 @@ https://stackoverflow.com/questions/38683709/python-pandas-how-to-set-dataframe-
 
 ax = df['weight'].plot(kind='bar')
 
+Timeouts ??
+
+https://pypi.org/project/timeout-decorator/
+
+import timeout_decorator
+
+Install https://pypi.org/project/pgspecial/
+
+pgspecial
+
+
+$ pip install folium
+
+https://python-visualization.github.io/folium/quickstart.html
+
+
+vi
+
 TODO
 ====
 
