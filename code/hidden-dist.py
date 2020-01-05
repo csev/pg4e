@@ -1,5 +1,7 @@
 # Keep this file separate
 
+# https://www.pg4e.com/code/hidden-dist.py
+
 # psql -h 35.239.113.162 -p 13009 -U pg4e_user_8187f pg4e
 
 # %load_ext sql
