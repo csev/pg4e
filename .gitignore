@@ -2,6 +2,7 @@
 *.swp
 *.pyc
 ~*
+.ipynb_checkpoints
 __pycache__
 tsugi
 pg4e-solutions
