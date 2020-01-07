@@ -123,7 +123,7 @@ represent lists or dictionaries.  We have been using XML as a way to represent s
 for interchange since the 1990's. Before that we had serialization formats like
 <a href="https://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One" target="_blank">ASN.1</a>
 fsince the mid-1980s.  And formats like Comma-Separated Values (CSV) work for linear structures
-but not so much for keyvalue structures.
+but not so much for key value structures.
 </p>
 <p>
 Around 2000, we started seeing the need to move structured data between code written in JavaScript
