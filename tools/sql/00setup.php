@@ -107,8 +107,11 @@ before you can actually connect.  Please give it another try if it does not resp
 a user <b><?= htmlentities($dbuser) ?></b> and then create a
 database named <b>pg4e</b> and give the user access to that database.  This database and role
 will be used to complete the rest of your assignments in this class.  The only use of the your superuser
-credentials is to create the database and role.  Make sure to run these two commands in two executions
-if you are using the online client.
+credentials is to create the database and role.
+</p>
+These assigments are best done using the <b>psql</b> command in the terminal / shell.
+If you are using the web client (phppgadmin), make sure to run these two commands separately
+or you will get a transaction error.
 </p>
 <pre>
 CREATE USER <?= htmlentities($dbuser) ?> WITH PASSWORD '<span id="dbpass2" style="display:none"><?= htmlentities($dbpass) ?></span>';  -- (<a href="#" onclick="$('#dbpass2').toggle();return false;">hide/show</a>)
@@ -120,6 +123,8 @@ while logged in with your superuser credentials:
 DROP DATABASE pg4e;
 DROP USER <?= htmlentities($dbuser) ?>;
 </pre>
+You need to drop them in this order because the user cannot be dropped until the database
+no longer exists.
 </div>
 <?php
 $OUTPUT->footerStart();
