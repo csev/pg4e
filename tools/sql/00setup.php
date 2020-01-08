@@ -113,6 +113,9 @@ These assigments are best done using the <b>psql</b> command in the terminal / s
 If you are using the web client (phppgadmin), make sure to run these two commands separately
 or you will get a transaction error.
 </p>
+<p>
+Make sure to "show" the password before before cutting and pasting the commands below.
+</p>
 <pre>
 CREATE USER <?= htmlentities($dbuser) ?> WITH PASSWORD '<span id="dbpass2" style="display:none"><?= htmlentities($dbpass) ?></span>';  -- (<a href="#" onclick="$('#dbpass2').toggle();return false;">hide/show</a>)
 CREATE DATABASE pg4e WITH OWNER '<?= htmlentities($dbuser) ?>';
