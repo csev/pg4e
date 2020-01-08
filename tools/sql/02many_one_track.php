@@ -92,7 +92,7 @@ format and produce properly normalized tables as specified below.
 Once you have placed the proper data in the tables, press the button below to
 check your answer.
 </p>
-<?php pg4e_user_db_form($LAUNCH); ?>
+<?php pg4e_user_db_form($LAUNCH, true); ?>
 <p>
 Here is the structure of the tables you will need for this assignment:
 <pre>

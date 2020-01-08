@@ -95,7 +95,7 @@ and produce properly normalized tables as specified below.
 Once you have placed the proper data in the tables, press the button below to
 check your answer.
 </p>
-<?php pg4e_user_db_form($LAUNCH); ?>
+<?php pg4e_user_db_form($LAUNCH, true); ?>
 <p>
 We will do some things differently in this assignment.   We will not use
 a separate "raw" table, we will just use <b>ALTER TABLE</b> statements

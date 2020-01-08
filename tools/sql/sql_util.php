@@ -240,7 +240,7 @@ function pg4e_user_db_load($LAUNCH) {
     return true;
 }
 
-function pg4e_user_db_form($LAUNCH) {
+function pg4e_user_db_form($LAUNCH, $terminalonly=false) {
 	global $CFG;
     global $OUTPUT, $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
@@ -298,9 +298,12 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input ty
 </form>
 </p>
 <p>
-<p>You can do basic SQL commands using the
+<?php id ( ! $terminalonly ) { ?>
+You can do basic SQL commands using the
 <a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
-For batch loading or to run Python programs, you will need to access to <b>psql</b> on the command line:</p>
+<?php } ?>
+For batch loading using the <b>\copy</b> command or to run Python programs,
+you will need to access <b>python</b> or <b>psql</b> on the command line:</p>
 <pre>
 <?php if ( $tunnel == 'yes' ) { 
     $localport = $pdo_port;

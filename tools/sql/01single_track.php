@@ -103,7 +103,7 @@ download the CSV file and upload or copy
 it to the folder where you are running your SQL client.
 </p>
 <p>Database details:</p>
-<?php pg4e_user_db_form($LAUNCH); ?>
+<?php pg4e_user_db_form($LAUNCH, true); ?>
 <p>
 Here is the structure of the tables you will need for this assignment:
 <pre>
