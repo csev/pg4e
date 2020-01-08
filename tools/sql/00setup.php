@@ -69,7 +69,7 @@ echo('Server: <span id="server">'.$spinner."</span>\n");
 echo('Port: <span id="port">'.$spinner."</span>\n");
 echo('User: <span id="user">'.$spinner."</span>\n");
 echo("Password: ");
-echo('<span id="pass" style="display:none">'.$spinner.'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show</a> ');
+echo('<span id="pass" style="display:none">'.$spinner.'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show password</a> ');
 echo('<a href="#" onclick="copyToClipboard(this, $(\'#pass\').text());return false;">copy</a>');
 echo(')'."\n");
 echo('Status: <span id="status">'.$spinner.'</span>');
@@ -109,15 +109,14 @@ database named <b>pg4e</b> and give the user access to that database.  This data
 will be used to complete the rest of your assignments in this class.  The only use of the your superuser
 credentials is to create the database and role.
 </p>
-These assigments are best done using the <b>psql</b> command in the terminal / shell.
+<p>
 If you are using the web client (phppgadmin), make sure to run these two commands separately
 or you will get a transaction error.
 </p>
-<p>
-Make sure to "show" the password before before cutting and pasting the commands below.
-</p>
 <pre>
-CREATE USER <?= htmlentities($dbuser) ?> WITH PASSWORD '<span id="dbpass2" style="display:none"><?= htmlentities($dbpass) ?></span>';  -- (<a href="#" onclick="$('#dbpass2').toggle();return false;">hide/show</a>)
+-- You must <a href="#" onclick="$('#dbpass2').toggle();$('#reveal').hide();return false;">click here to show the password</a> on the CREATE USER command before you copy the command
+
+CREATE USER <?= htmlentities($dbuser) ?> WITH PASSWORD '<span id="dbpass2" style="display:none"><?= htmlentities($dbpass) ?></span>'; <span id="reveal">-- Reveal the password before copying</span>
 CREATE DATABASE pg4e WITH OWNER '<?= htmlentities($dbuser) ?>';
 </pre>
 If you make a mistake and want to reset or recreate the user or database, use the following SQL commands
