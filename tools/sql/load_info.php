@@ -23,6 +23,9 @@ $info = false;
 if ( is_object($retval) ) {
   $info = pg4e_extract_info($retval);
   if ( $info && isset($info->ip) && strlen($info->ip) > 1 ) {
+    $json = $LAUNCH->result->getJSON();
+    $new = json_encode($info);
+    if ( $new != $json ) $LAUNCH->result->setJSON($new);
     $retval = LTIX::gradeSend(1.0, false, $debug_log);
   }
 } else {
