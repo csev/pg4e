@@ -298,7 +298,7 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input ty
 </form>
 </p>
 <p>
-<?php id ( ! $terminalonly ) { ?>
+<?php if ( ! $terminalonly ) { ?>
 You can do basic SQL commands using the
 <a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
 <?php } ?>
