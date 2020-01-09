@@ -114,7 +114,7 @@ If you are using the web client (phppgadmin), make sure to run these two command
 or you will get a transaction error.
 </p>
 <pre>
--- You must <a href="#" onclick="$('#dbpass2').toggle();$('#reveal').hide();return false;">click here to show the password</a> on the CREATE USER command before you copy the command
+-- You must <a href="#" onclick="$('#dbpass2').show();$('#reveal').hide();return false;">click here to show the password</a> on the CREATE USER command before you copy the command
 
 CREATE USER <?= htmlentities($dbuser) ?> WITH PASSWORD '<span id="dbpass2" style="display:none"><?= htmlentities($dbpass) ?></span>'; <span id="reveal">-- Reveal the password before copying</span>
 CREATE DATABASE pg4e WITH OWNER '<?= htmlentities($dbuser) ?>';
