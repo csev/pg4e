@@ -23,16 +23,19 @@ $info = false;
 if ( is_object($retval) ) {
   $info = pg4e_extract_info($retval);
   if ( $info && isset($info->ip) && strlen($info->ip) > 1 ) {
-    $json = $LAUNCH->result->getJSON();
-    $new = json_encode($info);
-    if ( $new != $json ) $LAUNCH->result->setJSON($new);
     $retval = LTIX::gradeSend(1.0, false, $debug_log);
   }
 } else {
   $info = new \stdClass();
   $info->error = $retval;
+  $info->gmdate = gmdate("M d Y H:i:s");
   $info->detail = $pg4e_request_result;
+  $info->json = json_decode($pg4e_request_result);
 }
+
+$json = $LAUNCH->result->getJSON();
+$new = json_encode($info);
+if ( $new != $json ) $LAUNCH->result->setJSON($new);
 
 echo(json_encode($info, JSON_PRETTY_PRINT));
 
