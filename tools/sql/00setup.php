@@ -79,7 +79,8 @@ echo('Status: <span id="status">'.$spinner.'</span>');
 <div id="access_instructions" style="display:none;">
 <p>You can do basic SQL commands using the
 <a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
-For batch loading or to run Python programs, you will need to access to <b>psql</b> on the command line, using this command to connect:</p>
+For batch loading, file uploads, or to run Python programs, you will need to
+access to <b>psql</b> on the command line, using this command to connect:</p>
 <pre>
 <?php
 $tunnel = $LAUNCH->link->settingsGet('tunnel');

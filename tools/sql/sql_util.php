@@ -302,7 +302,7 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input ty
 You can do basic SQL commands using the
 <a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
 <?php } ?>
-For batch loading using the <b>\copy</b> command or to run Python programs,
+For batch loading or file uploads using the <b>\copy</b> command or to run Python programs,
 you will need to access <b>python</b> or <b>psql</b> on the command line:</p>
 <pre>
 <?php if ( $tunnel == 'yes' ) { 
