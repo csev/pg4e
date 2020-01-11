@@ -76,11 +76,10 @@ if ( isset($_SESSION['debug']) ) {
 Create a table named <b>automagic</b> with the following fields:
 <ul>
 <li>An <b>id</b> field that is an auto incrementing serial field.
-</li>
 <li>A <b>name</b> field that allows up to 32 characters but no more  This field is required.
+(<a href="https://www.postgresql.org/docs/current/ddl-constraints.html" target="_blank">PostgreSQL Constraints</a>)
 </li>
 <li>A <b>height</b> field that is a floating point number that is required.
-<a href="https://www.postgresql.org/docs/current/ddl-constraints.html" target="_blank">PostgreSQL Constraints</a>.
 </li>
 </ul>
 When the table is created, check your answer.
