@@ -103,9 +103,10 @@ if ( $retval === null ) {
     echo("<pre>\n");
     echo("Server: ".(strlen($info->ip) > 0 ? $info->ip : "not set")."\n");
     echo("User: ".$info->user."\n");
+    echo("Port: ".$info->port."\n");
     echo("Password: ");
     echo('<span id="pass" style="display:none">'.htmlentities($info->password).'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show</a>)'."\n");
-    echo("psql -h ".htmlentities($info->ip)." -U ".htmlentities($info->user)."\n");
+    echo("psql -h ".htmlentities($info->ip)." -p ".htmlentities($info->port)." -U ".htmlentities($info->user)."\n");
     echo("</pre>\n");
 }
 if ( $pg4e_request_result != null ) {

@@ -33,10 +33,15 @@ if ( is_object($retval) ) {
   $info->json = json_decode($pg4e_request_result);
 }
 
+echo(json_encode($info, JSON_PRETTY_PRINT));
+
+$unique = getUnique($LAUNCH);
+$info->dbname = getDbName($unique);
+$info->dbuser = getDbUser($unique);
+$info->dbpass = getDbPass($unique);
+
 $json = $LAUNCH->result->getJSON();
 $new = json_encode($info);
 if ( $new != $json ) $LAUNCH->result->setJSON($new);
-
-echo(json_encode($info, JSON_PRETTY_PRINT));
 
 
