@@ -111,6 +111,7 @@ CREATE TABLE track (
     PRIMARY KEY(id)
 );
 
+DROP TABLE IF EXISTS track_raw;
 CREATE TABLE track_raw
  (title TEXT, artist TEXT, album TEXT, album_id INTEGER,
   count INTEGER, rating INTEGER, len INTEGER);
