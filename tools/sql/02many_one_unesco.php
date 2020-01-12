@@ -33,8 +33,8 @@ $answer = array();
 $first = true;
 while ( $pieces = fgetcsv($file) ) {
     if ( $first ) {
-		$first = false;
-   		continue;
+        $first = false;
+        continue;
     }
     $answer[] = array($pieces[0], $pieces[3], $pieces[7], $pieces[8], $pieces[9], $pieces[10]);
 }
@@ -44,13 +44,18 @@ fclose($file);
 function compare_row($x, $y) {
     global $order_pos;
 
-	if ($x[$order_pos] > $y[$order_pos]) return 1;
-	if ($x[$order_pos] < $y[$order_pos]) return -1;
+    $xcol = trim($x[$order_pos]);
+    $ycol = trim($y[$order_pos]);
+    if ( strlen($xcol) == 0 && strlen($ycol) > 0 ) return 1;
+    if ( strlen($xcol) > 0 && strlen($ycol) == 0 ) return 1;
 
-	if ($x[0] > $y[0]) return 1;
-	if ($x[0] < $y[0]) return -1;
+    if ($xcol > $ycol ) return 1;
+    if ($xcol < $ycol) return -1;
 
-	return 0;
+    if ($x[0] > $y[0]) return 1;
+    if ($x[0] < $y[0]) return -1;
+
+    return 0;
 }
 
 usort($answer, "compare_row");
@@ -123,7 +128,7 @@ if ( $dueDate->message ) {
 ?>
 <h1>Unesco Heritage Sites Many-to-One</h1>
 <p>
-In this assignment you will read some 
+In this assignment you will read some
 <a href="https://whc.unesco.org/en/list/" target="_blank">Unesco Heritage Site</a> data
 in comma-separated-values (CSV) format
 and produce properly normalized tables as specified below.
@@ -149,7 +154,7 @@ CREATE TABLE category (
 
 ... More tables needed
 </pre>
-To load 
+To load
 <a href=whc-sites-2018-small.csv" target="_blank">
 the CSV data for this assignment
 </a>
