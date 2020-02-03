@@ -90,6 +90,7 @@ if ( $USER->instructor ) {
     if ( $CFG->launchactivity ) {
         echo('<a href="analytics" class="btn btn-default">Launches</a> ');
     }
+    echo('<a href="config.php"><button class="btn btn-info">Configure</button></a> '."\n");
     echo('<a href="grades.php" target="_blank"><button class="btn btn-info">Grade detail</button></a> '."\n");
 }
 SettingsForm::button();
