@@ -86,7 +86,7 @@ CREATE TABLE pg4e_meta (
 );
 </pre></p>
 <p>Creating the <b>pg4e_result</b> table is optional in the case you do not want to store any
-of your Personally Identifyable Information (PII) on a third party server.
+of your Personally Identifiable Information (PII) on a third party server.
 </p>
 <p>If you create the <b>pg4e_result</b> table, the auto-graders
 will store a copy of the grades you receive from each assignment
