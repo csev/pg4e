@@ -37,8 +37,10 @@ if ( is_object($retval) ) {
 setcookie("pdo_user", '', time()+31556926 ,'/');
 setcookie("pdo_pass", '', time()+31556926 ,'/');
 
+$cfg = getUMSIConfig();
+
 $info = false;
-if ( ! $info ) {
+if ( is_object($cfg) && ! $info ) {
    $try_create = true;
    $retval = pg4e_request($dbname, 'create');
    $create_request = $pg4e_request_result;
@@ -51,7 +53,13 @@ if ( ! $info ) {
 }
 ?>
 <h1>Postgres Setup</h1>
-<?php if ( $LAUNCH->user->instructor ) { ?>
+<?php
+if ( ! $cfg ) {
+    echo("<p>The UMSI Provisioning API is not configured - so this process is not needed.</p>");
+    echo("<p>You can change the configuration to point to a UMSI provisioning endpoint or instructor your students to use another PostgreSQL server like ElephanSQL.</p>");
+    return;
+}
+if ( $LAUNCH->user->instructor ) { ?>
 <p>
 <a href="info.php" class="btn btn-normal">Test Harness</a>
 <a href="load_info.php?dbname=<?= $dbname ?>" target="_blank" class="btn btn-normal">JSON</a>

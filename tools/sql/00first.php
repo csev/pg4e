@@ -22,8 +22,8 @@ if ( U::get($_POST,'check') ) {
 	$sql = "SELECT id, keystr, valstr, created_at, updated_at FROM pg4e_meta";
 	if ( ! pg4e_query_return_error($pg_PDO, $sql) ) return;
 
-	$sql = "SELECT id, link_id, score, title, note, debug_log, created_at, updated_at FROM pg4e_result";
-	if ( ! pg4e_query_return_error($pg_PDO, $sql) ) return;
+	// $sql = "SELECT id, link_id, score, title, note, debug_log, created_at, updated_at FROM pg4e_result";
+	// if ( ! pg4e_query_return_error($pg_PDO, $sql) ) return;
 
 	$gradetosend = 1.0;
 	pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);
@@ -36,8 +36,12 @@ if ( U::get($_POST,'check') ) {
 if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
+
+$cfg = getUMSIConfig();
+
 ?>
 <h1>Our First Tables</h1>
+<?php if ( $cfg ) { ?>
 <p>
 At this point you should have a database created
 and have given access to a role that you have created.  You will now create a few tables
@@ -47,6 +51,7 @@ that the autograder will use to communicate with you.
 using the superuser account.  You must use the <b><?= $pdo_user ?></b> role
 you created using the superuser for this assignment.
 </p>
+<?php } ?>
 <?php pg4e_user_db_form($LAUNCH); ?>
 <p>The <b>pg4e_debug</b> table will let you see the queries that were run by the
 auto grader as it is grading your assignment.  It is cleared out at the beginning
@@ -80,7 +85,11 @@ CREATE TABLE pg4e_meta (
   PRIMARY KEY(id)
 );
 </pre></p>
-<p>The <b>pg4e_result</b> table will store a copy of the grades you receive from each assignment
+<p>Creating the <b>pg4e_result</b> table is optional in the case you do not want to store any
+of your Personally Identifyable Information (PII) on a third party server.
+</p>
+<p>If you create the <b>pg4e_result</b> table, the auto-graders
+will store a copy of the grades you receive from each assignment
 along with some error message detail if something goes wrong.
 These scores are also sent to your learning system of record so changing or deleting your scores
 in this table will not accomplish anything :).

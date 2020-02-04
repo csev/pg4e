@@ -15,21 +15,24 @@ $unique = getUnique($LAUNCH);
 if ( ! $USER->instructor ) die("Must be instructor");
 
 $redirect = false;
-$postkeys = array('db_source', 'psql_url', 'psql_secret', 'psql_key', 'tunnel');
-foreach($postkeys as $key) {
-    if ( U::get($_POST, $key) ) {
+$postkeys = array('db_source', 'umsi_url', 'umsi_password', 'umsi_key', 'tunnel');
+if ( U::get($_POST, 'update') ) {
+    foreach($postkeys as $key) {
         $LAUNCH->context->settingsSet($key, U::get($_POST, $key));
         $redirect = true;
     }
 }
 
 if ( $redirect ) {
+    // die();
     $_SESSION['success'] = 'Settings updated.';
     header("Location: ".addSession('index.php'));
     return;
 }
 
 $settings = $LAUNCH->context->settingsGetAll();
+
+$umsi_password = U::get($settings, 'umsi_password');
 
 // View
 $OUTPUT->header();
@@ -49,8 +52,15 @@ $OUTPUT->welcomeUserCourse();
 // echo("<pre>\n");var_dump($set);echo("</pre>\n");
 
 ?>
-<p>Please configure the database source(s) for this course.</p>
+<p><b>Note:</b> This is a per-course configuration, not a per-link
+configuration so <b>changing this configuration</b>
+affects all of the links in a course.  So be careful.
+</p>
+<p>If you are using ElephantSQL or some other externally provisioned PostgreSQL
+server, leave the UMSI provisioning values blank.
+If this course using UMSI provisioning, please configure the API for this <b>course</b>.   
 <form method="post">
+<!--
 <p>
 <select name="db_source">
 <option value="none">-- Please select the type of database server --</option>
@@ -61,11 +71,12 @@ $OUTPUT->welcomeUserCourse();
 <?php if ( U::get($settings, "db_source") == 'elephant' ) echo('selected'); ?>
 >ElephantSQL</option>
 </select>
+-->
 </p>
-<p>If you are using ElephantSQL, please leave the PSQL provisioning values blank.</p>
-<p>PSQL_URL <input type="text" name="psql_url" value="<?= htmlentities(U::get($settings, 'psql_url')) ?>"></p>
-<p>PSQL_KEY <input type="text" name="psql_key" value="<?= htmlentities(U::get($settings, 'psql_key')) ?>"></p>
-<p>PSQL_SECRET <input type="text" name="psql_secret" value="<?= htmlentities(U::get($settings, 'psql_secret')) ?>"></p>
+<p>UMSI_URL <input type="text" name="umsi_url" value="<?= htmlentities(U::get($settings, 'umsi_url')) ?>"></p>
+<p>UMSI_KEY <input type="text" name="umsi_key" value="<?= htmlentities(U::get($settings, 'umsi_key')) ?>"></p>
+<p>UMSI_PASSWORD 
+<span id="pass" style="display:none"><input type="text" name="umsi_password" id="umsi_password" value="<?= htmlentities($umsi_password) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($umsi_password) ?>');return false;">copy</a>)</p>
 <p>
 Is there an ssh tunnel required?
 <select name="tunnel">
@@ -75,11 +86,9 @@ Is there an ssh tunnel required?
 >SSH Tunnel</option>
 </select>
 </p>
-<input type="submit">
+<input type="submit" name="update">
 </form>
 
 <?php
-
-
 $OUTPUT->footer();
 

@@ -48,6 +48,33 @@ function getDbUser($unique) {
     return "pg4e_user_".substr($unique,15,5);
 }
 
+function getUMSIConfig() {
+    global $CFG, $TSUGI_LAUNCH;
+    $retval = new \stdclass();
+    // 'umsi_url', 'umsi_secret', 'umsi_key'
+    $settings = $TSUGI_LAUNCH->context->settingsGetAll();
+    $umsi_url = U::get($settings, 'umsi_url');
+    $umsi_key = U::get($settings, 'umsi_key');
+    $umsi_password = U::get($settings, 'umsi_password');
+    if ( strlen($umsi_url) > 0 && strlen($umsi_key) > 0 || strlen($umsi_password) > 0 ) {
+        $retval->pg4e_api_url = $umsi_url;
+        $retval->pg4e_api_key = $umsi_key;
+        $retval->pg4e_api_password = $umsi_password;
+        return $retval;
+    }
+
+    $umsi_url = isset($CFG->pg4e_api_url) ? $CFG->pg4e_api_url : false;
+    $umsi_key = isset($CFG->pg4e_api_key) ? $CFG->pg4e_api_key : false;
+    $umsi_password = isset($CFG->pg4e_api_password) ? $CFG->pg4e_api_password : false;
+    if ( strlen($umsi_url) > 0 && strlen($umsi_key) > 0 || strlen($umsi_password) > 0 ) {
+        $retval->pg4e_api_url = $umsi_url;
+        $retval->pg4e_api_key = $umsi_key;
+        $retval->pg4e_api_password = $umsi_password;
+        return $retval;
+    }
+    return false;
+}
+
 function getDbPass($unique) {
     return "pg4e_pass_".substr($unique,20,5);
 }
@@ -59,16 +86,21 @@ function getDbPass($unique) {
  * Number if something went wrong and all we have is the http code
  */
 function pg4e_request($dbname, $path='info/pg') {
-    global $CFG, $pg4e_request_result, $pg4e_request_url;
+    global $pg4e_request_result, $pg4e_request_url;
+
+    $cfg = getUMSIConfig();
+    if ( ! $cfg ) {
+        return "UMSI API is not configured.";
+    }
 
     $pg4e_request_result = false;
     $pg4e_request_url = false;
-    $pg4e_request_url = $CFG->pg4e_api_url.'/'.$path.'/'.$dbname;
+    $pg4e_request_url = $cfg->pg4e_api_url.'/'.$path.'/'.$dbname;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $pg4e_request_url);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_USERPWD, $CFG->pg4e_api_key.':'.$CFG->pg4e_api_password);
+    curl_setopt($ch, CURLOPT_USERPWD, $cfg->pg4e_api_key.':'.$cfg->pg4e_api_password);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
@@ -192,7 +224,12 @@ function pg4e_user_db_load($LAUNCH) {
 
     if ( strlen($pdo_port) < 1 ) $pdo_port = '5432';
 
-    if ( ! $pdo_host && isset($CFG->pg4e_api_key) ) {
+    $cfg = getUMSIConfig();
+    if ( ! $cfg ) {
+        return "UMSI API is not configured.";
+    }
+
+    if ( ! $pdo_host && $cfg ) {
         $retval = pg4e_request($project, 'info/pg');
         $info = false;
         if ( is_object($retval) ) {
@@ -215,12 +252,12 @@ function pg4e_user_db_load($LAUNCH) {
     ));
     if ( $new != $json ) $LAUNCH->result->setJSON($new);
 
-	// Set up the cookies
+    // Set up the cookies
     setcookie("pg4e_desc", $pdo_database, time()+31556926 ,'/');
     setcookie("pg4e_host", $pdo_host, time()+31556926 ,'/');
     setcookie("pg4e_port", $pdo_port, time()+31556926 ,'/');
 
-    if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) {
+    if ( $LAUNCH->user->instructor || ! $cfg ) {
         $_SESSION['pdo_host'] = $pdo_host;
         $_SESSION['pdo_port'] = $pdo_port;
         $_SESSION['pdo_database'] = $pdo_database;
@@ -241,18 +278,21 @@ function pg4e_user_db_load($LAUNCH) {
 }
 
 function pg4e_user_db_form($LAUNCH, $terminalonly=false) {
-	global $CFG;
     global $OUTPUT, $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
-        $tunnel = $LAUNCH->link->settingsGet('tunnel');
-        if ( ! $pdo_host || strlen($pdo_host) < 1 ) {
-                echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
+    $cfg = getUMSIConfig();
+
+    $tunnel = $LAUNCH->link->settingsGet('tunnel');
+    if ( ! $cfg ) {
+        echo("<p>Please enter your PostgreSQL credentials below.</p>\n");
+    } else if (! $pdo_host || strlen($pdo_host) < 1 ) {
+        echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
     }
     if ( strlen($pdo_port) < 1 ) $pdo_port = "5432";
 ?>
 <form name="myform" method="post" >
 <p>
-<?php if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) { ?>
+<?php if ( $LAUNCH->user->instructor || ! $cfg ) { ?>
 Host: <input type="text" name="pdo_host" value="<?= htmlentities($pdo_host) ?>" id="pdo_host" onchange="setPGAdminCookies();"><br/>
 Port: <input type="text" name="pdo_port" value="<?= htmlentities($pdo_port) ?>" id="pdo_port" onchange="setPGAdminCookies();"><br/>
 Database: <input type="text" name="pdo_database" value="<?= htmlentities($pdo_database) ?>" id="pdo_database" onchange="setPGAdminCookies();"><br/>
@@ -401,7 +441,7 @@ function pg4e_check_debug_table($LAUNCH, $pg_PDO) {
 }
 
 function pg4e_debug_note($pg_PDO, $note) {
-	if ( ! $pg_PDO ) return;
+    if ( ! $pg_PDO ) return;
     $pg_PDO->queryReturnError(
         "INSERT INTO pg4e_debug (query, result) VALUES (:query, :result)",
         array(":query" => $note, ':result' => 'Note only')
@@ -449,29 +489,29 @@ function pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate) {
         $scorestr = "Grade not sent: ".$retval;
         $_SESSION['error'] = $scorestr;
     } else {
-                $scorestr = "Unexpected return: ".json_encode($retval);
-                $_SESSION['error'] = "Unexpected return, see pg4e_result for detail";
+        $scorestr = "Unexpected return: ".json_encode($retval);
+        $_SESSION['error'] = "Unexpected return, see pg4e_result for detail";
     } 
 
-	if ( $pg_PDO ) {
+    if ( $pg_PDO ) {
         $pg_PDO->queryReturnError(
         "INSERT INTO pg4e_result (link_id, score, note, title, debug_log)
                     VALUES (:link_id, :score, :note, :title, :debug_log)",
-        	array(":link_id" => $LAUNCH->link->id, ":score" => $gradetosend,
+            array(":link_id" => $LAUNCH->link->id, ":score" => $gradetosend,
                ":note" => $scorestr, ":title" => $LAUNCH->link->title,
                ":debug_log" => json_encode($debug_log)
-         	)
-    	);
-	}
+             )
+        );
+    }
 }
 
 function pg4e_load_csv($filename) {
-	$file = fopen($filename,"r");
-	$retval = array();
-	while ( $pieces = fgetcsv($file) ) {
-    	$retval[] = $pieces;
-	}
-	fclose($file);
+    $file = fopen($filename,"r");
+    $retval = array();
+    while ( $pieces = fgetcsv($file) ) {
+        $retval[] = $pieces;
+    }
+    fclose($file);
     return $retval;
 }
 
@@ -514,7 +554,12 @@ function pg4e_user_es_load($LAUNCH) {
 
     if ( strlen($es_port) < 1 ) $es_port = '5432';
 
-    if ( ! $es_host && isset($CFG->pg4e_api_key) ) {
+    $cfg = getUMSIConfig();
+    if ( ! $cfg ) {
+        return "UMSI API is not configured.";
+    }
+
+    if ( ! $es_host && $cfg ) {
         $retval = pg4e_request($project, 'info/es');
         $info = false;
         if ( is_object($retval) ) {
@@ -572,7 +617,6 @@ function pg4e_extract_es_info($info) {
 }
 
 function pg4e_user_es_form($LAUNCH) {
-	global $CFG;
     global $OUTPUT, $es_host, $es_port, $es_user, $es_pass, $info;
 
         $tunnel = $LAUNCH->link->settingsGet('tunnel');
