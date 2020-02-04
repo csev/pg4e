@@ -33,6 +33,10 @@ if ( is_object($retval) ) {
   $info = pg4e_extract_info($retval);
 }
 
+// Make sure these are not set from some prior assignment
+setcookie("pdo_user", '', time()+31556926 ,'/');
+setcookie("pdo_pass", '', time()+31556926 ,'/');
+
 $info = false;
 if ( ! $info ) {
    $try_create = true;
@@ -192,6 +196,8 @@ function updateMsg() {
               document.cookie = 'pg4e_desc=<?= $dbname ?>;expires='+now.toGMTString()+';path=/;SameSite=Secure';
               document.cookie = 'pg4e_host='+retval.ip+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
               document.cookie = 'pg4e_port='+retval.port+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
+              document.cookie = 'pg4e_user=;expires=-1;path=/;SameSite=Secure';
+              document.cookie = 'pg4e_pass=;expires=-1;path=/;SameSite=Secure';
               console.log(document.cookie);
 
               $("#server").html(retval.ip);
