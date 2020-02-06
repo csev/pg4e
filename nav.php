@@ -53,7 +53,9 @@ if ( isset($_SESSION['id']) ) {
     }
 } else {
     // $set->addLeft('Autograder', $T.'store');
-    // $set->addRight('Login', $T.'login.php');
+    if ( isset($CFG->google_client_id) && $CFG->google_client_id ) {
+        $set->addRight('Login', $T.'login.php');
+    }
 }
 $set->addRight('Instructor', 'http://www.dr-chuck.com');
 
