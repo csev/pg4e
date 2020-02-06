@@ -10,6 +10,8 @@ $MAX_UPLOAD_FILE_SIZE = 1024*1024;
 
 require_once "sql_util.php";
 
+// echo("<pre>\n");var_dump($_POST);die('zap');
+
 if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
 $oldgrade = $RESULT->grade;
@@ -53,6 +55,7 @@ you created using the superuser for this assignment.
 </p>
 <?php } ?>
 <?php pg4e_user_db_form($LAUNCH); ?>
+<p>Log in to your database and create the following tables.</p>
 <p>The <b>pg4e_debug</b> table will let you see the queries that were run by the
 auto grader as it is grading your assignment.  It is cleared out at the beginning
 of each autograder attempt.

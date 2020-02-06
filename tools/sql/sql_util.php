@@ -50,9 +50,12 @@ function getDbUser($unique) {
 
 function getUMSIConfig() {
     global $CFG, $TSUGI_LAUNCH;
-    $retval = new \stdclass();
-    // 'umsi_url', 'umsi_secret', 'umsi_key'
+
     $settings = $TSUGI_LAUNCH->context->settingsGetAll();
+    $db_source = U::get($settings, 'db_source');
+	if ( $db_source == 'elephant' ) return false;
+
+    $retval = new \stdclass();
     $umsi_url = U::get($settings, 'umsi_url');
     $umsi_key = U::get($settings, 'umsi_key');
     $umsi_password = U::get($settings, 'umsi_password');
@@ -199,6 +202,12 @@ function pg4e_user_db_load($LAUNCH) {
         return false;
     }
 
+    $cfg = getUMSIConfig();
+    if ( ! $cfg ) {
+        return "UMSI API is not configured.";
+    }
+
+
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
 
@@ -208,6 +217,15 @@ function pg4e_user_db_load($LAUNCH) {
     $pdo_user = U::get($_POST, 'pdo_user');
     $pdo_pass = U::get($_POST, 'pdo_pass');
 
+	$default_database = '';
+	$default_user = '';
+	$default_pass = '';
+	if ( $cfg ) {
+		$default_database = 'pg4e';
+		$default_user = getDbUser($unique);
+		$default_pass = getDbPass($unique);
+    }
+		
     if ( $pdo_database && $pdo_host  && $pdo_user && $pdo_pass ) {
         setcookie("pdo_database", $pdo_database, time()+31556926 ,'/');
         setcookie("pdo_host", $pdo_host, time()+31556926 ,'/');
@@ -215,19 +233,14 @@ function pg4e_user_db_load($LAUNCH) {
         setcookie("pdo_user", $pdo_user, time()+31556926 ,'/');
         setcookie("pdo_pass", $pdo_pass, time()+31556926 ,'/');
     } else {
-        $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_COOKIE, 'pdo_database', 'pg4e'));
+        $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_COOKIE, 'pdo_database', $default_database));
         $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_COOKIE, 'pdo_host'));
         $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port'));
-        $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_COOKIE, 'pdo_user', getDbUser($unique)));
-        $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_COOKIE, 'pdo_pass', getDbPass($unique)));
+        $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_COOKIE, 'pdo_user', $default_user));
+        $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_COOKIE, 'pdo_pass', $default_pass));
     }
 
     if ( strlen($pdo_port) < 1 ) $pdo_port = '5432';
-
-    $cfg = getUMSIConfig();
-    if ( ! $cfg ) {
-        return "UMSI API is not configured.";
-    }
 
     if ( ! $pdo_host && $cfg ) {
         $retval = pg4e_request($project, 'info/pg');
@@ -271,7 +284,7 @@ function pg4e_user_db_load($LAUNCH) {
 
     if ( ! $pdo_host && ! $LAUNCH->user->instructor ) {
         echo("<p>You have not yet set up your database server for project <b>".htmlentities($project)."</b></p>\n");
-        echo("<p>Make sure to run the setup process before attempting this assignment..</p>\n");
+        echo("<p>Make sure to run the setup process before attempting this assignment.</p>\n");
         return false;
     }
     return true;
@@ -341,12 +354,13 @@ Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input ty
 <?php } ?>
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
-<?php if ( $LAUNCH->user->instructor) { ?>
+<?php if ( $LAUNCH->user->instructor || ! $cfg ) { ?>
 <input type="submit" name="default" value="Default Values">
 <?php } ?>
 </form>
 </p>
 <p>
+<?php if ( strlen($pdo_host) < 1 ) return; ?>
 <?php if ( ! $terminalonly ) { ?>
 You can do basic SQL commands using the
 <a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.

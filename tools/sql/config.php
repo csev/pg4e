@@ -60,7 +60,6 @@ affects all of the links in a course.  So be careful.
 server, leave the UMSI provisioning values blank.
 If this course using UMSI provisioning, please configure the API for this <b>course</b>.   
 <form method="post">
-<!--
 <p>
 <select name="db_source">
 <option value="none">-- Please select the type of database server --</option>
@@ -71,7 +70,6 @@ If this course using UMSI provisioning, please configure the API for this <b>cou
 <?php if ( U::get($settings, "db_source") == 'elephant' ) echo('selected'); ?>
 >ElephantSQL</option>
 </select>
--->
 </p>
 <p>UMSI_URL <input type="text" name="umsi_url" value="<?= htmlentities(U::get($settings, 'umsi_url')) ?>"></p>
 <p>UMSI_KEY <input type="text" name="umsi_key" value="<?= htmlentities(U::get($settings, 'umsi_key')) ?>"></p>
