@@ -284,7 +284,16 @@ function pg4e_user_db_form($LAUNCH, $terminalonly=false) {
 
     $tunnel = $LAUNCH->link->settingsGet('tunnel');
     if ( ! $cfg ) {
-        echo("<p>Please enter your PostgreSQL credentials below.</p>\n");
+    ?>
+<p>Please enter your PostgreSQL credentials below. You need to have an Internet-accessible 
+database server so we can grade your assignments..
+There is company called 
+<a href="https://www.elephantsql.com/plans.html" target="_blank">ElephantSQL</a> that provides
+a no-charge very small instance of PostgreSQL
+(Tiny Turtle) that should work for the purposes of these assignments.
+</p>
+<?php
+
     } else if (! $pdo_host || strlen($pdo_host) < 1 ) {
         echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
     }

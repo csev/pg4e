@@ -1,0 +1,38 @@
+{
+"title": "PostgreSQL for Everybody (PG4E)",
+"description" : "Hello and welcome to my site where you can work through these modules and learn develop to use the PostgreSQL database.",
+"count": true,
+"required_modules": [
+    "https://github.com/tsugitools/gift",
+    "https://github.com/tsugitools/youtube",
+    "https://github.com/tsugitools/peer-grade"
+],
+"badges": [
+],
+"modules": [
+{
+    "title": "Hello World",
+    "anchor": "hello",
+    "icon" : "fa-globe",
+    "description": "This is a test",
+    "videos" : [
+    ], 
+    "references" : [
+    ],
+    "lti" : [
+        {
+        "title" : "Autograder: Set up some tables",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_00_first",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "00first.php"
+            }
+        ]
+        }
+    ]
+}
+
+]
+}
