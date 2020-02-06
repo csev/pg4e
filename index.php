@@ -19,11 +19,11 @@ learn the PostgreSQL database.  The site is
 it is being built.
 </p>
 <p>
-At this point we are working on a way to provide users with a free PostgreSQL server so we can open
-this up beyond our enrolled students at the 
-<a href="https://www.si.umich.edu/" target="_blank">
-University of Michigan School of Information
-</a>.
+To do this course you need access to an Internet-Accessible PostgreSQL server.
+There is company called
+<a href="https://www.elephantsql.com/plans.html" target="_blank">ElephantSQL</a> that provides
+a no-charge very small instance of PostgreSQL
+(Tiny Turtle) that should work for the purposes of these assignments.
 </p>
 <h2>Technology</h2>
 <p>

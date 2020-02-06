@@ -11,7 +11,7 @@
 ],
 "modules": [
 {
-    "title": "Hello World",
+    "title": "Hello World (Beta test)",
     "anchor": "hello",
     "icon" : "fa-globe",
     "description": "This is a test",
