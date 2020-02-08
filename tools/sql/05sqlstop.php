@@ -118,7 +118,16 @@ CREATE TABLE <?= $index ?> (
   doc_id INTEGER REFERENCES <?= $table ?>(id) ON DELETE CASCADE
 );
 </pre>
+<?php if ( $stop_words ) { ?>
 <p>
+If you already have the above tables created and the documents inserted
+from a prior assignment, you can just delete all the rows from 
+the reverse index and recreate them following the rules of stop words:
+<pre>
+DELETE FROM <?= $index ?>;
+</pre>
+</p>
+<?php } ?>
 Here are the one-line documents that you are to insert into <b><?= $table ?></b>:
 <?php insert_docs($table, $lines); ?>
 <?php if ( $stop_words ) { ?>
