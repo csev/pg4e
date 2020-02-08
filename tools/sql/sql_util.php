@@ -183,39 +183,75 @@ function pg4e_unlock($LAUNCH) {
     return false;
 }
 
+// TODO: Remove
 function pg4e_user_db_load($LAUNCH) {
+
+    // Transport the request to check past the redirect :)
+    if ( U::get($_POST,'check') ) {
+        $_SESSION['check'] = $_POST['check'];  
+    }
+    // Returns true if redirected
+    $retval = pg4e_user_db_post($LAUNCH);
+    if ( $retval ) return $false;
+
+    // Restore check after redirect if one happens
+    if ( U::get($_SESSION,'check') ) {
+        $_POST['check'] = $_SESSION['check'];  
+        unset($_SESSION['check']);
+    }
+
+    // Set global values and cookies, etc.
+    pg4e_user_db_data($LAUNCH);
+    return true;
+}
+
+// Handle incoming POST request, redirecting if necessary
+function pg4e_user_db_post($LAUNCH) {
     global $CFG;
     global $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     if ( U::get($_POST,'default') ) {
-                unset($_SESSION['pdo_host']);
-                unset($_SESSION['pdo_port']);
-                unset($_SESSION['pdo_database']);
-                unset($_SESSION['pdo_user']);
-                unset($_SESSION['pdo_pass']);
-                setcookie("pdo_database", '', time()+31556926 ,'/');
-                setcookie("pdo_host", '', time()+31556926 ,'/');
-                setcookie("pdo_port", '', time()+31556926 ,'/');
-                setcookie("pdo_user", '', time()+31556926 ,'/');
-                setcookie("pdo_pass", '', time()+31556926 ,'/');
+        unset($_SESSION['pdo_host']);
+        unset($_SESSION['pdo_port']);
+        unset($_SESSION['pdo_database']);
+        unset($_SESSION['pdo_user']);
+        unset($_SESSION['pdo_pass']);
+        setcookie("pdo_database", '', time()+31556926 ,'/');
+        setcookie("pdo_host", '', time()+31556926 ,'/');
+        setcookie("pdo_port", '', time()+31556926 ,'/');
+        setcookie("pdo_user", '', time()+31556926 ,'/');
+        setcookie("pdo_pass", '', time()+31556926 ,'/');
         header( 'Location: '.addSession('index.php') ) ;
-        return false;
+        return true;
     }
+
+    // Cannot set these from post unless we are unconfigured or instructor
+    $cfg = getUMSIConfig();
+    if ( $cfg && ! $LAUNCH->user->instructor ) return false;
+
+    // If we have new values... copy them into SESSION
+    $retval = false;
+    foreach(array('pdo_database', 'pdo_host', 'pdo_port', 'pdo_user', 'pdo_pass') as $key) {
+        $value = U::get($_POST, $key);
+        if ( ! $value ) continue;
+        $_SESSION[$key] = $value;
+        $retval = true;
+    }
+    if ( $retval ) header( 'Location: '.addSession('index.php') ) ;
+    return $retval;
+}
+
+// The instructor precedence with config is SESSION, COOKIE, CONFIG
+// The student precedence with config is SESSION, CONFIG
+// Without config, the precedence is SESSION, COOKIE
+function pg4e_user_db_data($LAUNCH) {
+    global $CFG;
+    global $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     $cfg = getUMSIConfig();
-    if ( ! $cfg ) {
-        return "UMSI API is not configured.";
-    }
-
 
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
-
-    $pdo_database = U::get($_POST, 'pdo_database');
-    $pdo_host = U::get($_POST, 'pdo_host');
-    $pdo_port = U::get($_POST, 'pdo_port');
-    $pdo_user = U::get($_POST, 'pdo_user');
-    $pdo_pass = U::get($_POST, 'pdo_pass');
 
 	$default_database = '';
 	$default_user = '';
@@ -225,30 +261,32 @@ function pg4e_user_db_load($LAUNCH) {
 		$default_user = getDbUser($unique);
 		$default_pass = getDbPass($unique);
     }
-		
-    if ( $pdo_database && $pdo_host  && $pdo_user && $pdo_pass ) {
-        setcookie("pdo_database", $pdo_database, time()+31556926 ,'/');
-        setcookie("pdo_host", $pdo_host, time()+31556926 ,'/');
-        setcookie("pdo_port", $pdo_port, time()+31556926 ,'/');
-        setcookie("pdo_user", $pdo_user, time()+31556926 ,'/');
-        setcookie("pdo_pass", $pdo_pass, time()+31556926 ,'/');
-    } else {
+
+    // Instructor / un-confgured defaults
+    if ( $LAUNCH->user->instructor || ! $cfg ) {
         $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_COOKIE, 'pdo_database', $default_database));
         $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_COOKIE, 'pdo_host'));
-        $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port'));
+        $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port'), '5432');
         $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_COOKIE, 'pdo_user', $default_user));
         $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_COOKIE, 'pdo_pass', $default_pass));
+    } else {  // Student && Config
+        $pdo_database = U::get($_SESSION, 'pdo_database', $default_database);
+        $pdo_host = U::get($_SESSION, 'pdo_host');
+        $pdo_port = U::get($_SESSION, 'pdo_port', '5432');
+        $pdo_user = U::get($_SESSION, 'pdo_user', $default_user);
+        $pdo_pass = U::get($_SESSION, 'pdo_pass', $default_pass);
     }
 
-    if ( strlen($pdo_port) < 1 ) $pdo_port = '5432';
-
+    // If we don't yet have a host and we are configured, grab one from the server
     if ( ! $pdo_host && $cfg ) {
         $retval = pg4e_request($project, 'info/pg');
         $info = false;
         if ( is_object($retval) ) {
             $info = pg4e_extract_info($retval);
-             if ( isset($info->ip) ) $pdo_host = $info->ip;
-             if ( isset($info->port) ) $pdo_port = $info->port;
+            if ( isset($info->ip) ) $pdo_host = $info->ip;
+            if ( isset($info->port) ) $pdo_port = $info->port;
+            if ( strlen($pdo_port) < 1 ) $pdo_port = '5432';
+            // Save later API retrievals
             $_SESSION['pdo_host'] = $pdo_host;
             $_SESSION['pdo_port'] = $pdo_port;
         }
@@ -265,33 +303,32 @@ function pg4e_user_db_load($LAUNCH) {
     ));
     if ( $new != $json ) $LAUNCH->result->setJSON($new);
 
-    // Set up the cookies
-    setcookie("pg4e_desc", $pdo_database, time()+31556926 ,'/');
-    setcookie("pg4e_host", $pdo_host, time()+31556926 ,'/');
-    setcookie("pg4e_port", $pdo_port, time()+31556926 ,'/');
 
-    if ( $LAUNCH->user->instructor || ! $cfg ) {
-        $_SESSION['pdo_host'] = $pdo_host;
-        $_SESSION['pdo_port'] = $pdo_port;
-        $_SESSION['pdo_database'] = $pdo_database;
-        $_SESSION['pdo_user'] = $pdo_user;
-        $_SESSION['pdo_pass'] = $pdo_pass;
+    // If we have a full set - store the cookies for good measure
+    if ( $pdo_database && $pdo_host &&  $pdo_port && $pdo_user && $pdo_pass ) {
+        setcookie("pdo_database", $pdo_database, time()+31556926 ,'/');
+        setcookie("pdo_host", $pdo_host, time()+31556926 ,'/');
+        setcookie("pdo_port", $pdo_port, time()+31556926 ,'/');
+        setcookie("pdo_user", $pdo_user, time()+31556926 ,'/');
+        setcookie("pdo_pass", $pdo_pass, time()+31556926 ,'/');
+
+        // Cookies for phppgadmin
+        setcookie("pg4e_desc", $pdo_database, time()+31556926 ,'/');
+        setcookie("pg4e_host", $pdo_host, time()+31556926 ,'/');
+        setcookie("pg4e_port", $pdo_port, time()+31556926 ,'/');
     }
 
-    if ( strlen($pdo_port) < 1 ) $pdo_port = 5432;
     $pdo_connection = "pgsql:host=$pdo_host;port=$pdo_port;dbname=$pdo_database";
-    
+}
+
+function pg4e_user_db_form($LAUNCH, $terminalonly=false) {
+    global $OUTPUT, $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     if ( ! $pdo_host && ! $LAUNCH->user->instructor ) {
         echo("<p>You have not yet set up your database server for project <b>".htmlentities($project)."</b></p>\n");
         echo("<p>Make sure to run the setup process before attempting this assignment.</p>\n");
         return false;
     }
-    return true;
-}
-
-function pg4e_user_db_form($LAUNCH, $terminalonly=false) {
-    global $OUTPUT, $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     $cfg = getUMSIConfig();
 
@@ -303,7 +340,8 @@ database server so we can grade your assignments..
 There is company called 
 <a href="https://www.elephantsql.com/plans.html" target="_blank">ElephantSQL</a> that provides
 a no-charge very small instance of PostgreSQL
-(Tiny Turtle) that should work for the purposes of these assignments.
+(Tiny Turtle) that should work for the purposes of these assignments.  Not that on ElephantSQL
+the database name and user name are the same.
 </p>
 <?php
 
