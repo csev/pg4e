@@ -323,6 +323,7 @@ Password: <span id="pass" style="display:none"><input type="text" name="pdo_pass
 </pre>
 <script>
 function setPGAdminCookies() {
+    global $CFG;
     var host = $("#pdo_host").val();
     var port = $("#pdo_port").val();
     var database = $("#pdo_database").val();
