@@ -65,7 +65,10 @@ If this course using UMSI provisioning, please configure the API for this <b>cou
 <form method="post">
 <p>
 <select name="db_source">
-<option value="none">-- Please select database server provisioning approach --</option>
+<option value="">-- Please select database server provisioning approach --</option>
+<option value="none"
+<?php if ( U::get($settings, "db_source") == 'none' ) echo('selected'); ?>
+>None - Prompt the user</option>
 <option value="umsi"
 <?php if ( U::get($settings, "db_source") == 'umsi' ) echo('selected'); ?>
 >UMSI</option>
@@ -80,7 +83,10 @@ If this course using UMSI provisioning, please configure the API for this <b>cou
 <span id="pass" style="display:none"><input type="text" name="umsi_password" id="umsi_password" value="<?= htmlentities($umsi_password) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($umsi_password) ?>');return false;">copy</a>)</p>
 <p>
 <select name="es_source">
-<option value="none">-- Please select elastic server provisioning approach --</option>
+<option value="">-- Please select elastic server provisioning approach --</option>
+<option value="none"
+<?php if ( U::get($settings, "es_source") == 'none' ) echo('selected'); ?>
+>None - Prompt the user</option>
 <option value="umsi"
 <?php if ( U::get($settings, "es_source") == 'umsi' ) echo('selected'); ?>
 >UMSI</option>

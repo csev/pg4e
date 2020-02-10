@@ -22,8 +22,10 @@ $dbname = U::get($_REQUEST, 'dbname', $dbname);
 
 $url = addSession("info.php?dbname=".urlencode($dbname));
 
+$cfg = getUMSIConfig();
+
 if ( U::get($_POST,'create') ) {
-    $retval = pg4e_request($dbname, 'create');
+    $retval = pg4e_request($dbname, 'create', $cfg);
     $_SESSION['operation'] = 'create';
     $_SESSION['retval'] = $retval;
     $_SESSION['pg4e_request_result'] = $pg4e_request_result;
@@ -31,7 +33,7 @@ if ( U::get($_POST,'create') ) {
     header('Location: '. $url);
     return;
 } else if ( U::get($_POST,'delete') ) {
-    $retval = pg4e_request($dbname, 'delete');
+    $retval = pg4e_request($dbname, 'delete', $cfg);
     $_SESSION['operation'] = 'delete';
     $_SESSION['pg4e_request_result'] = $pg4e_request_result;
     $_SESSION['pg4e_request_url'] = $pg4e_request_url;
@@ -39,7 +41,7 @@ if ( U::get($_POST,'create') ) {
     header('Location: '. $url);
     return;
 } else if ( U::get($_POST,'info') ) {
-    $retval = pg4e_request($dbname, 'info/pg');
+    $retval = pg4e_request($dbname, 'info/pg', $cfg);
     $_SESSION['operation'] = 'delete';
     $_SESSION['pg4e_request_result'] = $pg4e_request_result;
     $_SESSION['pg4e_request_url'] = $pg4e_request_url;

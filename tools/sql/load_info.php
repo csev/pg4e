@@ -18,7 +18,8 @@ if ( $LAUNCH->user->instructor && U::get($_GET, 'dbname') ) {
     $dbname = U::get($_GET, 'dbname');
 }
 
-$retval = pg4e_request($dbname);
+$cfg = getUMSIConfig();
+$retval = pg4e_request($dbname, 'info/pg', $cfg);
 $info = false;
 if ( is_object($retval) ) {
   $info = pg4e_extract_info($retval);

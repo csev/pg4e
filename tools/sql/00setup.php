@@ -26,7 +26,8 @@ $info1_request = false;
 $create_request = false;
 $info2_request = false;
 
-$retval = pg4e_request($dbname);
+$cfg = getUMSIConfig();
+$retval = pg4e_request($dbname, 'info/pg', $cfg);
 $info1_request = $pg4e_request_result;
 $info = false;
 if ( is_object($retval) ) {
@@ -42,9 +43,9 @@ $cfg = getUMSIConfig();
 $info = false;
 if ( is_object($cfg) && ! $info ) {
    $try_create = true;
-   $retval = pg4e_request($dbname, 'create');
+   $retval = pg4e_request($dbname, 'create', $cfg);
    $create_request = $pg4e_request_result;
-   $retval = pg4e_request($dbname);
+   $retval = pg4e_request($dbname, 'info/pg', $cfg);
    $info2_request = $pg4e_request_result;
    $info = false;
    if ( is_object($retval) ) {
@@ -59,7 +60,7 @@ if ( ! $cfg ) {
     echo("<p>You can change the configuration to point to a UMSI provisioning endpoint or instructor your students to use another PostgreSQL server like ElephanSQL.</p>");
     return;
 }
-if ( $LAUNCH->user->instructor ) { ?>
+if ( $LAUNCH->user->instructor && $cfg) { ?>
 <p>
 <a href="info.php" class="btn btn-normal">Test Harness</a>
 <a href="load_info.php?dbname=<?= $dbname ?>" target="_blank" class="btn btn-normal">JSON</a>
