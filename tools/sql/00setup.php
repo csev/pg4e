@@ -102,6 +102,7 @@ echo("Password: ");
 echo('<span id="pass" style="display:none">'.$spinner.'</span> (<a href="#" onclick="$(\'#pass\').toggle();return false;">hide/show password</a> ');
 echo('<a href="#" onclick="copyToClipboard(this, $(\'#pass\').text());return false;">copy</a>');
 echo(')'."\n");
+echo('Elastic Search: <span id="elastic">'.$spinner."</span>\n");
 echo('Status: <span id="status">'.$spinner.'</span>');
 ?>
 </pre>
@@ -211,6 +212,9 @@ function updateMsg() {
       $("#user3").html(retval.user);
       $("#pass").html(retval.password);
 
+      if ( retval.es ) {
+          $("#elastic").html("Setup complete");
+	  }
       if ( retval.ip && retval.ip.length > 0 ) {
           $("#status").html("Environment created");
           if ( retval.ip ) {
