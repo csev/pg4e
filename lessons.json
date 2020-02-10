@@ -32,6 +32,29 @@
         ]
         }
     ]
+},
+{
+    "title": "Elastic World (Beta test)",
+    "anchor": "elastic",
+    "icon" : "fa-globe",
+    "description": "This is a test",
+    "videos" : [
+    ], 
+    "references" : [
+    ],
+    "lti" : [
+        {
+        "title" : "Autograder: Elastic",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_07_tweet",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07tweet.php"
+            }
+        ]
+        }
+    ]
 }
 
 ]

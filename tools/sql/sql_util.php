@@ -280,6 +280,14 @@ function pg4e_user_db_data($LAUNCH) {
     // If we don't yet have a host and we are configured, grab one from the server
     if ( ! $pdo_host && $cfg ) {
         $retval = pg4e_request($project, 'info/pg');
+		if ( $retval == 500 ) {
+			echo("<pre>\n");
+			echo("Internal provisioning error. Please send this text on this page to csev@umich.edu\n\n");
+			echo("Requesting: ".$pg4e_request_url."\n\n");
+			echo("Result:\n");
+			echo(htmlentities(wordwrap($pg4e_request_result)));
+			die();
+		}
         $info = false;
         if ( is_object($retval) ) {
             $info = pg4e_extract_info($retval);
@@ -577,15 +585,39 @@ function pg4e_load_csv($filename) {
     return $retval;
 }
 
+// TODO: Remove
 function pg4e_user_es_load($LAUNCH) {
+
+    // Transport the request to check past the redirect :)
+    if ( U::get($_POST,'check') ) {
+        $_SESSION['check'] = $_POST['check'];  
+    }
+    // Returns true if redirected
+    $retval = pg4e_user_es_post($LAUNCH);
+    if ( $retval ) return $false;
+
+    // Restore check after redirect if one happens
+    if ( U::get($_SESSION,'check') ) {
+        $_POST['check'] = $_SESSION['check'];  
+        unset($_SESSION['check']);
+    }
+
+    // Set global values and cookies, etc.
+    pg4e_user_es_data($LAUNCH);
+    return true;
+}
+
+// Handle incoming POST request, redirecting if necessary
+function pg4e_user_es_post($LAUNCH) {
     global $CFG;
+    global $pg4e_request_result, $pg4e_request_url;
     global $es_host, $es_port, $es_user, $es_pass, $info;
 
     if ( U::get($_POST,'default') ) {
-                unset($_SESSION['es_host']);
-                unset($_SESSION['es_port']);
-                unset($_SESSION['es_user']);
-                unset($_SESSION['es_pass']);
+        unset($_SESSION['es_host']);
+        unset($_SESSION['es_port']);
+        unset($_SESSION['es_user']);
+        unset($_SESSION['es_pass']);
         setcookie("es_host", '', time()+31556926 ,'/');
         setcookie("es_port", '', time()+31556926 ,'/');
         setcookie("es_user", '', time()+31556926 ,'/');
@@ -593,6 +625,30 @@ function pg4e_user_es_load($LAUNCH) {
         header( 'Location: '.addSession('index.php') ) ;
         return false;
     }
+
+    // Cannot set these from post unless we are unconfigured or instructor
+    $cfg = getUMSIConfig();
+    if ( $cfg && ! $LAUNCH->user->instructor ) return false;
+
+    // If we have new values... copy them into SESSION
+    $retval = false;
+    foreach(array('es_host', 'es_port', 'es_user', 'es_pass') as $key) {
+        $value = U::get($_POST, $key);
+        if ( ! $value ) continue;
+        $_SESSION[$key] = $value;
+        $retval = true;
+    }
+    if ( $retval ) header( 'Location: '.addSession('index.php') ) ;
+    return $retval;
+}
+
+// The instructor precedence with config is SESSION, COOKIE, CONFIG
+// The student precedence with config is SESSION, CONFIG
+// Without config, the precedence is SESSION, COOKIE
+function pg4e_user_es_data($LAUNCH) {
+    global $CFG;
+    global $pg4e_request_result, $pg4e_request_url;
+    global $es_host, $es_port, $es_user, $es_pass, $info;
 
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
@@ -614,8 +670,6 @@ function pg4e_user_es_load($LAUNCH) {
         $es_pass = U::get($_SESSION, 'es_pass', U::get($_COOKIE, 'es_pass'));
     }
 
-    if ( strlen($es_port) < 1 ) $es_port = '5432';
-
     $cfg = getUMSIConfig();
     if ( ! $cfg ) {
         return "UMSI API is not configured.";
@@ -623,6 +677,14 @@ function pg4e_user_es_load($LAUNCH) {
 
     if ( ! $es_host && $cfg ) {
         $retval = pg4e_request($project, 'info/es');
+		if ( $retval == 500 ) {
+			echo("<pre>\n");
+			echo("Internal provisioning error. Please send the text below to csev@umich.edu\n\n");
+			echo("Requesting: ".$pg4e_request_url."\n\n");
+			echo("Result:\n");
+			echo(htmlentities(wordwrap($pg4e_request_result)));
+			die();
+		}
         $info = false;
         if ( is_object($retval) ) {
             $info = pg4e_extract_es_info($retval);
@@ -654,11 +716,14 @@ function pg4e_user_es_load($LAUNCH) {
         $_SESSION['es_pass'] = $es_pass;
     }
 
-    if ( ! $es_host && ! $LAUNCH->user->instructor ) {
-        echo("<p>You have not yet set up your database server for project <b>".htmlentities($project)."</b></p>\n");
-        echo("<p>Make sure to run the setup process before attempting this assignment..</p>\n");
-        return false;
+    // If we have a full set - store the cookies for good measure
+    if ( $es_host &&  $es_port && $es_user && $es_pass ) {
+        setcookie("es_host", $es_host, time()+31556926 ,'/');
+        setcookie("es_port", $es_port, time()+31556926 ,'/');
+        setcookie("es_user", $es_user, time()+31556926 ,'/');
+        setcookie("es_pass", $es_pass, time()+31556926 ,'/');
     }
+
     return true;
 }
 
@@ -681,15 +746,16 @@ function pg4e_extract_es_info($info) {
 function pg4e_user_es_form($LAUNCH) {
     global $OUTPUT, $es_host, $es_port, $es_user, $es_pass, $info;
 
-        $tunnel = $LAUNCH->link->settingsGet('tunnel');
-        if ( ! $es_host || strlen($es_host) < 1 ) {
-                echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
+    $cfg = getUMSIConfig();
+
+    $tunnel = $LAUNCH->link->settingsGet('tunnel');
+    if ( ! $es_host || strlen($es_host) < 1 ) {
+                echo('<p style="color:red">It appears that your ElasticSearch environment is not yet set up or is not running.</p>'."\n");
     }
-    if ( strlen($es_port) < 1 ) $es_port = "5432";
 ?>
 <form name="myform" method="post" >
 <p>
-<?php if ( $LAUNCH->user->instructor || ! isset($CFG->pg4e_api_key) ) { ?>
+<?php if ( $LAUNCH->user->instructor || ! $cfg ) { ?>
 Host: <input type="text" name="es_host" value="<?= htmlentities($es_host) ?>" id="es_host"><br/>
 Port: <input type="text" name="es_port" value="<?= htmlentities($es_port) ?>" id="es_port"><br/>
 User: <input type="text" name="es_user" value="<?= htmlentities($es_user) ?>"><br/>
