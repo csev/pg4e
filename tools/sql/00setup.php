@@ -34,13 +34,18 @@ if ( is_object($retval) ) {
   $info = pg4e_extract_info($retval);
 }
 
+$es_cfg = getESConfig();
+$es_retval = pg4e_request($dbname, 'info/es', $es_cfg);
+$es_info1_request = $pg4e_request_result;
+$es_info = false;
+if ( is_object($es_retval) ) {
+  $es_info = pg4e_extract_es_info($es_retval);
+}
+
 // Make sure these are not set from some prior assignment
 setcookie("pdo_user", '', time()+31556926 ,'/');
 setcookie("pdo_pass", '', time()+31556926 ,'/');
 
-$cfg = getUMSIConfig();
-
-$info = false;
 if ( is_object($cfg) && ! $info ) {
    $try_create = true;
    $retval = pg4e_request($dbname, 'create', $cfg);
@@ -50,6 +55,18 @@ if ( is_object($cfg) && ! $info ) {
    $info = false;
    if ( is_object($retval) ) {
      $info = pg4e_extract_info($retval);
+   }
+}
+
+if ( is_object($es_cfg) && ! $es_info ) {
+   $es_try_create = true;
+   $es_retval = pg4e_request($dbname, 'create', $es_cfg);
+   $es_create_request = $pg4e_request_result;
+   $es_retval = pg4e_request($dbname, 'info/es', $es_cfg);
+   $es_info2_request = $pg4e_request_result;
+   $es_info = false;
+   if ( is_object($es_retval) ) {
+     $es_info = pg4e_extract_es_info($es_retval);
    }
 }
 ?>
