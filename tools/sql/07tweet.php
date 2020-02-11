@@ -123,6 +123,12 @@ You can build your application by starting with this code -
 You will need to setup the <b>hidden.py</b> with your elastic search host/port/account/password values.
 </p>
 <p>
+You will need to install the Python ElasticSearch library:
+<pre>
+pip install elasticsearch
+</pre>
+</p>
+<p>
 This autograder will run a command equivalent to using the <b>elastictool.py</b> command as follows:
 <pre>
 $ python3 elastictool.py 

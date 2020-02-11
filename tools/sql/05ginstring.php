@@ -96,7 +96,7 @@ which contains a particular word using SQL.
 <p>
 FYI: In <i>contrast</i> with the provided sample SQL, you will
 map all the words
-in the GIN index to lower case (i.e. Python, PYTHON, and python
+in the GIN index to <i>lower</i> case (i.e. Python, PYTHON, and python
 should all end up as "python" in the GIN index).
 </p>
 <?php } ?>

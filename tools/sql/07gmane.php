@@ -88,6 +88,12 @@ and load at least the first 300 email messages into the
 <b>gmane</b> index.
 </p>
 <p>
+You will need to install the Python ElasticSearch library if you have not already done so.
+<pre>
+pip install elasticsearch
+</pre>
+</p>
+<p>
 <?php pg4e_user_es_form($LAUNCH); ?>
 </p>
 <!--
