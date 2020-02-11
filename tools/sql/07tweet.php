@@ -81,7 +81,7 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>Elastic Search Tweeets</h1>
+<h1>Elastic Search Tweets</h1>
 <p>
 In this assignment you will create an elastic search index called <b>tweet-index</b>
 in the following Elastic Search instance:
