@@ -70,7 +70,7 @@ if ( is_object($es_cfg) && ! $es_info ) {
    }
 }
 ?>
-<h1>Postgres Setup</h1>
+<h1>PostgreSQL / ElasticSearch Setup</h1>
 <?php
 if ( ! $cfg ) {
     echo("<p>The UMSI Provisioning API is not configured - so this process is not needed.</p>");
