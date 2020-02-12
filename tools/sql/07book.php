@@ -25,7 +25,9 @@ $books = array(
 
 $book_ids = array_keys($books);
 $MT = new Mersenne_Twister($code);
+// TODO: Add -1
 $pos = $MT->getNext(0,count($book_ids));
+if ( $pos >= count($book_ids) ) $pos = 0;
 
 $book_id = $book_ids[$pos];
 $book_url = 'http://www.gutenberg.org/cache/epub/'.$book_id.'/pg'.$book_id.'.txt';
