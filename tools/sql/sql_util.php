@@ -53,7 +53,7 @@ function getUMSIConfig() {
 
     $settings = $TSUGI_LAUNCH->context->settingsGetAll();
     $db_source = U::get($settings, 'db_source');
-	if ( $db_source == 'elephant' ) return false;
+    if ( $db_source == 'elephant' ) return false;
 
     $retval = new \stdclass();
     $umsi_url = U::get($settings, 'umsi_url');
@@ -83,10 +83,10 @@ function getESConfig() {
 
     $settings = $TSUGI_LAUNCH->context->settingsGetAll();
     $es_source = U::get($settings, 'es_source');
-	if ( strlen($es_source) < 1 || $es_source == 'none') return false;
+    if ( strlen($es_source) < 1 || $es_source == 'none') return false;
 
     $retval = new \stdclass();
-	$retval->es_source = $es_source;
+    $retval->es_source = $es_source;
 
     $retval->pg4e_api_url = U::get($settings, 'um_es_url');
     $retval->pg4e_api_key = U::get($settings, 'um_es_key');
@@ -95,7 +95,7 @@ function getESConfig() {
     $retval->es_url = U::get($settings, 'es_url');
     $retval->es_key = U::get($settings, 'es_key');
     $retval->es_password = U::get($settings, 'es_password');
-	return $retval;
+    return $retval;
 }
 
 function getDbPass($unique) {
@@ -207,7 +207,7 @@ function pg4e_user_db_load($LAUNCH) {
 
     // Transport the request to check past the redirect :)
     if ( U::get($_POST,'check') ) {
-        $_SESSION['check'] = $_POST['check'];  
+        $_SESSION['check'] = $_POST['check'];
     }
     // Returns true if redirected
     $retval = pg4e_user_db_post($LAUNCH);
@@ -215,7 +215,7 @@ function pg4e_user_db_load($LAUNCH) {
 
     // Restore check after redirect if one happens
     if ( U::get($_SESSION,'check') ) {
-        $_POST['check'] = $_SESSION['check'];  
+        $_POST['check'] = $_SESSION['check'];
         unset($_SESSION['check']);
     }
 
@@ -272,13 +272,13 @@ function pg4e_user_db_data($LAUNCH) {
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
 
-	$default_database = '';
-	$default_user = '';
-	$default_pass = '';
-	if ( $cfg ) {
-		$default_database = 'pg4e';
-		$default_user = getDbUser($unique);
-		$default_pass = getDbPass($unique);
+    $default_database = '';
+    $default_user = '';
+    $default_pass = '';
+    if ( $cfg ) {
+        $default_database = 'pg4e';
+        $default_user = getDbUser($unique);
+        $default_pass = getDbPass($unique);
     }
 
     // Instructor / un-confgured defaults
@@ -300,19 +300,19 @@ function pg4e_user_db_data($LAUNCH) {
     if ( ! $pdo_host && $cfg ) {
         $retval = pg4e_request($project, 'info/pg', $cfg);
         if ( $retval == 500 ) {
-			echo("<pre>\n");
-			echo("Your Elastic Search server is not yet setup.\n\n");
+            echo("<pre>\n");
+            echo("Your PostgreSQL server is not yet setup.\n\n");
             return;
         }
         if ( $retval >= 300 ) {
-			echo("<pre>\n");
-			echo("Internal provisioning error. Please send the text below to csev@umich.edu\n\n");
-			echo("HTTP Code: ".$retval."\n\n");
-			echo("Requesting: ".$pg4e_request_url."\n\n");
-			echo("Result:\n");
-			echo(htmlentities(wordwrap($pg4e_request_result)));
-			die();
-		}
+            echo("<pre>\n");
+            echo("Internal provisioning error. Please send the text below to csev@umich.edu\n\n");
+            echo("HTTP Code: ".$retval."\n\n");
+            echo("Requesting: ".$pg4e_request_url."\n\n");
+            echo("Result:\n");
+            echo(htmlentities(wordwrap($pg4e_request_result)));
+            die();
+        }
         $info = false;
         if ( is_object($retval) ) {
             $info = pg4e_extract_info($retval);
@@ -368,9 +368,9 @@ function pg4e_user_db_form($LAUNCH, $terminalonly=false) {
     $tunnel = $LAUNCH->link->settingsGet('tunnel');
     if ( ! $cfg ) {
     ?>
-<p>Please enter your PostgreSQL credentials below. You need to have an Internet-accessible 
+<p>Please enter your PostgreSQL credentials below. You need to have an Internet-accessible
 database server so we can grade your assignments..
-There is company called 
+There is company called
 <a href="https://www.elephantsql.com/plans.html" target="_blank">ElephantSQL</a> that provides
 a no-charge very small instance of PostgreSQL
 (Tiny Turtle) that should work for the purposes of these assignments.  Not that on ElephantSQL
@@ -440,7 +440,7 @@ You can do basic SQL commands using the
 For batch loading or file uploads using the <b>\copy</b> command or to run Python programs,
 you will need to access <b>python</b> or <b>psql</b> on the command line:</p>
 <pre>
-<?php if ( $tunnel == 'yes' ) { 
+<?php if ( $tunnel == 'yes' ) {
     $localport = $pdo_port;
     if ( $pdo_port < 10000 ) $localport = $pdo_port + 10000;
 ?>
@@ -586,7 +586,7 @@ function pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate) {
     } else {
         $scorestr = "Unexpected return: ".json_encode($retval);
         $_SESSION['error'] = "Unexpected return, see pg4e_result for detail";
-    } 
+    }
 
     if ( $pg_PDO ) {
         $pg_PDO->queryReturnError(
@@ -615,7 +615,7 @@ function pg4e_user_es_load($LAUNCH) {
 
     // Transport the request to check past the redirect :)
     if ( U::get($_POST,'check') ) {
-        $_SESSION['check'] = $_POST['check'];  
+        $_SESSION['check'] = $_POST['check'];
     }
     // Returns true if redirected
     $retval = pg4e_user_es_post($LAUNCH);
@@ -623,7 +623,7 @@ function pg4e_user_es_load($LAUNCH) {
 
     // Restore check after redirect if one happens
     if ( U::get($_SESSION,'check') ) {
-        $_POST['check'] = $_SESSION['check'];  
+        $_POST['check'] = $_SESSION['check'];
         unset($_SESSION['check']);
     }
 
@@ -698,15 +698,20 @@ function pg4e_user_es_data($LAUNCH) {
 
     if ( ! $es_host && $cfg ) {
         $retval = pg4e_request($project, 'info/es', $cfg);
-		if ( $retval >= 300 ) {
-			echo("<pre>\n");
-			echo("Internal provisioning error. Please send the text below to csev@umich.edu\n\n");
-			echo("HTTP Code: ".$retval."\n\n");
-			echo("Requesting: ".$pg4e_request_url."\n\n");
-			echo("Result:\n");
-			echo(htmlentities(wordwrap($pg4e_request_result)));
-			die();
-		}
+        if ( $retval == 500 ) {
+            echo("<pre>\n");
+            echo("Your Elastic Search server is not yet setup.\n\n");
+            return;
+        }
+        if ( $retval >= 300 ) {
+            echo("<pre>\n");
+            echo("Internal provisioning error. Please send the text below to csev@umich.edu\n\n");
+            echo("HTTP Code: ".$retval."\n\n");
+            echo("Requesting: ".$pg4e_request_url."\n\n");
+            echo("Result:\n");
+            echo(htmlentities(wordwrap($pg4e_request_result)));
+            die();
+        }
         $info = false;
         if ( is_object($retval) ) {
             $info = pg4e_extract_es_info($retval);
