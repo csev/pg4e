@@ -29,6 +29,7 @@ $pos = $MT->getNext(0,count($book_ids));
 
 $book_id = $book_ids[$pos];
 $book_url = 'http://www.gutenberg.org/cache/epub/'.$book_id.'/pg'.$book_id.'.txt';
+$alt_book_url = $CFG->apphome . '/gutenberg/cache/epub/'.$book_id.'/pg'.$book_id.'.txt';
 $word = $books[$book_id];
 
 $oldgrade = $RESULT->grade;
@@ -92,6 +93,10 @@ if ( $dueDate->message ) {
 In this assignment you will download a book from:
 <pre>
 <a href="<?= $book_url ?>" target="_blank"><?= $book_url ?></a>
+
+or if you are behind a firewall, you can try this alternate URL:
+
+<a href="<?= $alt_book_url ?>" target="_blank"><?= $alt_book_url ?></a>
 </pre>
 and
 create an elastic search index called <b>pg<?= $book_id ?></b>
