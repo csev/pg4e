@@ -299,6 +299,11 @@ function pg4e_user_db_data($LAUNCH) {
     // If we don't yet have a host and we are configured, grab one from the server
     if ( ! $pdo_host && $cfg ) {
         $retval = pg4e_request($project, 'info/pg', $cfg);
+        if ( $retval == 500 ) {
+			echo("<pre>\n");
+			echo("Your Elastic Search server is not yet setup.\n\n");
+            return;
+        }
         if ( $retval >= 300 ) {
 			echo("<pre>\n");
 			echo("Internal provisioning error. Please send the text below to csev@umich.edu\n\n");
