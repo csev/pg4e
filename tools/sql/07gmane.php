@@ -7,12 +7,15 @@ use \Tsugi\Util\Mersenne_Twister;
 require_once "names.php";
 require_once "text_util.php";
 require_once "es_util.php";
+require_once "sql_util.php";
 
 if ( ! pg4e_user_es_load($LAUNCH) ) return;
 if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
 // Compute the stuff for the output
 $code = getCode($LAUNCH);
+
+$config = getCourseSettings();
 
 $words = array(
     'canberra',
@@ -115,6 +118,20 @@ pip install elasticsearch
 
 ?>
 -->
+<?php if ( U::get($config, 'proxy') == 'yes' ) { ?>
+<p>
+If you are behind a firewall, you may need to change urls in your Python code like:
+<pre>
+http://mbox.dr-chuck.net/sakai.devel/100/101
+</pre>
+to
+<pre>
+<?= $CFG->apphome ?>/proxy/http://mbox.dr-chuck.net/sakai.devel/100/101
+</pre>
+To retrieve the data through a firewall.
+</p>
+<?php } ?>
+
 <?php
 if ( $LAUNCH->user->instructor ) {
   echo("<p>Note to instructors: Students can view source to see the last elastic search request and response</p>");

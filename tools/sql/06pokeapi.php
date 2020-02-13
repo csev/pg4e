@@ -8,6 +8,8 @@ require_once "text_util.php";
 
 if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
+$config = getCourseSettings();
+
 // Compute the stuff for the output
 $code = getCode($LAUNCH);
 
@@ -65,6 +67,19 @@ some of the JSON techniques from
 but the application you write can be far simpler.  All you need to do is loop through and retrieve
 the API data for urls ending in 1..100.
 </p>
+<?php if ( U::get($config, 'proxy') == 'yes' ) { ?>
+<p>
+If you are behind a firewall, you may need to change references to:
+<pre>
+https://pokeapi.co/people/...
+</pre>
+to
+<pre>
+<?= $CFG->apphome ?>/proxy/https://pokeapi.co/people/...
+</pre>
+To retrieve the data through a firewall.
+</p>
+<?php } ?>
 <?php
 if ( $LAUNCH->user->instructor ) {
     echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");

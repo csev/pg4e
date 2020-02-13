@@ -15,7 +15,7 @@ $unique = getUnique($LAUNCH);
 if ( ! $USER->instructor ) die("Must be instructor");
 
 $redirect = false;
-$postkeys = array('db_source', 'umsi_url', 'umsi_password', 'umsi_key', 'tunnel',
+$postkeys = array('tunnel', 'proxy', 'db_source', 'umsi_url', 'umsi_password', 'umsi_key',
   'es_source', 'es_url', 'es_password', 'um_es_url', 'um_es_key', 'um_es_password');
 
 if ( U::get($_POST, 'update') ) {
@@ -104,9 +104,18 @@ If this course using UMSI provisioning, please configure the API for this <b>cou
 <span id="espass" style="display:none"><input type="text" name="es_password" id="es_password" value="<?= htmlentities($es_password) ?>"/></span> (<a href="#" onclick="$('#espass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($es_password) ?>');return false;">copy</a>)</p>
 <p>
 <p>
+Proxy Instructions?
+<select name="proxy">
+<option value="no">No Proxy Instructions</option>
+<option value="yes"
+<?php if ( U::get($settings, "proxy") == 'yes' ) echo('selected'); ?>
+>Provide Proxy Instructions</option>
+</select>
+</p>
+<p>
 Is there an ssh tunnel required?
 <select name="tunnel">
-<option value="no">No Tunnel<option>
+<option value="no">No Tunnel</option>
 <option value="yes"
 <?php if ( U::get($settings, "tunnel") == 'yes' ) echo('selected'); ?>
 >SSH Tunnel</option>

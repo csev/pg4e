@@ -78,10 +78,17 @@ function getUMSIConfig() {
     return false;
 }
 
-function getESConfig() {
-    global $CFG, $TSUGI_LAUNCH;
+function getCourseSettings() {
+    global $TSUGI_LAUNCH;
 
     $settings = $TSUGI_LAUNCH->context->settingsGetAll();
+    return $settings;
+}
+
+function getESConfig() {
+    global $CFG;
+
+    $settings = getCourseSettings();
     $es_source = U::get($settings, 'es_source');
     if ( strlen($es_source) < 1 || $es_source == 'none') return false;
 

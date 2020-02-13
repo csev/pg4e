@@ -6,6 +6,7 @@ use \Tsugi\Util\Mersenne_Twister;
 // https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/quickstart.html
 require_once "names.php";
 require_once "text_util.php";
+require_once "sql_util.php";
 require_once "es_util.php";
 
 if ( ! pg4e_user_es_load($LAUNCH) ) return;
@@ -13,6 +14,8 @@ if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
 // Compute the stuff for the output
 $code = getCode($LAUNCH);
+
+$config = getCourseSettings();
 
 // http://www.gutenberg.org/cache/epub/22381/pg22381.txt
 $books = array(
@@ -23,6 +26,8 @@ $books = array(
  '20203' => 'pennsylvania',
 );
 
+$config = getCourseSettings();
+
 $book_ids = array_keys($books);
 $MT = new Mersenne_Twister($code);
 // TODO: Add -1
@@ -31,7 +36,7 @@ if ( $pos >= count($book_ids) ) $pos = 0;
 
 $book_id = $book_ids[$pos];
 $book_url = 'http://www.gutenberg.org/cache/epub/'.$book_id.'/pg'.$book_id.'.txt';
-$alt_book_url = $CFG->apphome . '/gutenberg/cache/epub/'.$book_id.'/pg'.$book_id.'.txt';
+$alt_book_url = $CFG->apphome . '/proxy/'.$book_url;
 $word = $books[$book_id];
 
 $oldgrade = $RESULT->grade;
@@ -95,10 +100,12 @@ if ( $dueDate->message ) {
 In this assignment you will download a book from:
 <pre>
 <a href="<?= $book_url ?>" target="_blank"><?= $book_url ?></a>
+<?php if ( U::get($config, 'proxy') == 'yes' ) { ?>
 
 or if you are behind a firewall, you can try this alternate URL:
 
 <a href="<?= $alt_book_url ?>" target="_blank"><?= $alt_book_url ?></a>
+<?php } ?>
 </pre>
 and
 create an elastic search index called <b>pg<?= $book_id ?></b>
