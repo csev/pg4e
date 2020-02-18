@@ -69,9 +69,10 @@ if ( is_object($es_cfg) && ! $es_info ) {
      $es_info = pg4e_extract_es_info($es_retval);
    }
 }
-?>
-<h1>PostgreSQL / ElasticSearch Setup</h1>
-<?php
+echo("<h1>PostgreSQL \n");
+if ( $es_cfg ) echo(" / ElasticSearch ");
+echo(" Setup</h1>\n");
+
 if ( ! $cfg ) {
     echo("<p>The UMSI Provisioning API is not configured - so this process is not needed.</p>");
     echo("<p>You can change the configuration to point to a UMSI provisioning endpoint or instructor your students to use another PostgreSQL server like ElephanSQL.</p>");
