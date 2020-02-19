@@ -15,7 +15,7 @@ from elasticsearch import Elasticsearch
 
 import hidden
 
-secrets = hidden.elastic2()
+secrets = hidden.elastic7()
 
 print(secrets)
 
