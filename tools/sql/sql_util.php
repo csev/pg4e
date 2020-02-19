@@ -116,7 +116,7 @@ function getDbPass($unique) {
  * Number if something went wrong and all we have is the http code
  */
 function pg4e_request($dbname, $path='info/pg', $cfg) {
-    global $pg4e_request_result, $pg4e_request_url;
+    global $pg4e_request_result, $pg4e_request_url, $pg4e_request_status;
 
     if ( ! $cfg ) {
         return "UMSI API is not configured.";
@@ -138,12 +138,12 @@ function pg4e_request($dbname, $path='info/pg', $cfg) {
     {
         return 'Curl error: ' . curl_error($ch);
     }
-    $returnCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $pg4e_request_status = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    if ( $returnCode != 200 ) return $returnCode;
+    if ( $pg4e_request_status != 200 ) return $pg4e_request_status;
 
     // It seems as though create success returns '"" '
-    if ( $returnCode == 200 && trim($pg4e_request_result) == '""' ) return 200;
+    if ( $pg4e_request_status == 200 && trim($pg4e_request_result) == '""' ) return 200;
 
     // Lets parse the JSON
     $retval = json_decode($pg4e_request_result, false);  // As stdClass

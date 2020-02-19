@@ -80,7 +80,10 @@ if ( ! $cfg ) {
 }
 if ( $LAUNCH->user->instructor && $cfg) { ?>
 <p>
-<a href="info.php" class="btn btn-normal">Test Harness</a>
+<a href="info.php" class="btn btn-normal">PG Test Harness</a>
+<?php if ( is_object($cfg) ) { ?>
+<a href="es_info.php" class="btn btn-normal">ES Test Harness</a>
+<?php } ?>
 <a href="load_info.php?dbname=<?= $dbname ?>" target="_blank" class="btn btn-normal">JSON</a>
 </p>
 <?php } ?>
