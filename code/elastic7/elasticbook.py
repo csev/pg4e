@@ -30,7 +30,7 @@ indexname = bookfile.split('.')[0]
 fhand = open(bookfile)
 
 # Load the secrets
-secrets = hidden.elastic7()
+secrets = hidden.elastic()
 
 es = Elasticsearch(
     [ secrets['host'] ],

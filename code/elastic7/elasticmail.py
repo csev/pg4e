@@ -31,7 +31,7 @@ def parsemaildate(md) :
     except:
         return datecompat.parsemaildate(md)
 
-secrets = hidden.elastic7()
+secrets = hidden.elastic()
 
 # Connect to our database
 es = Elasticsearch(
