@@ -26,14 +26,15 @@ es = Elasticsearch(
     scheme="http",
     port=secrets['port']
 )
+indexname = secrets['user']
 
 # Start fresh
 # https://elasticsearch-py.readthedocs.io/en/master/api.html#indices
-res = es.indices.delete(index='testing', ignore=[400, 404])
+res = es.indices.delete(index=indexname, ignore=[400, 404])
 print("Dropped index")
 print(res)
 
-res = es.indices.create(index='testing')
+res = es.indices.create(index=indexname)
 print("Created the index...")
 print(res)
 
@@ -45,8 +46,7 @@ doc = {
 }
 
 # Note - you can't change the key type after you start indexing documents
-# res = es.index(index="testing", id='abc', body=doc)
-res = es.index(index="testing", id='abc', body=doc)
+res = es.index(index=indexname, id='abc', body=doc)
 print('Added document...')
 print(res['result'])
 

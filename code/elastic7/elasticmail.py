@@ -8,7 +8,7 @@
 # http://mbox.dr-chuck.net/sakai.devel/100/101
 
 # python3 elasticmail.py
-# Pulls data from the web and puts it into gmane index
+# Pulls data from the web and puts it into index
 
 import requests
 import re
@@ -31,66 +31,37 @@ def parsemaildate(md) :
     except:
         return datecompat.parsemaildate(md)
 
-secrets = hidden.elastic()
+secrets = hidden.elastic7()
 
 # Connect to our database
 es = Elasticsearch(
     [ secrets['host'] ],
     http_auth=(secrets['user'], secrets['pass']),
+    url_prefix = secrets['prefix'],
     scheme="http",
     port=secrets['port']
 )
 
-
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-date-format.html#built-in-date-formats
-settings = {
-        "mappings": {
-            "message": {
-                "properties": {
-                    "offset": {
-                        "type": "long"
-                    },
-                    "headers.date": {
-                        "type": "date"
-                    },
-                    "body": {
-                        "type": "text",
-                        "analyzer" : "english"
-                    },
-                }
-            }
-        }
-    }
+# In our test world - we only get one index :(
+indexname = secrets['user']
 
 
-try:
-    res = es.indices.create(index='gmane', body=settings)
-    print("Creating the gmane index if it is not there...")
-    print(res)
-except:
-    print("The gmane index seems to already exist...")
+# Start fresh
+# https://elasticsearch-py.readthedocs.io/en/master/api.html#indices
+res = es.indices.delete(index=indexname, ignore=[400, 404])
+print("Dropped index")
+print(res)
+
+res = es.indices.create(index=indexname)
+print("Created the index...")
+print(res)
 
 baseurl = 'http://mbox.dr-chuck.net/sakai.devel/'
-
-# Pick up where we left off
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-max-aggregation.html
-
-agg = {
-    "aggs" : {
-        "max_id" : { "max" : { "field" : "offset" } }
-    }
-}
-query = json.dumps(agg)
-res = es.search(index='gmane', body=agg)
-# print(res)
-start = res['aggregations']['max_id']['value']
-if start is None : start = 0
-start = int(start)
-print('start:', start)
 
 many = 0
 count = 0
 fail = 0
+start = 0
 while True:
     if ( many < 1 ) :
         sval = input('How many messages:')
@@ -98,14 +69,6 @@ while True:
         many = int(sval)
 
     start = start + 1
-
-    # Skip rows that are already retrieved
-    try:
-        res = es.get(index='gmane', doc_type='message', id=start)
-        print(res)
-        continue;
-    except: 
-        pass
 
     many = many - 1
     url = baseurl + str(start) + '/' + str(start + 1)
@@ -200,11 +163,11 @@ while True:
     # Reset the fail counter
     fail = 0
     doc = {'offset': start, 'sender': email, 'headers' : hdrdict, 'body': body}
-    res = es.index(index='gmane', doc_type='message', id=start, body=doc)
+    res = es.index(index=indexname, id=str(start), body=doc)
     print('   ',start, email, sent_at)
 
-    # print('Added document...')
-    # print(res['result'])
+    print('Added document...')
+    print(res['result'])
 
     if count % 100 == 0 : time.sleep(1)
 

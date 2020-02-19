@@ -30,14 +30,16 @@ indexname = bookfile.split('.')[0]
 fhand = open(bookfile)
 
 # Load the secrets
-secrets = hidden.elastic()
+secrets = hidden.elastic7()
 
 es = Elasticsearch(
     [ secrets['host'] ],
     http_auth=(secrets['user'], secrets['pass']),
+    url_prefix = secrets['prefix'],
     scheme="http",
     port=secrets['port']
 )
+indexname = secrets['user']
 
 # Start fresh
 # https://elasticsearch-py.readthedocs.io/en/master/api.html#indices
@@ -45,22 +47,7 @@ res = es.indices.delete(index=indexname, ignore=[400, 404])
 print("Dropped index", indexname)
 print(res)
 
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/properties.html
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html
-settings = {
-        "mappings": {
-            "paragraph": {
-                "properties": {
-                    "content": {
-                        "type": "text",
-                        "analyzer" : "english"
-                    },
-                }
-            }
-        }
-    }
-
-res = es.indices.create(index=indexname, body=settings)
+res = es.indices.create(index=indexname)
 print("Created the index...")
 print(res)
 
@@ -94,10 +81,10 @@ for line in fhand:
         m.update(json.dumps(doc).encode())
         pkey = m.hexdigest()
 
-        res = es.index(index=indexname, doc_type='paragraph', id=pkey, body=doc)
+        res = es.index(index=indexname, id=pkey, body=doc)
 
-        # print('Added document...')
-        # print(res['result'])
+        print('Added document', pkey)
+        print(res['result'])
 
         if pcount % 100 == 0 :
             print(pcount, 'loaded...')
