@@ -50,24 +50,18 @@ res = es.index(index=indexname, id='abc', body=doc)
 print('Added document...')
 print(res['result'])
 
-res = es.get(index="testing", id='abc')
+res = es.get(index=indexname, id='abc')
 print('Retrieved document...')
 print(res)
 
 # Tell it to recompute the index - normally it would take up to 30 seconds
 # Refresh can be costly - we do it here for demo purposes
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html
-res = es.indices.refresh(index="testing")
+res = es.indices.refresh(index=indexname)
 print("Index refreshed")
 print(res)
 
-# Read through all the documents...
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html
-
-# res = es.search(index="testing", body={"query": {"match_all": {}}})
-
 # Read the documents with a search term
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 
 x = {
   "query": {
@@ -86,7 +80,7 @@ x = {
   }
 }
 
-res = es.search(index="testing", body=x)
+res = es.search(index=indexname, body=x)
 print('Search results...')
 print(res)
 print()
