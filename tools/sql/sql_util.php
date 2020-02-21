@@ -162,8 +162,8 @@ function pg4e_extract_info($info) {
     $ip = false;
     try {
         $retval = new \stdClass();
-         $retval->user = base64_decode($info->auth->data->POSTGRES_USER);
-         $retval->password = base64_decode($info->auth->data->POSTGRES_PASSWORD);
+         $retval->user = isset($info->auth->data->POSTGRES_USER) ? base64_decode($info->auth->data->POSTGRES_USER) : null;
+         $retval->password = isset($info->auth->data->POSTGRES_PASSWORD) ? base64_decode($info->auth->data->POSTGRES_PASSWORD) : null;
          $retval->ip = $info->ing->status->loadBalancer->ingress[0]->ip ?? null;
          $retval->port = $info->svc->metadata->labels->port ?? null;
         return $retval;

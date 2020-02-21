@@ -96,7 +96,7 @@ If this course using UMSI provisioning, please configure the API for this <b>cou
 </select>
 </p>
 <p>UMSI ElasticSearch</p>
-<p>UMSI_ES_URL <input type="text" name="um_es_host" value="<?= htmlentities(U::get($settings, 'um_es_host')) ?>"></p>
+<p>UMSI_ES_URL <input type="text" name="um_es_url" value="<?= htmlentities(U::get($settings, 'um_es_url')) ?>"></p>
 <p>UMSI_ES_KEY <input type="text" name="um_es_key" value="<?= htmlentities(U::get($settings, 'um_es_key')) ?>"></p>
 <p>UMSI_ES_PASSWORD 
 <span id="umespass" style="display:none"><input type="text" name="um_es_password" id="um_es_password" value="<?= htmlentities($um_es_password) ?>"/></span> (<a href="#" onclick="$('#umespass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($um_es_password) ?>');return false;">copy</a>)</p>

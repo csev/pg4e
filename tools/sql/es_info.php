@@ -74,6 +74,8 @@ $OUTPUT->topNav();
 ?>
 <h1>Elastic Info</h1>
 <?php if ( $LAUNCH->user->instructor ) { ?>
+<p> API URL: <?= $cfg->pg4e_api_url ?></p>
+<p> API KEY: <?= $cfg->pg4e_api_key ?></p>
 <form method="post">
 Value to check:
 <input type="text" size="30" name="dbname" value="<?= htmlentities($dbname) ?>"><br/>
