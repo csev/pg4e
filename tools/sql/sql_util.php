@@ -688,6 +688,8 @@ function pg4e_user_es_data($LAUNCH) {
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
 
+    $cfg = getESConfig();
+
     // Instructor / un-confgured defaults
     if ( $LAUNCH->user->instructor || ! $cfg ) {
         $es_host = U::get($_SESSION, 'es_host', U::get($_COOKIE, 'es_host'));
@@ -703,7 +705,6 @@ function pg4e_user_es_data($LAUNCH) {
         $es_pass = U::get($_SESSION, 'es_pass');
     }
 
-    $cfg = getESConfig();
     if ( ! $es_host && $cfg ) {
         $retval = pg4e_request($project, 'info/es', $cfg);
         if ( is_int($retval) && $retval == 500 ) {
