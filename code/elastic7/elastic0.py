@@ -23,7 +23,7 @@ es = Elasticsearch(
     [secrets['host']],
     http_auth=(secrets['user'], secrets['pass']),
     url_prefix = secrets['prefix'],
-    scheme="http",
+    scheme='http',
     port=secrets['port']
 )
 indexname = secrets['user']

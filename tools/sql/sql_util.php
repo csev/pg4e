@@ -99,8 +99,9 @@ function getESConfig() {
     $retval->pg4e_api_key = U::get($settings, 'um_es_key');
     $retval->pg4e_api_password = U::get($settings, 'um_es_password');
 
-    $retval->es_url = U::get($settings, 'es_url');
-    $retval->es_key = U::get($settings, 'es_key');
+    $retval->es_host = U::get($settings, 'es_host');
+    $retval->es_prefix = U::get($settings, 'es_prefix');
+    $retval->es_port = U::get($settings, 'es_port');
     $retval->es_password = U::get($settings, 'es_password');
     return $retval;
 }
@@ -643,14 +644,16 @@ function pg4e_user_es_load($LAUNCH) {
 function pg4e_user_es_post($LAUNCH) {
     global $CFG;
     global $pg4e_request_result, $pg4e_request_url;
-    global $es_host, $es_port, $es_user, $es_pass, $info;
+    global $es_host, $es_port, $es_prefix, $es_user, $es_pass, $info;
 
     if ( U::get($_POST,'default') ) {
         unset($_SESSION['es_host']);
+        unset($_SESSION['es_prefix']);
         unset($_SESSION['es_port']);
         unset($_SESSION['es_user']);
         unset($_SESSION['es_pass']);
         setcookie("es_host", '', time()+31556926 ,'/');
+        setcookie("es_prefix", '', time()+31556926 ,'/');
         setcookie("es_port", '', time()+31556926 ,'/');
         setcookie("es_user", '', time()+31556926 ,'/');
         setcookie("es_pass", '', time()+31556926 ,'/');
@@ -664,7 +667,7 @@ function pg4e_user_es_post($LAUNCH) {
 
     // If we have new values... copy them into SESSION
     $retval = false;
-    foreach(array('es_host', 'es_port', 'es_user', 'es_pass') as $key) {
+    foreach(array('es_host', 'es_prefix', 'es_port', 'es_user', 'es_pass') as $key) {
         $value = U::get($_POST, $key);
         if ( ! $value ) continue;
         $_SESSION[$key] = $value;
@@ -680,12 +683,7 @@ function pg4e_user_es_post($LAUNCH) {
 function pg4e_user_es_data($LAUNCH) {
     global $CFG;
     global $pg4e_request_result, $pg4e_request_url;
-    global $es_host, $es_port, $es_user, $es_pass, $info;
-
-    $cfg = getESConfig();
-    if ( ! $cfg ) {
-        return "UMSI ES API is not configured.";
-    }
+    global $es_host, $es_port, $es_prefix, $es_user, $es_pass, $info;
 
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
@@ -693,16 +691,19 @@ function pg4e_user_es_data($LAUNCH) {
     // Instructor / un-confgured defaults
     if ( $LAUNCH->user->instructor || ! $cfg ) {
         $es_host = U::get($_SESSION, 'es_host', U::get($_COOKIE, 'es_host'));
+        $es_prefix = U::get($_SESSION, 'es_prefix', U::get($_COOKIE, 'es_prefix'));
         $es_port = U::get($_SESSION, 'es_port', U::get($_COOKIE, 'es_port'));
         $es_user = U::get($_SESSION, 'es_user', U::get($_COOKIE, 'es_user'));
         $es_pass = U::get($_SESSION, 'es_pass', U::get($_COOKIE, 'es_pass'));
     } else {  // Student && Config
         $es_host = U::get($_SESSION, 'es_host');
+        $es_prefix = U::get($_SESSION, 'es_prefix');
         $es_port = U::get($_SESSION, 'es_port');
         $es_user = U::get($_SESSION, 'es_user');
         $es_pass = U::get($_SESSION, 'es_pass');
     }
 
+    $cfg = getESConfig();
     if ( ! $es_host && $cfg ) {
         $retval = pg4e_request($project, 'info/es', $cfg);
         if ( is_int($retval) && $retval == 500 ) {
@@ -723,10 +724,12 @@ function pg4e_user_es_data($LAUNCH) {
         if ( is_object($retval) ) {
             $info = pg4e_extract_es_info($retval);
              if ( isset($info->ip) ) $es_host = $info->ip;
+             if ( isset($info->prefix) ) $es_prefix = $info->prefix;
              if ( isset($info->port) ) $es_port = $info->port;
              if ( isset($info->user) ) $es_user = $info->user;
              if ( isset($info->password) ) $es_pass = $info->password;
             $_SESSION['es_host'] = $es_host;
+            $_SESSION['es_prefix'] = $es_prefix;
             $_SESSION['es_port'] = $es_port;
             $_SESSION['es_user'] = $es_user;
             $_SESSION['es_pass'] = $es_pass;
@@ -737,6 +740,7 @@ function pg4e_user_es_data($LAUNCH) {
     $json = $LAUNCH->result->getJSON();
     $new = json_encode(array(
         'es_host' => $es_host,
+        'es_prefix' => $es_prefix,
         'es_port' => $es_port,
         'es_user' => $es_user,
         'es_pass' => $es_pass,
@@ -746,6 +750,7 @@ function pg4e_user_es_data($LAUNCH) {
     // If we have a full set - store the cookies for good measure
     if ( $es_host &&  $es_port && $es_user && $es_pass ) {
         setcookie("es_host", $es_host, time()+31556926 ,'/');
+        setcookie("es_prefix", $es_prefix, time()+31556926 ,'/');
         setcookie("es_port", $es_port, time()+31556926 ,'/');
         setcookie("es_user", $es_user, time()+31556926 ,'/');
         setcookie("es_pass", $es_pass, time()+31556926 ,'/');
@@ -770,8 +775,62 @@ function pg4e_extract_es_info($info) {
     }
 }
 
+/*
+def makepw(user, secret):
+
+    # 2020-05-03 20:07:19.778803
+    date = datetime.now()
+    date = date + relativedelta(months=+3)
+
+    expire = getexpire(date)
+
+    # user_2005
+    index = user + '_' + str(expire)
+
+    # user_2005_asecret
+    base = index + '_' + secret
+
+    m = hashlib.sha256()
+    m.update(base.encode())
+    sig = m.hexdigest()
+
+    # 2005_7cce7423
+    pw = str(expire) + '_' + sig[0:8]
+    return pw
+*/
+
+/*
+def getexpire(date) :
+
+    strdate = str(date)
+
+    # 2005
+    expire = strdate[2:4] + strdate[5:7]
+    return int(expire)
+*/
+function es_getexpire() {
+    $now = date(DATE_ATOM);
+    $retval = substr($now, 2, 2) . substr($now, 5, 2);
+    return $retval;
+}
+
+function pg4e_user_es_elastic7($LAUNCH) {
+    global $OUTPUT, $es_host, $es_prefix, $es_port, $es_user, $es_pass, $info;
+    $cfg = getESConfig();
+    if ( ! $cfg ) return;
+    if ( strlen($cfg->es_host) < 1 ) return;
+    if ( strlen($es_user) > 1 ) return;
+    $exp = es_getexpire();
+    /*
+    $retval->es_host = U::get($settings, 'es_host');
+    $retval->es_prefix = U::get($settings, 'es_prefix');
+    $retval->es_port = U::get($settings, 'es_port');
+     */
+    // TODO: Finish this
+}
+
 function pg4e_user_es_form($LAUNCH) {
-    global $OUTPUT, $es_host, $es_port, $es_user, $es_pass, $info;
+    global $OUTPUT, $es_host, $es_prefix, $es_port, $es_user, $es_pass, $info;
 
 // TODO: Fix
 // echo("<p style=\"color: red;\">The elastic search assignments are currently under construction, Dr. Chuck will announce when they are again available...</p>\n");
@@ -788,6 +847,7 @@ function pg4e_user_es_form($LAUNCH) {
 <p>
 <?php if ( $LAUNCH->user->instructor || ! $cfg ) { ?>
 Host: <input type="text" name="es_host" value="<?= htmlentities($es_host) ?>" id="es_host"><br/>
+Prefix: <input type="text" name="es_prefix" value="<?= htmlentities($es_prefix) ?>" id="es_prefix"><br/>
 Port: <input type="text" name="es_port" value="<?= htmlentities($es_port) ?>" id="es_port"><br/>
 User: <input type="text" name="es_user" value="<?= htmlentities($es_user) ?>"><br/>
 Password: <span id="pass" style="display:none"><input type="text" name="es_pass" id="es_pass" value="<?= htmlentities($es_pass) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($es_pass) ?>');return false;">copy</a>) <br/>
@@ -796,6 +856,8 @@ Password: <span id="pass" style="display:none"><input type="text" name="es_pass"
 <p>
 <pre>
 Host: <?= $es_host ?>
+
+Prefix: <?= $es_prefix ?>
 
 Port: <?= $es_port ?>
 

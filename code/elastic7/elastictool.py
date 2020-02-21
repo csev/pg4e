@@ -89,7 +89,7 @@ while True:
         text = response.text
         status = response.status_code
         print(status)
-        print(text)
+        print(json.dumps(json.loads(text), indent=2))
         continue
 
     print()

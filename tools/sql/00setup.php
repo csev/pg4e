@@ -75,7 +75,7 @@ echo(" Setup</h1>\n");
 
 if ( ! $cfg ) {
     echo("<p>The UMSI Provisioning API is not configured - so this process is not needed.</p>");
-    echo("<p>You can change the configuration to point to a UMSI provisioning endpoint or instructor your students to use another PostgreSQL server like ElephanSQL.</p>");
+    echo("<p>You can change the configuration to point to a UMSI provisioning endpoint or instructor your students to use another PostgreSQL server like ElephantSQL.</p>");
     return;
 }
 if ( $LAUNCH->user->instructor && $cfg) { ?>
