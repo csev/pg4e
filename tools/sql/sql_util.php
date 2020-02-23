@@ -48,6 +48,10 @@ function getDbUser($unique) {
     return "pg4e_user_".substr($unique,15,5);
 }
 
+function getEsUser($unique) {
+    return "pg4e_".substr($unique,12,7);
+}
+
 function getUMSIConfig() {
     global $CFG, $TSUGI_LAUNCH;
 
@@ -219,7 +223,7 @@ function pg4e_user_db_load($LAUNCH) {
     }
     // Returns true if redirected
     $retval = pg4e_user_db_post($LAUNCH);
-    if ( $retval ) return $false;
+    if ( $retval ) return false;
 
     // Restore check after redirect if one happens
     if ( U::get($_SESSION,'check') ) {
@@ -230,6 +234,16 @@ function pg4e_user_db_load($LAUNCH) {
     // Set global values and cookies, etc.
     pg4e_user_db_data($LAUNCH);
     return true;
+}
+
+// https://stackoverflow.com/questions/4694089/sending-browser-cookies-during-a-302-redirect
+function redirect_200($url) {
+?>
+<html>
+<head><meta http-equiv="refresh" content=1;url="<?=$url?>"></head>
+<body><a href="<?=$url?>">...</a></body>
+</html>
+<?php
 }
 
 // Handle incoming POST request, redirecting if necessary
@@ -248,7 +262,8 @@ function pg4e_user_db_post($LAUNCH) {
         setcookie("pdo_port", '', time()+31556926 ,'/');
         setcookie("pdo_user", '', time()+31556926 ,'/');
         setcookie("pdo_pass", '', time()+31556926 ,'/');
-        header( 'Location: '.addSession('index.php') ) ;
+        // header( 'Location: '.addSession('index.php') ) ;
+        redirect_200(addSession('index.php'));
         return true;
     }
 
@@ -627,7 +642,7 @@ function pg4e_user_es_load($LAUNCH) {
     }
     // Returns true if redirected
     $retval = pg4e_user_es_post($LAUNCH);
-    if ( $retval ) return $false;
+    if ( $retval ) return false;
 
     // Restore check after redirect if one happens
     if ( U::get($_SESSION,'check') ) {
@@ -637,6 +652,7 @@ function pg4e_user_es_load($LAUNCH) {
 
     // Set global values and cookies, etc.
     pg4e_user_es_data($LAUNCH);
+
     return true;
 }
 
@@ -657,8 +673,9 @@ function pg4e_user_es_post($LAUNCH) {
         setcookie("es_port", '', time()+31556926 ,'/');
         setcookie("es_user", '', time()+31556926 ,'/');
         setcookie("es_pass", '', time()+31556926 ,'/');
-        header( 'Location: '.addSession('index.php') ) ;
-        return false;
+        // header( 'Location: '.addSession('index.php') ) ;
+        redirect_200(addSession('index.php'));
+        return true;
     }
 
     // Cannot set these from post unless we are unconfigured or instructor
@@ -706,34 +723,47 @@ function pg4e_user_es_data($LAUNCH) {
     }
 
     if ( ! $es_host && $cfg ) {
-        $retval = pg4e_request($project, 'info/es', $cfg);
-        if ( is_int($retval) && $retval == 500 ) {
-            echo("<pre>\n");
-            echo("Your Elastic Search server is not yet setup.\n\n");
-            return;
-        }
-        if ( is_int($retval) && $retval >= 300 ) {
-            echo("<pre>\n");
-            echo("Internal provisioning error. Please send the text below to csev@umich.edu\n\n");
-            echo("HTTP Code: ".$retval."\n\n");
-            echo("Requesting: ".$pg4e_request_url."\n\n");
-            echo("Result:\n");
-            echo(htmlentities(wordwrap($pg4e_request_result)));
-            die();
-        }
-        $info = false;
-        if ( is_object($retval) ) {
-            $info = pg4e_extract_es_info($retval);
-             if ( isset($info->ip) ) $es_host = $info->ip;
-             if ( isset($info->prefix) ) $es_prefix = $info->prefix;
-             if ( isset($info->port) ) $es_port = $info->port;
-             if ( isset($info->user) ) $es_user = $info->user;
-             if ( isset($info->password) ) $es_pass = $info->password;
+        if ( is_elastic7() ) {
+            $es_host = $cfg->es_host;
+            $es_port = $cfg->es_port;
+            $es_prefix = $cfg->es_prefix;
+            $es_user = getEsUser($unique);
+            $es_pass = es_makepw($es_user, '12345');
             $_SESSION['es_host'] = $es_host;
             $_SESSION['es_prefix'] = $es_prefix;
             $_SESSION['es_port'] = $es_port;
             $_SESSION['es_user'] = $es_user;
             $_SESSION['es_pass'] = $es_pass;
+        } else {
+            $retval = pg4e_request($project, 'info/es', $cfg);
+            if ( is_int($retval) && $retval == 500 ) {
+                echo("<pre>\n");
+                echo("Your Elastic Search server is not yet setup.\n\n");
+                return;
+            }
+            if ( is_int($retval) && $retval >= 300 ) {
+                echo("<pre>\n");
+                echo("Internal provisioning error. Please send the text below to csev@umich.edu\n\n");
+                echo("HTTP Code: ".$retval."\n\n");
+                echo("Requesting: ".$pg4e_request_url."\n\n");
+                echo("Result:\n");
+                echo(htmlentities(wordwrap($pg4e_request_result)));
+                die();
+            }
+            $info = false;
+            if ( is_object($retval) ) {
+                $info = pg4e_extract_es_info($retval);
+                if ( isset($info->ip) ) $es_host = $info->ip;
+                if ( isset($info->prefix) ) $es_prefix = $info->prefix;
+                if ( isset($info->port) ) $es_port = $info->port;
+                if ( isset($info->user) ) $es_user = $info->user;
+                if ( isset($info->password) ) $es_pass = $info->password;
+                $_SESSION['es_host'] = $es_host;
+                $_SESSION['es_prefix'] = $es_prefix;
+                $_SESSION['es_port'] = $es_port;
+                $_SESSION['es_user'] = $es_user;
+                $_SESSION['es_pass'] = $es_pass;
+            }
         }
     }
 
@@ -779,10 +809,6 @@ function pg4e_extract_es_info($info) {
 /*
 def makepw(user, secret):
 
-    # 2020-05-03 20:07:19.778803
-    date = datetime.now()
-    date = date + relativedelta(months=+3)
-
     expire = getexpire(date)
 
     # user_2005
@@ -800,34 +826,25 @@ def makepw(user, secret):
     return pw
 */
 
-/*
-def getexpire(date) :
-
-    strdate = str(date)
-
-    # 2005
-    expire = strdate[2:4] + strdate[5:7]
-    return int(expire)
-*/
+// 2020-02-23 => 2005
 function es_getexpire() {
-    $now = date(DATE_ATOM);
-    $retval = substr($now, 2, 2) . substr($now, 5, 2);
+    $future = date("Y/m/d", strtotime(" +3 months"));
+    $retval = substr($future, 2, 2) . substr($future, 5, 2);
     return $retval;
 }
 
-function pg4e_user_es_elastic7($LAUNCH) {
-    global $OUTPUT, $es_host, $es_prefix, $es_port, $es_user, $es_pass, $info;
-    $cfg = getESConfig();
-    if ( ! $cfg ) return;
-    if ( strlen($cfg->es_host) < 1 ) return;
-    if ( strlen($es_user) > 1 ) return;
-    $exp = es_getexpire();
-    /*
-    $retval->es_host = U::get($settings, 'es_host');
-    $retval->es_prefix = U::get($settings, 'es_prefix');
-    $retval->es_port = U::get($settings, 'es_port');
-     */
-    // TODO: Finish this
+// ('testing', '12345') => '2005_975c9677'
+function es_makepw($user, $secret) {
+    $expire = es_getexpire();
+    $base = $user . '_' . $expire . '_' . $secret;
+    $sig = hash('sha256', $base);
+    $pw = $expire . '_' . substr($sig, 0, 8);
+    return($pw);
+}
+
+function is_elastic7() {
+    $the_version = $_GET['es_version'] ?? $_COOKIE['es_version'] ?? 'elastic6';
+    return $the_version == 'elastic7';
 }
 
 function pg4e_user_es_form($LAUNCH) {

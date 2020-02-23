@@ -72,6 +72,7 @@ if ( U::get($_POST,'check') ) {
 if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
+
 ?>
 <h1>Elastic Search 7.x Tweets</h1>
 <p>Do this assignment using
@@ -81,8 +82,6 @@ if ( $dueDate->message ) {
 In this assignment you will create an elastic search index 
 in the following Elastic Search instance:
 <?php 
-// es_getexpire();
-pg4e_user_es_elastic7($LAUNCH); 
 pg4e_user_es_form($LAUNCH); 
 ?>
 </p>
