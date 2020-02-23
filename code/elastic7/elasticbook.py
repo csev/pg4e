@@ -84,7 +84,7 @@ for line in fhand:
         res = es.index(index=indexname, id=pkey, body=doc)
 
         print('Added document', pkey)
-        print(res['result'])
+        # print(res['result'])
 
         if pcount % 100 == 0 :
             print(pcount, 'loaded...')
@@ -103,23 +103,4 @@ print(res)
 print(' ')
 print('Loaded',pcount,'paragraphs',count,'lines',chars,'characters')
 
-
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
-
-while True:
-    search = input('Enter search term:')
-    if len(search.strip()) < 1 : break
-    res = es.search(index=indexname, body={"query": {"query_string": { "query": search, "default_field": "content" }}})
-
-    summary = copy.deepcopy(res)   # Make a copy for printing
-    del(summary['hits']['hits'])   # delete the detail from the copy
-    print('Search results...')
-    print(summary)
-    print()
-
-    print("Got %d Hits:" % res['hits']['total'])
-    for hit in res['hits']['hits']:
-        s = hit['_source']
-        print(f"{s['content']}")
-        print()
 

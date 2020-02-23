@@ -23,8 +23,6 @@ foreach($gin as $keyword => $docs) {
     if(strlen($keyword) > strlen($word)) $word = $keyword;
 }
 
-$word = 'bonsai';
-
 $oldgrade = $RESULT->grade;
 
 if ( U::get($_POST,'check') ) {
@@ -164,9 +162,9 @@ Enter command:
 And expect to get at least one hit.
 </p>
 <p>
-You can download <b>elastictool.py</b> at 
-<a href="https://www.pg4e.com/code/elastictool.py" target="_blank">https://www.pg4e.com/code/elastictool.py</a>.
-You will need to setup the <b>hidden.py</b> with your elastic search host/port/account/password values.
+You can download the Elastic Search 7 version of <b>elastictool.py</b> at 
+<a href="https://www.pg4e.com/code/elastic7/elastictool.py" target="_blank">https://www.pg4e.com/code/elastic7/elastictool.py</a>.
+This depends on having the account values in <b>hidden.py</b>.
 </p>
 <!--
 <?php

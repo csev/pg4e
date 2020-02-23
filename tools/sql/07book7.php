@@ -10,7 +10,6 @@ require_once "sql_util.php";
 require_once "es_util.php";
 
 if ( ! pg4e_user_es_load($LAUNCH) ) return;
-if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
 // Compute the stuff for the output
 $code = getCode($LAUNCH);
@@ -43,16 +42,11 @@ $oldgrade = $RESULT->grade;
 
 if ( U::get($_POST,'check') ) {
 
-	// This may or may not work
-    $pg_PDO = pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass);
-	unset($_SESSION['error']);  // Ignore missing database connection
-    if ( $pg_PDO && ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
-
 	$client = get_es_connection();
     if ( ! $client ) return;
 
 	$params = [
-    	'index' => 'pg'.$book_id,
+        'index' => $es_prefix .'/' . $es_user,
     	'body'  => [
         	'query' => [
             	'match' => [
@@ -62,7 +56,6 @@ if ( U::get($_POST,'check') ) {
     	]
 	];
 	$_SESSION['last_parms'] = $params;
-	pg4e_debug_note($pg_PDO, json_encode($params, JSON_PRETTY_PRINT));
 
 	try {
 		unset($_SESSION['last_response']);
@@ -84,6 +77,7 @@ if ( U::get($_POST,'check') ) {
     }
 
     $gradetosend = 1.0;
+    $pg_PDO = false;
     pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);
 
     // Redirect to ourself
@@ -111,30 +105,22 @@ or if you are behind a firewall, you can try this alternate URL:
 <?php } ?>
 </pre>
 and
-create an elastic search index called <b>pg<?= $book_id ?></b>
+create an elastic search index called <b><?= $es_user ?></b>
 in the following Elastic Search instance:
 <?php pg4e_user_es_form($LAUNCH); ?>
 </p>
-Use the following mapping for your index:
-<pre>
-{
-    "mappings": {
-        "paragraph": {
-            "properties": {
-                "content": {
-                    "type": "text",
-                    "analyzer" : "english"
-                },
-            }
-        }
-    }
-}
-</pre>
-</p>
 <p>
-You can build your application by starting with this code -
-<a href="https://www.pg4e.com/code/elasticbook.py" target="_blank">https://www.pg4e.com/code/elasticbook.py</a>.
-You will need to setup the <b>hidden.py</b> with your elastic search host/port/account/password values.
+You should have a separate <b>elastic7</b> folder and download these files into it:
+<ul>
+<li>
+<a href="https://www.pg4e.com/code/elastic7/elasticbook.py" target="_blank">https://www.pg4e.com/code/elastic7/elasticbook.py</a>.
+</li>
+<li>(If you have not already done this)
+<a href="https://www.pg4e.com/code/elastic7/hidden-dist.py" target="_blank">https://www.pg4e.com/code/elastic7/hidden-dist.py</a>
+</li>
+</ul>
+If necessary, copy <b>hidden-dist.py</b> to <b>hidden.py</b> and put your elastic search host/prefix/port/account/password values
+into the <b>elastic7()</b> method.  You should also put your PostgreSQL secrets into this file as well.
 </p>
 <p>
 You will need to install the Python ElasticSearch library if you have not already done so.
@@ -145,26 +131,43 @@ pip install elasticsearch
 <p>
 This autograder will run a command equivalent to using the <b>elastictool.py</b> command as follows:
 <pre>
-$ python3 elastictool.py 
+$ python3 elastictool.py
 
-Index / document count
-----------------------
-searchguard / 0
-pg<?= $book_id ?> / 514
-
-Enter command: <b>search pg<?= $book_id ?> <?= $word ?></b>
-
+Enter command: search <?= htmlentities($word) ?> 
+http://testing:*****@34.219.107.86:8001/v1/basicauth/elasticsearch/testing/_search?pretty
+{"query": {"query_string": {"query": "distinct"}}}
+200
 {
-  ...
-  "hits" : {
-    "total" : 1,
-    "max_score" : 1.0024122,
-    "hits" : [
+  "took": 5,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 1,
+      "relation": "eq"
+    },
+    "max_score": 2.2903469,
+    "hits": [
       {
-         ...
+        "_index": "testing",
+        "_type": "_doc",
+        "_id": "922addd2c481d64edd8aa17b3b4fb86484b5728409e5e58b9b15a01cc93462c2",
+        "_score": 2.2903469,
+        "_source": {
+          "offset": 29,
+          "content": " is a distinct <?= htmlentities($word) ?> from the ..."
+        }
       }
     ]
   }
+}
+
+
 </pre>
 And expect to get at least one hit.
 </p>
