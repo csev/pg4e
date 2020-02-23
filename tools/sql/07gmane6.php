@@ -84,7 +84,7 @@ if ( $dueDate->message ) {
 }
 ?>
 <h1>Elastic Search 6.x Email Load</h1>
-<?php if ( $LAUNCH->user->instructor ) { ?>
+<?php if ( true || $LAUNCH->user->instructor ) { ?>
 <p><b>Optional:</b> Do this assignment using
 <a href="index.php?es_version=elastic7">Elastic Search 7</a>
 </p>

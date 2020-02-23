@@ -77,8 +77,9 @@ if ( $dueDate->message ) {
 }
 ?>
 <h1>Elastic Search 7.x Email Load</h1>
-<p>Do this assignment using
-<a href="index.php?es_version=elastic6">Elastic Search 6</a>
+<p>This assignment is using an <b>experimental</b> Elastic Search 7.x server.  ES 7.x has a different API
+than ES 6.x and so there is different code that needs to be written.  You can switch back to
+<a href="index.php?es_version=elastic6">Elastic Search 6</a> if you like.
 </p>
 <p>
 You should have a separate <b>elastic7</b> folder and download these files into it:
