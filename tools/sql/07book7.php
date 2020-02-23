@@ -6,50 +6,71 @@ use \Tsugi\Util\Mersenne_Twister;
 // https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/quickstart.html
 require_once "names.php";
 require_once "text_util.php";
+require_once "sql_util.php";
 require_once "es_util.php";
 
 if ( ! pg4e_user_es_load($LAUNCH) ) return;
+if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
 // Compute the stuff for the output
 $code = getCode($LAUNCH);
 
-$lines = get_lines($code, 5);
-$gin = get_gin($lines);
-ksort($gin);
+$config = getCourseSettings();
 
-// Find the longest word
-$word = '';
-foreach($gin as $keyword => $docs) {
-    if(strlen($keyword) > strlen($word)) $word = $keyword;
-}
+// http://www.gutenberg.org/cache/epub/22381/pg22381.txt
+$books = array(
+ '14091' => 'repose',
+ '18866' => 'eccentric',
+ '19337' => 'charitable',
+ '22381' => 'prometheus',
+ '20203' => 'pennsylvania',
+);
+
+$config = getCourseSettings();
+
+$book_ids = array_keys($books);
+$MT = new Mersenne_Twister($code);
+// TODO: Add -1
+$pos = $MT->getNext(0,count($book_ids));
+if ( $pos >= count($book_ids) ) $pos = 0;
+
+$book_id = $book_ids[$pos];
+$book_url = 'http://www.gutenberg.org/cache/epub/'.$book_id.'/pg'.$book_id.'.txt';
+$alt_book_url = $CFG->apphome . '/proxy/'.$book_url;
+$word = $books[$book_id];
 
 $oldgrade = $RESULT->grade;
 
 if ( U::get($_POST,'check') ) {
 
+	// This may or may not work
+    $pg_PDO = pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass);
+	unset($_SESSION['error']);  // Ignore missing database connection
+    if ( $pg_PDO && ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
+
 	$client = get_es_connection();
     if ( ! $client ) return;
 
-    $word = 'parentheses';
-
 	$params = [
-    	'index' => $es_prefix .'/' . $es_user,
+    	'index' => 'pg'.$book_id,
     	'body'  => [
         	'query' => [
             	'match' => [
-                	'text' => $word
+                	'content' => $word
             	]
         	]
     	]
 	];
 	$_SESSION['last_parms'] = $params;
+	pg4e_debug_note($pg_PDO, json_encode($params, JSON_PRETTY_PRINT));
 
 	try {
 		unset($_SESSION['last_response']);
 		$response = $client->search($params);
 		$_SESSION['last_response'] = $response;
-		// echo("<pre>\n");print_r($response);echo("</pre>\n");die();
-		$hits = count($response['hits']['hits']);
+		pg4e_debug_note($pg_PDO, json_encode($response, JSON_PRETTY_PRINT));
+		// echo("<pre>\n");print_r($response);echo("</pre>\n");
+		$hits = $response['hits']['total'];
 		if ( $hits < 1 ) {
 			$_SESSION['error'] = 'Query / match did not find '.$word;
         	header( 'Location: '.addSession('index.php') ) ;
@@ -63,7 +84,6 @@ if ( U::get($_POST,'check') ) {
     }
 
     $gradetosend = 1.0;
-    $pg_PDO = false;
     pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);
 
     // Redirect to ourself
@@ -75,83 +95,73 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>Elastic Search 7.x Tweets</h1>
-<p>Do this assignment using
-<a href="index.php?es_version=elastic6">Elastic Search 6</a>
-</p>
+<h1>Elastic Search Book Load</h1>
 <p>
-In this assignment you will create an elastic search index 
-in the following Elastic Search instance:
-<?php 
-// es_getexpire();
-pg4e_user_es_elastic7($LAUNCH); 
-pg4e_user_es_form($LAUNCH); 
-?>
-</p>
-The index name should be the same as your user name and you should drop the index
-before you insert
-the following tweets (The author and date can be anything):
-<p>
+In this assignment you will download a book from:
 <pre>
-<?php 
-foreach($lines as $line) { 
-  echo($line."\n");
+<a href="<?= $book_url ?>" target="_blank"><?= $book_url ?></a>
+<?php if ( U::get($config, 'proxy') == 'yes' ) { ?>
+
+or if you are behind a firewall, you can try this alternate URL:
+
+<a href="<?= $alt_book_url ?>" target="_blank"><?= $alt_book_url ?></a>
+<?php } ?>
+</pre>
+and
+create an elastic search index called <b>pg<?= $book_id ?></b>
+in the following Elastic Search instance:
+<?php pg4e_user_es_form($LAUNCH); ?>
+</p>
+Use the following mapping for your index:
+<pre>
+{
+    "mappings": {
+        "paragraph": {
+            "properties": {
+                "content": {
+                    "type": "text",
+                    "analyzer" : "english"
+                },
+            }
+        }
+    }
 }
-?>
 </pre>
 </p>
 <p>
 You can build your application by starting with this code -
-<a href="https://www.pg4e.com/code/elastic7/elastic0.py" target="_blank">https://www.pg4e.com/code/elastic7/elastic0.py</a>.
+<a href="https://www.pg4e.com/code/elasticbook.py" target="_blank">https://www.pg4e.com/code/elasticbook.py</a>.
 You will need to setup the <b>hidden.py</b> with your elastic search host/port/account/password values.
 </p>
 <p>
-You will need to install the Python ElasticSearch library:
+You will need to install the Python ElasticSearch library if you have not already done so.
 <pre>
-pip install elasticsearch    # or pip3
+pip install elasticsearch
 </pre>
 </p>
 <p>
 This autograder will run a command equivalent to using the <b>elastictool.py</b> command as follows:
 <pre>
-elastic7 csev$ python3 elastictool.py
+$ python3 elastictool.py 
 
-Enter command: <b>search conversation</b>
-http://testing:*****@34.219.107.86:8001/v1/basicauth/elasticsearch/testing/_search?pretty
-{"query": {"query_string": {"query": "conversation"}}}
-200
+Index / document count
+----------------------
+searchguard / 0
+pg<?= $book_id ?> / 514
+
+Enter command: <b>search pg<?= $book_id ?> <?= $word ?></b>
+
 {
-  "took": 4,
-  "timed_out": false,
-  "_shards": {
-    "total": 5,
-    "successful": 5,
-    "skipped": 0,
-    "failed": 0
-  },
-  "hits": {
-    "total": {
-      "value": 1,
-      "relation": "eq"
-    },
-    "max_score": 0.2876821,
-    "hits": [
+  ...
+  "hits" : {
+    "total" : 1,
+    "max_score" : 1.0024122,
+    "hits" : [
       {
-        "_index": "testing",
-        "_type": "_doc",
-        "_id": "4",
-        "_score": 0.2876821,
-        "_source": {
-          "author": "kimchy",
-          "text": "The conversation was going so well for a while and then you made the",
-          "timestamp": "2020-02-20T19:32:48.847651"
-        }
+         ...
       }
     ]
   }
-}
-
-Enter command:
 </pre>
 And expect to get at least one hit.
 </p>
