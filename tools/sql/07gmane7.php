@@ -10,7 +10,6 @@ require_once "es_util.php";
 require_once "sql_util.php";
 
 if ( ! pg4e_user_es_load($LAUNCH) ) return;
-if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
 // Compute the stuff for the output
 $code = getCode($LAUNCH);
@@ -29,17 +28,12 @@ $words = array(
 
 if ( U::get($_POST,'check') ) {
 
-	// This may or may not work
-    $pg_PDO = pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass);
-	unset($_SESSION['error']);  // Ignore missing database connection
-    if ( $pg_PDO && ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
-
 	$client = get_es_connection();
     if ( ! $client ) return;
 
     foreach($words as $word) {
 	    $params = [
-    	    'index' => 'gmane',
+            'index' => $es_prefix .'/' . $es_user,
     	    'body'  => [
         	    'query' => [
             	    'match' => [
@@ -49,13 +43,11 @@ if ( U::get($_POST,'check') ) {
     	    ]
 	    ];
 	    $_SESSION['last_parms'] = $params;
-	    pg4e_debug_note($pg_PDO, json_encode($params, JSON_PRETTY_PRINT));
 
 	    try {
 		    unset($_SESSION['last_response']);
 		    $response = $client->search($params);
 		    $_SESSION['last_response'] = $response;
-		    pg4e_debug_note($pg_PDO, json_encode($response, JSON_PRETTY_PRINT));
 		    // echo("<pre>\n");print_r($response);echo("</pre>\n");
 		    $hits = $response['hits']['total'];
 		    if ( $hits < 1 ) {
@@ -72,6 +64,7 @@ if ( U::get($_POST,'check') ) {
     }
 
     $gradetosend = 1.0;
+    $pg_PDO = false;
     pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);
 
     // Redirect to ourself
@@ -88,10 +81,15 @@ if ( $dueDate->message ) {
 <a href="index.php?es_version=elastic6">Elastic Search 6</a>
 </p>
 <p>
-In this assignment you will will setup and run
-<a href="https://www.pg4e.com/code/elasticmail.py" target="_blank">https://www.pg4e.com/code/elasticmail.py</a>
-and load at least the first 300 email messages into the
-<b>gmane</b> index.
+You should have a separate <b>elastic7</b> folder and download these files into it:
+<ul>
+<li>
+<a href="https://www.pg4e.com/code/elastic7/elasticmail.py" target="_blank">https://www.pg4e.com/code/elastic7/elasticmail.py</a>
+</li>
+<li>
+<a href="https://www.pg4e.com/code/elastic7/datecompat.py" target="_blank">https://www.pg4e.com/code/elastic7/datecompat.py</a>
+</li>
+</ul>
 </p>
 <p>
 You will need to install the Python ElasticSearch library if you have not already done so.
