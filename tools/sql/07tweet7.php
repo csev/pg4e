@@ -23,14 +23,14 @@ foreach($gin as $keyword => $docs) {
     if(strlen($keyword) > strlen($word)) $word = $keyword;
 }
 
+$word = 'bonsai';
+
 $oldgrade = $RESULT->grade;
 
 if ( U::get($_POST,'check') ) {
 
 	$client = get_es_connection();
     if ( ! $client ) return;
-
-    $word = 'parentheses';
 
 	$params = [
     	'index' => $es_prefix .'/' . $es_user,
@@ -101,9 +101,17 @@ foreach($lines as $line) {
 </pre>
 </p>
 <p>
-You can build your application by starting with this code -
+You should start by making a separate <b>elastic7</b> folder and downloading these files into it:
+<ul>
+<li>
 <a href="https://www.pg4e.com/code/elastic7/elastic0.py" target="_blank">https://www.pg4e.com/code/elastic7/elastic0.py</a>.
-You will need to setup the <b>hidden.py</b> with your elastic search host/port/account/password values.
+</li>
+<li>
+<a href="https://www.pg4e.com/code/elastic7/hidden-dist.py" target="_blank">https://www.pg4e.com/code/elastic7/hidden-dist.py</a>
+</li>
+</ul>
+Then copy <b>hidden-dist.py</b> to <b>hidden.py</b> and put your elastic search host/prefix/port/account/password values
+into the <b>elastic7()</b> method.  You should also put your PostgreSQL secrets into this file as well.
 </p>
 <p>
 You will need to install the Python ElasticSearch library:
