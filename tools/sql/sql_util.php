@@ -587,6 +587,9 @@ function pg4e_query_return_error($pg_PDO, $sql, $arr=false) {
 
 function pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate) {
     $scorestr = "Your answer is correct, score saved.";
+    if ( is_elastic7() ) {
+        $scorestr = "Your answer is correct - score saved.";
+    }
     if ( $dueDate->penalty > 0 ) {
         $gradetosend = $gradetosend * (1.0 - $dueDate->penalty);
         $scorestr = "Effective Score = $gradetosend after ".$dueDate->penalty*100.0." percent late penalty";
