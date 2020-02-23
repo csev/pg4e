@@ -95,7 +95,12 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>Elastic Search Book Load</h1>
+<h1>Elastic Search 6.x Book Load</h1>
+<?php if ( $LAUNCH->user->instructor ) { ?>
+<p><b>Optional:</b> Do this assignment using
+<a href="index.php?es_version=elastic7">Elastic Search 7</a>
+</p>
+<?php } ?>
 <p>
 In this assignment you will download a book from:
 <pre>

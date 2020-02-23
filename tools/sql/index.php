@@ -36,7 +36,6 @@ $assignments = array(
     '05fulltext.php' => 'Full text GIN using tsvector',
     '06pokeapi.php' => 'Loading JSON from PokeAPI',
     '07tweet.php' => 'Elastic Search Tweets',
-    '07tweet7.php' => 'Elastic Search 7 Tweets',
     '07book.php' => 'Elastic Search Book Text',
     '07gmane.php' => 'Elastic Search Email',
 );
