@@ -713,7 +713,7 @@ function pg4e_user_es_data($LAUNCH) {
     $cfg = getESConfig();
 
     // Instructor / un-confgured defaults
-    if ( $LAUNCH->user->instructor || ! $cfg ) {
+    if ( true || $LAUNCH->user->instructor || ! $cfg ) {
         $es_host = U::get($_SESSION, 'es_host', U::get($_COOKIE, 'es_host'));
         $es_prefix = U::get($_SESSION, 'es_prefix', U::get($_COOKIE, 'es_prefix'));
         $es_port = U::get($_SESSION, 'es_port', U::get($_COOKIE, 'es_port'));
@@ -892,9 +892,7 @@ Password: <span id="pass" style="display:none"><?= $es_pass ?></span> <input typ
 <?php } ?>
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
-<?php if ( $LAUNCH->user->instructor) { ?>
-<input type="submit" name="default" value="Default Values">
-<?php } ?>
+<input type="submit" name="default" value="Reset Values">
 </form>
 </p>
 </p>
