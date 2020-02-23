@@ -16,7 +16,7 @@ def secrets():
             "pass": "pg4e_pass_7f749",
             "database": "pg4e"}
 
-def elastic():
+def elastic7():
     return {"host": "34.219.107.86",
             "prefix" : "v1/basicauth/elasticsearch",
             "port": 8001,

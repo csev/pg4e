@@ -12,7 +12,7 @@ import requests
 import json
 import hidden
 
-secrets = hidden.elastic()
+secrets = hidden.elastic7()
 
 url = 'http://'+secrets['user']+':'+secrets['pass']+'@'+secrets['host']+':'+str(secrets['port']);
 if secrets.get('prefix') : 
