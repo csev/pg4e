@@ -559,6 +559,8 @@ function pg4e_check_debug_table($LAUNCH, $pg_PDO) {
 }
 
 function pg4e_debug_note($pg_PDO, $note) {
+    global $LAUNCH;
+    $LAUNCH->result->setNote($note);
     if ( ! $pg_PDO ) return;
     $pg_PDO->queryReturnError(
         "INSERT INTO pg4e_debug (query, result) VALUES (:query, :result)",

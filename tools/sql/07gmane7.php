@@ -28,6 +28,7 @@ $words = array(
 
 if ( U::get($_POST,'check') ) {
 
+    $pg_PDO = false;
 	$client = get_es_connection();
     if ( ! $client ) return;
 
@@ -43,12 +44,21 @@ if ( U::get($_POST,'check') ) {
     	    ]
 	    ];
 	    $_SESSION['last_parms'] = $params;
+        pg4e_debug_note($pg_PDO, json_encode($params, JSON_PRETTY_PRINT));
 
 	    try {
 		    unset($_SESSION['last_response']);
 		    $response = $client->search($params);
 		    $_SESSION['last_response'] = $response;
 		    // echo("<pre>\n");print_r($response);echo("</pre>\n");
+            if ( ! isset($response['hits']['hits']) ) {
+                $msg = 'Error looking for '.$word;
+                if ( isset($response['error']['type'])) $msg .= ' | ' . $response['error']['type'];
+                if ( isset($response['error']['reason'])) $msg .= ' | ' . $response['error']['reason'];
+                $_SESSION['error'] = $msg;
+                header( 'Location: '.addSession('index.php') ) ;
+                return;
+            }
 		    $hits = $response['hits']['total'];
 		    if ( $hits < 1 ) {
 			    $_SESSION['error'] = 'Query / match did not find '.$word;
@@ -57,6 +67,7 @@ if ( U::get($_POST,'check') ) {
     	    }
 			
 	    } catch(Exception $e) {
+            pg4e_debug_note($pg_PDO, $e->getMessage());
 		    $_SESSION['error'] = 'Error: '.$e->getMessage();
             header( 'Location: '.addSession('index.php') ) ;
             return;

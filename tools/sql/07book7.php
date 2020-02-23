@@ -42,6 +42,7 @@ $oldgrade = $RESULT->grade;
 
 if ( U::get($_POST,'check') ) {
 
+    $pg_PDO = false;
 	$client = get_es_connection();
     if ( ! $client ) return;
 
@@ -56,6 +57,7 @@ if ( U::get($_POST,'check') ) {
     	]
 	];
 	$_SESSION['last_parms'] = $params;
+    pg4e_debug_note($pg_PDO, json_encode($params, JSON_PRETTY_PRINT));
 
 	try {
 		unset($_SESSION['last_response']);
@@ -63,7 +65,15 @@ if ( U::get($_POST,'check') ) {
 		$_SESSION['last_response'] = $response;
 		pg4e_debug_note($pg_PDO, json_encode($response, JSON_PRETTY_PRINT));
 		// echo("<pre>\n");print_r($response);echo("</pre>\n");
-		$hits = $response['hits']['total'];
+        if ( ! isset($response['hits']['hits']) ) {
+            $msg = 'Error looking for '.$word;
+            if ( isset($response['error']['type'])) $msg .= ' | ' . $response['error']['type'];
+            if ( isset($response['error']['reason'])) $msg .= ' | ' . $response['error']['reason'];
+            $_SESSION['error'] = $msg;
+            header( 'Location: '.addSession('index.php') ) ;
+            return;
+        }
+		$hits = count($response['hits']['hits']);
 		if ( $hits < 1 ) {
 			$_SESSION['error'] = 'Query / match did not find '.$word;
         	header( 'Location: '.addSession('index.php') ) ;
@@ -71,13 +81,13 @@ if ( U::get($_POST,'check') ) {
     	}
 			
 	} catch(Exception $e) {
+         pg4e_debug_note($pg_PDO, $e->getMessage());
 		$_SESSION['error'] = 'Error: '.$e->getMessage();
         header( 'Location: '.addSession('index.php') ) ;
         return;
     }
 
     $gradetosend = 1.0;
-    $pg_PDO = false;
     pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);
 
     // Redirect to ourself
