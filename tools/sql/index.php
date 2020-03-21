@@ -85,25 +85,18 @@ if ( ( count($_FILES) + count($_POST) ) > 0 &&
     return;
 }
 
+$menu = new \Tsugi\UI\MenuSet();
+$menu->addLeft(__('Grade Detail'), 'grades.php');
+$menu->addRight(__('Launches'), 'analytics');
+$menu->addRight(__('Configure'), 'config.php');
+$menu->addRight(__('Settings'), '#', /* push */ false, SettingsForm::attr());
+
 // View
 $OUTPUT->header();
 $OUTPUT->bodyStart();
-$OUTPUT->topNav();
+$OUTPUT->topNav($menu);
 
-// Settings button and dialog
-
-echo('<div style="float: right;">');
-if ( $USER->instructor ) {
-    if ( $CFG->launchactivity ) {
-        echo('<a href="analytics" class="btn btn-default">Launches</a> ');
-    }
-    echo('<a href="config.php"><button class="btn btn-info">Configure</button></a> '."\n");
-    echo('<a href="grades.php" target="_blank"><button class="btn btn-info">Grade detail</button></a> '."\n");
-}
-SettingsForm::button();
-$OUTPUT->exitButton();
-echo('</div>');
-
+// Settings dialog
 $tunnelopts = array(
     "no" => __('Not using a tunnel'),
     "yes" => __('Using a tunnel'),
@@ -123,8 +116,6 @@ if ( isset($_SESSION['error']) ) {
 }
 
 $OUTPUT->flashMessages();
-
-$OUTPUT->welcomeUserCourse();
 
 $FOOTER_DONE = false;
 if ( $assn && isset($assignments[$assn]) ) {

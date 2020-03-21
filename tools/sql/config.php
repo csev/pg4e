@@ -37,19 +37,14 @@ $umsi_password = U::get($settings, 'umsi_password');
 $um_es_password = U::get($settings, 'um_es_password');
 $es_password = U::get($settings, 'es_password');
 
+$menu = new \Tsugi\UI\MenuSet();
+$menu->addLeft(__('Back'), 'index.php');
+
 // View
 $OUTPUT->header();
 $OUTPUT->bodyStart();
-$OUTPUT->topNav();
-
-// Settings button and dialog
-
-echo('<div style="float: right;">');
-echo('<a href="index.php"><button class="btn btn-info">Back</button></a> '."\n");
-echo('</div>');
-
+$OUTPUT->topNav($menu);
 $OUTPUT->flashMessages();
-
 $OUTPUT->welcomeUserCourse();
 
 // echo("<pre>\n");var_dump($set);echo("</pre>\n");
