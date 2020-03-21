@@ -5,11 +5,13 @@
 .ipynb_checkpoints
 __pycache__
 tsugi
+vendor
 pg4e-solutions
 hidden.py
 demos
 phppgadmin
 googleb380e3007*.html
 mod
+composer.lock
 
 

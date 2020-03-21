@@ -1,4 +1,11 @@
 <?php
+// Local composer dependencies
+if ( file_exists(__DIR__ . '/vendor/autoload.php') ) {
+    require __DIR__ . '/vendor/autoload.php';
+} else {
+    die('You need to run composer in '.__DIR__);
+}
+
 require_once "../config.php";
 require_once "sql_util.php";
 
