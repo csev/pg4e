@@ -9,6 +9,8 @@
 
 # psql -h 127.0.0.1 -U postgres -W
 
+# psql -h 127.0.0.1 -p 5000 -U postgres -W
+
 # navigate to http://localhost:8080/
 
 # mysql -u root --host=127.0.0.1 --port=3306 -p

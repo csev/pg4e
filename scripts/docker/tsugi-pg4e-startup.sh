@@ -21,6 +21,19 @@ cat >> /var//www/html/tsugi/config.php << EOF
 
 EOF
 
+# Open things up
+cat >> /etc/postgresql/11/main/pg_hba.conf << EOF
+
+host    all             all              0.0.0.0/0              md5
+EOF
+
+rm /tmp/x
+sed "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" < /etc/postgresql/11/main/postgresql.conf > /tmp/x
+cp /tmp/x /etc/postgresql/11/main/postgresql.conf
+
+echo "Restart PostgreSQL"
+service postgresql restart
+
 # Fix the composer bits
 EXPECTED_CHECKSUM="$(wget -q -O - https://composer.github.io/installer.sig)"
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
