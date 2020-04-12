@@ -36,7 +36,7 @@ conn = psycopg2.connect(host=secrets['host'],
 
 cur = conn.cursor()
 
-defaulturl = 'https://swapi.co/api/films/1/'
+defaulturl = 'https://swapi.py4e.com/api/films/1/'
 print('If you want to restart the spider, run')
 print('DROP TABLE IF EXISTS swapi CASCADE;')
 print(' ')
@@ -56,7 +56,7 @@ count = myutils.queryValue(cur, sql)
 if count < 1:
     objects = ['films', 'species', 'people']
     for obj in objects:
-        sql = f"INSERT INTO swapi (url) VALUES ( 'https://swapi.co/api/{obj}/1/' )";
+        sql = f"INSERT INTO swapi (url) VALUES ( 'https://swapi.py4e.com/api/{obj}/1/' )";
         print(sql)
         myutils.doQuery(cur, sql, (defaulturl, ))
     conn.commit()
