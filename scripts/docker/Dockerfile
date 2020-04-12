@@ -1,7 +1,7 @@
 
 # Tsugi plus mysql
 # docker build --tag tsugi_pg4e .
-# docker run -p 8080:80 -p 3306:3306 -e TSUGI_SERVICENAME=PG4E -e MYSQL_ROOT_PASSWORD=secret --name pg4e -dit tsugi_pg4e:latest
+# docker run -p 8080:80 -p 3306:3306 -e TSUGI_SERVICENAME=PG4E -e MYSQL_ROOT_PASSWORD=secret -e MAIN_REPO=https://github.com/csev/pg4e --volume-driver=nfs  -v /Users/csev/docker:/mnt/csev --name pg4e -dit tsugi_pg4e:latest
 # docker exec -it pg4e bash
 
 # mysql -u root --host=127.0.0.1 --port=3306 -p
@@ -28,7 +28,7 @@ RUN \
   df && \
   rm -rf /var/lib/apt/lists/* && \
   df && \
-  echo ======= Cleanup Done 
+  echo ======= Cleanup Done
 
 #  apt-get install -y mailutils
 
