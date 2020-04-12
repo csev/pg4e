@@ -4,7 +4,7 @@
 # Pre-Requisite - build these - https://github.com/tsugiproject/docker-php.git
 
 # docker build --tag tsugi_pg4e .
-# docker run -p 8080:80 -p 3306:3306 -e TSUGI_SERVICENAME=PG4E -e MYSQL_ROOT_PASSWORD=secret -e PSQL_ROOT_PASSWORD=secret -e MAIN_REPO=https://github.com/csev/pg4e --volume-driver=nfs  -v /Users/csev/docker:/mnt/csev --name pg4e -dit tsugi_pg4e:latest
+# docker run -p 8080:80 -p 3306:3306 -p 5000:5432 -e TSUGI_SERVICENAME=PG4E -e MYSQL_ROOT_PASSWORD=secret -e PSQL_ROOT_PASSWORD=secret -e MAIN_REPO=https://github.com/csev/pg4e --volume-driver=nfs  -v /Users/csev/docker:/mnt/csev --name pg4e -dit tsugi_pg4e:latest
 # docker exec -it pg4e bash
 
 # psql -h 127.0.0.1 -U postgres -W

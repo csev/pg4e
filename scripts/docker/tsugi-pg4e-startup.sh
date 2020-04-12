@@ -7,19 +7,42 @@ service postgresql start
 
 # https://stackoverflow.com/questions/18715345/how-to-create-a-user-for-postgres-from-the-command-line-for-bash-automation
 if [ -z "$PSQL_ROOT_PASSWORD" ]; then
-    echo "Setting psql root password to default pw"
-    sudo -i -u postgres psql -c "ALTER ROLE postgres WITH PASSWORD 'password'"
-else
-    echo "Setting psql root password to $PSQL_ROOT_PASSWORD"
-    sudo -i -u postgres psql -c "ALTER ROLE postgres WITH PASSWORD '$PSQL_ROOT_PASSWORD'"
+PSQL_ROOT_PASSWORD=password; export PSQL_ROOT_PASSWORD;
 fi
+
+echo "Setting psql root password to $PSQL_ROOT_PASSWORD"
+sudo -i -u postgres psql -c "ALTER ROLE postgres WITH PASSWORD '$PSQL_ROOT_PASSWORD'"
 
 # psql -h 127.0.0.1 -U postgres -W
 
 cat >> /var//www/html/tsugi/config.php << EOF 
 \$CFG->tool_folders = array("admin", "../tools", "mod");
+\$CFG->psql_root_password = "$PSQL_ROOT_PASSWORD";
 
 EOF
+
+# Fix the composer bits
+EXPECTED_CHECKSUM="$(wget -q -O - https://composer.github.io/installer.sig)"
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+
+if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]
+then
+    >&2 echo 'ERROR: Invalid installer checksum'
+    rm composer-setup.php
+    exit 1
+fi
+
+# php composer-setup.php --quiet
+php composer-setup.php --install-dir=/usr/local/bin
+RESULT=$?
+rm composer-setup.php
+
+# Run composer
+PWD=`pwd`
+cd /var/www/html/tools/sql
+php /usr/local/bin/composer.phar install
+echo $PWD
 
 echo ""
 if [ "$@" == "return" ] ; then
