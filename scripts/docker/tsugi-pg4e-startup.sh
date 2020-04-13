@@ -6,7 +6,7 @@ bash /usr/local/bin/tsugi-dev-startup.sh return
 echo Starting PostgreSQL
 service postgresql start
 
-COMPLETE=/usr/local/bin/tsugi-setup-complete
+COMPLETE=/usr/local/bin/tsugi-pg4e-complete
 if [ -f "$COMPLETE" ]; then
     echo "PG4E Startup Already has run"
 else
