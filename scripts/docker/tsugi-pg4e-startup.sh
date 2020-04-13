@@ -1,4 +1,5 @@
-echo "Running MySQL Startup"
+
+echo "Running PG4E Startup"
 
 bash /usr/local/bin/tsugi-dev-startup.sh return
 
@@ -21,12 +22,15 @@ cat >> /var//www/html/tsugi/config.php << EOF
 
 EOF
 
-# Open things up
+# Open things up all but postgres user
+# https://dba.stackexchange.com/questions/83984/connect-to-postgresql-server-fatal-no-pg-hba-conf-entry-for-host
+# https://stackoverflow.com/questions/61179852/how-to-configure-postgessql-to-accept-all-incoming-connections-except-postgres
 cat >> /etc/postgresql/11/main/pg_hba.conf << EOF
-
-host    all             all              0.0.0.0/0              md5
+host    all             postgres        0.0.0.0/0               reject
+host    all             all             0.0.0.0/0               md5
 EOF
 
+# https://blog.bigbinary.com/2016/01/23/configure-postgresql-to-allow-remote-connection.html
 rm /tmp/x
 sed "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" < /etc/postgresql/11/main/postgresql.conf > /tmp/x
 cp /tmp/x /etc/postgresql/11/main/postgresql.conf
