@@ -6,6 +6,11 @@ bash /usr/local/bin/tsugi-dev-startup.sh return
 echo Starting PostgreSQL
 service postgresql start
 
+COMPLETE=/usr/local/bin/tsugi-setup-complete
+if [ -f "$COMPLETE" ]; then
+    echo "PG4E Startup Already has run"
+else
+
 # https://stackoverflow.com/questions/18715345/how-to-create-a-user-for-postgres-from-the-command-line-for-bash-automation
 if [ -z "$PSQL_ROOT_PASSWORD" ]; then
 PSQL_ROOT_PASSWORD=password; export PSQL_ROOT_PASSWORD;
@@ -16,7 +21,7 @@ sudo -i -u postgres psql -c "ALTER ROLE postgres WITH PASSWORD '$PSQL_ROOT_PASSW
 
 # psql -h 127.0.0.1 -U postgres -W
 
-cat >> /var//www/html/tsugi/config.php << EOF 
+cat >> /var/www/html/tsugi/config.php << EOF 
 \$CFG->tool_folders = array("admin", "../tools", "mod");
 \$CFG->psql_root_password = "$PSQL_ROOT_PASSWORD";
 
@@ -60,6 +65,10 @@ PWD=`pwd`
 cd /var/www/html/tools/sql
 php /usr/local/bin/composer.phar install
 echo $PWD
+
+fi
+
+touch $COMPLETE
 
 echo ""
 if [ "$@" == "return" ] ; then
