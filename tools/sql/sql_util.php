@@ -41,11 +41,11 @@ function getUnique($LAUNCH) {
 }
 
 function getDbName($unique) {
-    return substr("pg4e".$unique,0,15);
+    return substr("pg4e_".$unique,0,10);
 }
 
 function getDbUser($unique) {
-    return "pg4e_user_".substr($unique,15,5);
+    return "pg4e_u_".substr($unique,15,8);
 }
 
 function getEsUser($unique) {
@@ -111,7 +111,7 @@ function getESConfig() {
 }
 
 function getDbPass($unique) {
-    return "pg4e_pass_".substr($unique,20,5);
+    return "pg4e_p_".substr($unique,20,8);
 }
 
 /**
@@ -378,7 +378,7 @@ function pg4e_user_db_data($LAUNCH) {
 }
 
 function pg4e_user_db_form($LAUNCH, $terminalonly=false) {
-    global $OUTPUT, $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
+    global $CFG, $OUTPUT, $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     if ( ! $pdo_host && ! $LAUNCH->user->instructor ) {
         echo("<p>You have not yet set up your database server for project <b>".htmlentities($project)."</b></p>\n");
@@ -396,7 +396,7 @@ database server so we can grade your assignments..
 There is company called
 <a href="https://www.elephantsql.com/plans.html" target="_blank">ElephantSQL</a> that provides
 a no-charge very small instance of PostgreSQL
-(Tiny Turtle) that should work for the purposes of these assignments.  Not that on ElephantSQL
+(Tiny Turtle) that should work for the purposes of these assignments.  Note that on ElephantSQL
 the database name and user name are the same.
 </p>
 <?php

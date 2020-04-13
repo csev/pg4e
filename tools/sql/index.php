@@ -25,7 +25,8 @@ if ( SettingsForm::handleSettingsPost() ) {
 
 // All the assignments we support
 $assignments = array(
-    '00setup.php' => 'Setup database environment',
+    '00setup.php' => 'Setup database environment (obsolete)',
+    '00create.php' => 'Create initial database',
     '00first.php' => 'Add some housekeeping tables',
     '01single.php' => 'Single Table (ages)',
     '01auto.php' => 'Auto Increment / SERIAL (automagic)',
