@@ -16,21 +16,52 @@ if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
 $oldgrade = $RESULT->grade;
 
-if ( U::get($_POST,'check') ) {
-    $pg_PDO = pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass);
-    if ( ! $pg_PDO ) return;
-    if ( ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
+$admin_user = 'postgres';
+$admin_pass = $CFG->psql_root_password ?? false;
+$admin_connection = "pgsql:host=localhost;port=5432";
 
-	$sql = "SELECT id, keystr, valstr, created_at, updated_at FROM pg4e_meta";
-	if ( ! pg4e_query_return_error($pg_PDO, $sql) ) return;
+$unique = getUnique($LAUNCH);
+$db = getDbName($unique);
+$user = getDbUser($unique);
+$pass = getDbPass($unique);
+$user_connection = $admin_connection . ";dbname=" . $db;
 
-	// $sql = "SELECT id, link_id, score, title, note, debug_log, created_at, updated_at FROM pg4e_result";
-	// if ( ! pg4e_query_return_error($pg_PDO, $sql) ) return;
+$admin_PDO = false;
+$user_PDO = false;
 
-	$gradetosend = 1.0;
-	pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);
+if ( U::get($_POST,'reset') ) {
+    $admin_PDO = get_connection($admin_connection, $admin_user, $admin_pass);
+    if ( ! $admin_PDO ) {
+        $_SESSION['error'] = "Unable to access admin connection";
+        header('Location: '.addSession('index.php'));
+        return;
+    }
 
-    // Redirect to ourself
+    $error = "";
+    $sql = "DROP DATABASE $db";
+    $stmt = $admin_PDO->queryReturnError($sql);
+    if ( ! $stmt->success ) {
+        error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
+        $error = "SQL Query Error: ".$stmt->errorImplode;
+    }
+
+    $sql = "DROP USER $user";
+    $stmt = $admin_PDO->queryReturnError($sql);
+    if ( ! $stmt->success ) {
+        error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
+        if ( strlen($error) > 0 ) {
+            $error .= ' / ' . $stmt->errorImplode;
+        } else {
+            $error = "SQL Query Error: ".$stmt->errorImplode;
+        }
+    }
+    if ( strlen($error) > 0 ) {
+        $_SESSION['error'] = $error;
+        header('Location: '.addSession('index.php'));
+        return;
+    }
+
+    $_SESSION['success'] = "Database reset";
     header('Location: '.addSession('index.php'));
     return;
 }
@@ -39,67 +70,31 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 
-$cfg = getUMSIConfig();
+$user_PDO = get_connection($user_connection, $user, $pass);
 
-$unique = getUnique($LAUNCH);
-$db = getDbName($unique);
-$user = getDbUser($unique);
-$pass = getDbPass($unique);
-
-$admin_user = 'postgres';
-$admin_pass = $CFG->psql_root_password ?? false;
-
-$pg_PDO = false;
-$pg_error = false;
-
-?>
-<h1>Your Database</h1>
-<p>
-You will need access to a database to use for this course.  This tool creates your database and gives
-you an account and password to use to connect to the database.
-</p>
-<?php
-if ( ! $admin_pass ) {
+if ( ! $user_PDO && ! $admin_pass ) {
     echo("<p>Not configured to create accounts</p>\n");
     return;
 }
 
-// $pdo_connection = "pgsql:host=localhost;port=5432;dbname=postgres;";
-$pdo_connection = "pgsql:host=localhost;port=5432";
-if ( $admin_pass ) {
-    try {
-        $pg_PDO = new PDOX($pdo_connection, $admin_user, $admin_pass,
-        array(
-            PDO::ATTR_TIMEOUT => 5, // in seconds
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        )
-    );
-    } catch(Exception $e) {
-        $pg_PDO = false;
-        $pg_error = $e->getMessage();
-        error_log('Fail to connect to admin: '.$pg_error);
-        echo("<p>Not configured to create accounts</p>\n");
-        return;
-    }
+if ( ! $user_PDO && $admin_pass ) {
+    $admin_PDO = get_connection($admin_connection, $admin_user, $admin_pass);
 }
 
-if ( $pg_PDO ) {
+if ( $admin_PDO ) {
     // https://dba.stackexchange.com/questions/45143/check-if-postgresql-database-exists-case-insensitive-way
     // SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower('dbname');
-    $row = $pg_PDO->rowDie(
+    $row = $admin_PDO->rowDie(
         "SELECT datname FROM pg_catalog.pg_database WHERE datname = :nam",
         array(":nam" => $db)
     );
 
-    if ( $row ) {
-        echo("<p>Database is available...</p>\n");
-    } else {
-        $user_row = $pg_PDO->rowDie("SELECT * FROM pg_user WHERE usename = '$user'");
-        var_dump($user_row);
+    if ( ! $row ) {
+        $user_row = $admin_PDO->rowDie("SELECT * FROM pg_user WHERE usename = '$user'");
         if ( ! $user_row ) {
             echo("<p>Creating database...</p>\n");
             $sql = "CREATE USER $user WITH PASSWORD '$pass' ";
-            $stmt = $pg_PDO->queryReturnError($sql);
+            $stmt = $admin_PDO->queryReturnError($sql);
             if ( ! $stmt->success ) {
                 error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
                 echo("<p>SQL Query Error: ".htmlentities($stmt->errorImplode)."</p>");
@@ -107,19 +102,26 @@ if ( $pg_PDO ) {
             }
         }
         $sql = "CREATE DATABASE $db WITH OWNER $user";
-        $stmt = $pg_PDO->queryReturnError($sql);
+        $stmt = $admin_PDO->queryReturnError($sql);
         if ( ! $stmt->success ) {
             error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
             echo("<p>SQL Query Error: ".htmlentities($stmt->errorImplode)."</p>");
             return false;
         }
-        $row = $pg_PDO->rowDie(
+        $row = $admin_PDO->rowDie(
             "SELECT datname FROM pg_catalog.pg_database WHERE datname = :nam",
             array(":nam" => $db)
         );
     }
 }
+
+
 ?>
+<h1>Your Database</h1>
+<p>
+You will need access to a database to use for this course.  This tool creates your database and gives
+you an account and password to use to connect to the database.
+</p>
 <pre>
 Host:     127.0.0.1
 Port:     5000
@@ -130,3 +132,7 @@ Password: <span id="pass" style="display:none"><?= $pass ?></span> (<a href="#" 
 
 psql -h 127.0.0.1 -p 5000 -U <?= $user ?> <?= $db ?>
 </pre>
+<form method="post">
+<input type="submit" class="btn btn-danger" name="reset" value="Delete and re-create database"
+onclick="return confirm('<?= __('Are you sure?') ?>')">
+</form>

@@ -898,3 +898,20 @@ Password: <span id="pass" style="display:none"><?= $es_pass ?></span> <input typ
 </p>
 <?php
 }
+
+function get_connection($connection, $user, $pass) {
+    try {
+        $retval = new PDOX($connection, $user, $pass,
+            array(
+                PDO::ATTR_TIMEOUT => 5, // in seconds
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            )
+        );
+        return $retval;
+    } catch(Exception $e) {
+        $error = $e->getMessage();
+        error_log("Connection failure user=$user $connection $error");
+        return null;
+    }
+}
+
