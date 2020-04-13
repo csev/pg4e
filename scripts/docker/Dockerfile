@@ -5,7 +5,7 @@
 
 # docker build --tag tsugi_pg4e .
 
-# docker run -p 8080:80 -p 3306:3306 -p 5000:5432 -e TSUGI_SERVICENAME=PG4E -e MYSQL_ROOT_PASSWORD=secret -e PSQL_ROOT_PASSWORD=secret -e MAIN_REPO=https://github.com/csev/pg4e --volume-driver=nfs  -v /Users/csev/docker:/mnt/csev --name pg4e -dit tsugi_pg4e:latest
+# docker run -p 8080:80 -p 3306:3306 -p 5000:5432 -e TSUGI_APPHOME=http://localhost:8080 -e TSUGI_SERVICENAME=PG4E -e MYSQL_ROOT_PASSWORD=secret -e PSQL_ROOT_PASSWORD=secret -e MAIN_REPO=https://github.com/csev/pg4e --volume-driver=nfs  -v /Users/csev/docker:/mnt/csev --name pg4e -dit tsugi_pg4e:latest
 
 # navigate to http://localhost:8080/
 

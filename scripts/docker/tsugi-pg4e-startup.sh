@@ -19,7 +19,13 @@ fi
 echo "Setting psql root password to $PSQL_ROOT_PASSWORD"
 sudo -i -u postgres psql -c "ALTER ROLE postgres WITH PASSWORD '$PSQL_ROOT_PASSWORD'"
 
-# psql -h 127.0.0.1 -U postgres -W
+echo "Removing phpMyAdmin"
+rm -rf /var/www/html/phpMyAdmin /var/www/html/phppgadmin
+
+echo "Adding and configuring phppgadmin"
+cd /var/www/html/
+git clone https://github.com/csev/phppgadmin.git
+cp /var/www/html/scripts/config.inc.php /var/www/html/phppgadmin/conf/config.inc.php
 
 cat >> /var/www/html/tsugi/config.php << EOF 
 \$CFG->tool_folders = array("admin", "../tools", "mod");
