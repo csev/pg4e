@@ -15,25 +15,12 @@ import hidden
 secrets = hidden.elastic()
 
 url = 'http://'+secrets['user']+':'+secrets['pass']+'@'+secrets['host']+':'+str(secrets['port']);
-
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-indices.html
-caturl = url + '/_cat/indices?format=json&pretty'
-prurl = caturl.replace(secrets['pass'],'*****')
-print(prurl)
+if secrets.get('prefix') : 
+    url = url + '/' + secrets['prefix']
+url = url + '/' + secrets['user']
 
 while True:
-    response = requests.get(caturl)
-    text = response.text
-    status = response.status_code
-    js = json.loads(text)
 
-    print('')
-    print('Index / document count')
-    print('----------------------')
-    for entry in js:
-        print(entry['index'], '/', entry['docs.count'])
-
-    # print(text)
     print()
     try:
         cmd = input('Enter command: ').strip()
@@ -43,45 +30,23 @@ while True:
 
     if cmd.startswith('quit') : break
 
-    if cmd.startswith('detail') : 
-        print(text)
-        continue
-
     pieces = cmd.split()
 
     # https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-delete-index.html
-    if len(pieces) == 2 and pieces[0] == 'delete' :
-        if pieces[1] == 'searchguard' :
-            print('')
-            print("Don't do that...");
-            continue
+    if len(pieces) == 1 and pieces[0] == 'delete' :
 
-        queryurl = url + '/' + pieces[1]
-        prurl = queryurl.replace(secrets['pass'],'*****')
-        print(queryurl)
-        response = requests.delete(queryurl)
+        prurl = url.replace(secrets['pass'],'*****')
+        print(prurl)
+        response = requests.delete(url)
         text = response.text
         status = response.status_code
         print('Status:', status)
         print(text)
         continue
 
-    # https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-mapping.html
-    if len(pieces) == 2 and pieces[0] == 'mapping' :
-        queryurl = url + '/' + pieces[1] + '/_mapping?pretty'
-        prurl = queryurl.replace(secrets['pass'],'*****')
-        print(prurl)
-        response = requests.get(queryurl)
-        text = response.text
-        status = response.status_code
-        print(status)
-        print(text)
-        continue
-
-
     # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html
-    if len(pieces) == 2 and pieces[0] == 'match_all' :
-        queryurl = url + '/' + pieces[1] + '/_search?pretty'
+    if len(pieces) == 1 and pieces[0] == 'match_all' :
+        queryurl = url + '/_search'
         prurl = queryurl.replace(secrets['pass'],'*****')
         print(prurl)
 
@@ -96,8 +61,8 @@ while True:
         continue
 
     # https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-get.html
-    if len(pieces) == 3 and pieces[0] == 'get' :
-        queryurl = url + '/' + pieces[1] + '/' + pieces[2] + '?pretty'
+    if len(pieces) == 2 and pieces[0] == 'get' :
+        queryurl = url + '/_doc/' + pieces[1] + '?pretty'
         prurl = queryurl.replace(secrets['pass'],'*****')
         print(prurl)
 
@@ -109,12 +74,12 @@ while True:
         continue
 
     # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
-    if len(pieces) == 3 and pieces[0] == 'search' :
-        queryurl = url + '/' + pieces[1] + '/_search?pretty'
+    if len(pieces) == 2 and pieces[0] == 'search' :
+        queryurl = url + '/_search?pretty'
         prurl = queryurl.replace(secrets['pass'],'*****')
         print(prurl)
 
-        body = json.dumps({ "query": {"query_string": {"query": pieces[2] }}})
+        body = json.dumps({ "query": {"query_string": {"query": pieces[1] }}})
         
         # {"query": {"query_string": { "query": search, "default_field": "content" }}}
         print(body)
@@ -124,18 +89,15 @@ while True:
         text = response.text
         status = response.status_code
         print(status)
-        print(text)
+        print(json.dumps(json.loads(text), indent=2))
         continue
 
     print()
     print('Invalid command, please try:')
     print('')
-    print('  detail')
     print('  quit')
-    print('  get indexname/doctype id')
-    print('  search indexname/doctype string')
-    print('  search indexname string')
-    print('  mapping indexname')
-    print('  match_all indexname')
-    print('  delete indexname')
+    print('  get id')
+    print('  search string')
+    print('  match_all')
+    print('  delete')
 

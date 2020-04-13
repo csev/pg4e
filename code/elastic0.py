@@ -17,77 +17,74 @@ import hidden
 
 secrets = hidden.elastic()
 
+print(secrets)
+
 es = Elasticsearch(
     [secrets['host']],
     http_auth=(secrets['user'], secrets['pass']),
-    scheme="http",
+    url_prefix = secrets['prefix'],
+    scheme='http',
     port=secrets['port']
 )
+indexname = secrets['user']
 
 # Start fresh
 # https://elasticsearch-py.readthedocs.io/en/master/api.html#indices
-res = es.indices.delete(index='test-index', ignore=[400, 404])
+res = es.indices.delete(index=indexname, ignore=[400, 404])
 print("Dropped index")
 print(res)
 
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/properties.html
-settings = {
-        "mappings": {
-            "tweet": {
-                "properties": {
-                    "author": {
-                        "type": "keyword"
-                    },
-                    "text": {
-                        "type": "text"
-                    },
-                    "timestamp": {
-                        "type": "date"
-                    },
-                }
-            }
-        }
-    }
-
-res = es.indices.create(index='test-index', body=settings)
+res = es.indices.create(index=indexname)
 print("Created the index...")
 print(res)
 
 doc = {
     'author': 'kimchy',
+    'type' : 'tweet',
     'text': 'Elasticsearch: cool. bonsai cool.',
     'timestamp': datetime.now(),
 }
 
 # Note - you can't change the key type after you start indexing documents
-# res = es.index(index="test-index", id='abc', body=doc)
-res = es.index(index="test-index", doc_type='tweet', id='abc', body=doc)
+res = es.index(index=indexname, id='abc', body=doc)
 print('Added document...')
 print(res['result'])
 
-res = es.get(index="test-index", doc_type='tweet', id='abc')
+res = es.get(index=indexname, id='abc')
 print('Retrieved document...')
 print(res)
 
 # Tell it to recompute the index - normally it would take up to 30 seconds
 # Refresh can be costly - we do it here for demo purposes
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html
-res = es.indices.refresh(index="test-index")
+res = es.indices.refresh(index=indexname)
 print("Index refreshed")
 print(res)
 
-# Read through all the documents...
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html
-
-# res = es.search(index="test-index", body={"query": {"match_all": {}}})
-
 # Read the documents with a search term
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 
-res = es.search(index="test-index", body={"query": {"match": { "text" : { "query": "bonsai" }}}})
+x = {
+  "query": {
+    "bool": {
+      "must": {
+        "match": {
+          "text": "bonsai"
+        }
+      },
+      "filter": {
+        "match": {
+          "type": "tweet" 
+        }
+      }
+    }
+  }
+}
+
+res = es.search(index=indexname, body=x)
 print('Search results...')
 print(res)
-print("Got %d Hits:" % res['hits']['total'])
+print()
+print("Got %d Hits:" % len(res['hits']['hits']))
 for hit in res['hits']['hits']:
     s = hit['_source']
     print(f"{s['timestamp']} {s['author']}: {s['text']}")

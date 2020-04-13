@@ -88,18 +88,14 @@ if ( $dueDate->message ) {
 }
 ?>
 <h1>Elastic Search 7.x Email Load</h1>
-<p>This assignment is using an <b>experimental</b> Elastic Search 7.x server.  ES 7.x has a different API
-than ES 6.x and so there is different code that needs to be written.  You can switch back to
-<a href="index.php?es_version=elastic6">Elastic Search 6</a> if you like.
-</p>
 <p>
-You should have a separate <b>elastic7</b> folder and download these files into it:
+You should folder and download these files:
 <ul>
 <li>
-<a href="https://www.pg4e.com/code/elastic7/elasticmail.py" target="_blank">https://www.pg4e.com/code/elastic7/elasticmail.py</a>
+<a href="https://www.pg4e.com/code/elasticmail.py" target="_blank">https://www.pg4e.com/code/elasticmail.py</a>
 </li>
 <li>
-<a href="https://www.pg4e.com/code/elastic7/datecompat.py" target="_blank">https://www.pg4e.com/code/elastic7/datecompat.py</a>
+<a href="https://www.pg4e.com/code/datecompat.py" target="_blank">https://www.pg4e.com/code/datecompat.py</a>
 </li>
 </ul>
 </p>

@@ -35,9 +35,11 @@ secrets = hidden.elastic()
 es = Elasticsearch(
     [ secrets['host'] ],
     http_auth=(secrets['user'], secrets['pass']),
+    url_prefix = secrets['prefix'],
     scheme="http",
     port=secrets['port']
 )
+indexname = secrets['user']
 
 # Start fresh
 # https://elasticsearch-py.readthedocs.io/en/master/api.html#indices
@@ -45,22 +47,7 @@ res = es.indices.delete(index=indexname, ignore=[400, 404])
 print("Dropped index", indexname)
 print(res)
 
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/properties.html
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html
-settings = {
-        "mappings": {
-            "paragraph": {
-                "properties": {
-                    "content": {
-                        "type": "text",
-                        "analyzer" : "english"
-                    },
-                }
-            }
-        }
-    }
-
-res = es.indices.create(index=indexname, body=settings)
+res = es.indices.create(index=indexname)
 print("Created the index...")
 print(res)
 
@@ -94,9 +81,9 @@ for line in fhand:
         m.update(json.dumps(doc).encode())
         pkey = m.hexdigest()
 
-        res = es.index(index=indexname, doc_type='paragraph', id=pkey, body=doc)
+        res = es.index(index=indexname, id=pkey, body=doc)
 
-        # print('Added document...')
+        print('Added document', pkey)
         # print(res['result'])
 
         if pcount % 100 == 0 :
@@ -116,23 +103,4 @@ print(res)
 print(' ')
 print('Loaded',pcount,'paragraphs',count,'lines',chars,'characters')
 
-
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
-
-while True:
-    search = input('Enter search term:')
-    if len(search.strip()) < 1 : break
-    res = es.search(index=indexname, body={"query": {"query_string": { "query": search, "default_field": "content" }}})
-
-    summary = copy.deepcopy(res)   # Make a copy for printing
-    del(summary['hits']['hits'])   # delete the detail from the copy
-    print('Search results...')
-    print(summary)
-    print()
-
-    print("Got %d Hits:" % res['hits']['total'])
-    for hit in res['hits']['hits']:
-        s = hit['_source']
-        print(f"{s['content']}")
-        print()
 

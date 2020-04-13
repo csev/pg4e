@@ -100,10 +100,6 @@ if ( $dueDate->message ) {
 }
 ?>
 <h1>Elastic Search 7.x Book Load</h1>
-<p>This assignment is using an <b>experimental</b> Elastic Search 7.x server.  ES 7.x has a different API
-than ES 6.x and so there is different code that needs to be written.  You can switch back to 
-<a href="index.php?es_version=elastic6">Elastic Search 6</a> if you like.
-</p>
 <p>
 In this assignment you will download a book from:
 <pre>
@@ -121,17 +117,17 @@ in the following Elastic Search instance:
 <?php pg4e_user_es_form($LAUNCH); ?>
 </p>
 <p>
-You should have a separate <b>elastic7</b> folder and download these files into it:
+You should download these files:
 <ul>
 <li>
-<a href="https://www.pg4e.com/code/elastic7/elasticbook.py" target="_blank">https://www.pg4e.com/code/elastic7/elasticbook.py</a>.
+<a href="https://www.pg4e.com/code/elasticbook.py" target="_blank">https://www.pg4e.com/code/elasticbook.py</a>.
 </li>
 <li>(If you have not already done this)
-<a href="https://www.pg4e.com/code/elastic7/hidden-dist.py" target="_blank">https://www.pg4e.com/code/elastic7/hidden-dist.py</a>
+<a href="https://www.pg4e.com/code/hidden-dist.py" target="_blank">https://www.pg4e.com/code/hidden-dist.py</a>
 </li>
 </ul>
 If necessary, copy <b>hidden-dist.py</b> to <b>hidden.py</b> and put your elastic search host/prefix/port/account/password values
-into the <b>elastic7()</b> method.  You should also put your PostgreSQL secrets into this file as well.
+into the <b>elastic()</b> method.  You should also put your PostgreSQL secrets into this file as well.
 </p>
 <p>
 You will need to install the Python ElasticSearch library if you have not already done so.

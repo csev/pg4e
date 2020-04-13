@@ -17,10 +17,11 @@ def secrets():
             "database": "pg4e"}
 
 def elastic():
-    return {"host": "35.239.113.162",
-            "port": 13009,
-            "user": "admin",
-            "pass": "sakaiger"}
+    return {"host": "34.219.107.86",
+            "prefix" : "v1/basicauth/elasticsearch",
+            "port": 8001,
+            "user": "pg4e_0333a53",
+            "pass": "2005_975c9678"}
 
 def readonly():
     return {"host": "35.239.113.162",
