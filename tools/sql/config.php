@@ -15,7 +15,8 @@ $unique = getUnique($LAUNCH);
 if ( ! $USER->instructor ) die("Must be instructor");
 
 $redirect = false;
-$postkeys = array('es_source', 'es_host', 'es_port', 'es_prefix', 'es_password');
+$postkeys = array('pg_host', 'pg_port', 
+    'es_source', 'es_host', 'es_port', 'es_prefix', 'es_password');
 
 if ( U::get($_POST, 'update') ) {
     foreach($postkeys as $key) {
@@ -52,6 +53,11 @@ configuration so <b>changing this configuration</b>
 affects all of the links in a course.  So be careful.
 </p>
 <form method="post">
+<p>The PostgreSQL server is internally provisioned but the host and port shown to the student may be different.
+Fill in these fields if you want to affect what the student sees in their <b>psql</b> commands.
+</p>
+<p>PG_HOST <input type="text" name="pg_host" value="<?= htmlentities(U::get($settings, 'pg_host')) ?>"></p>
+<p>PG_PORT <input type="text" name="pg_port" value="<?= htmlentities(U::get($settings, 'pg_port')) ?>"></p>
 <p>
 <select name="es_source">
 <option value="">-- Please select elastic server provisioning approach --</option>

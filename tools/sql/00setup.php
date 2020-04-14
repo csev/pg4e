@@ -128,6 +128,13 @@ if ( ! $user_PDO ) {
 // Set up the meta table
 $meta = pg4e_setup_meta($LAUNCH, $user_PDO);
 
+$default_host = '127.0.0.1';
+$default_port = '127.0.0.1';
+
+$cfg = getConfig();
+if ( $cfg && isset($cfg->pg_host) && strlen($cfg->pg_host) > 0 ) $default_host = $cfg->pg_host;
+if ( $cfg && isset($cfg->pg_port) && strlen($cfg->pg_port) > 0 ) $default_port = $cfg->pg_port;
+
 ?>
 <h1>Your Database</h1>
 <p>
@@ -135,14 +142,14 @@ You will need access to a database to use for this course.  This tool creates yo
 you an account and password to use to connect to the database.
 </p>
 <pre>
-Host:     127.0.0.1
-Port:     5000
+Host:     <?= $default_host ?> 
+Port:     <?= $default_host ?> 
 Database: <?= $db ?> 
 User:     <?= $user ?> 
 Password: <span id="pass" style="display:none"><?= $pass ?></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, $('#pass').text());return false;">copy</a>)
 
 
-psql -h 127.0.0.1 -p 5000 -U <?= $user ?> <?= $db ?>
+psql -h <?= $default_host ?> -p <?= $default_port ?> -U <?= $user ?> <?= $db ?>
 </pre>
 <p>
 <form method="post">

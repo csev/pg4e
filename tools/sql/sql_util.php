@@ -59,16 +59,17 @@ function getCourseSettings() {
     return $settings;
 }
 
-function getESConfig() {
+function getConfig() {
     global $CFG;
 
     $settings = getCourseSettings();
-    $es_source = U::get($settings, 'es_source');
-    if ( strlen($es_source) < 1 || $es_source == 'none') return false;
 
     $retval = new \stdclass();
-    $retval->es_source = $es_source;
 
+    $retval->pg_host = U::get($settings, 'pg_host');
+    $retval->pg_port = U::get($settings, 'pg_port');
+
+    $retval->es_source = U::get($settings, 'es_source');
     $retval->es_host = U::get($settings, 'es_host');
     $retval->es_prefix = U::get($settings, 'es_prefix');
     $retval->es_port = U::get($settings, 'es_port');
@@ -197,11 +198,17 @@ function pg4e_user_db_data($LAUNCH) {
     $default_database = '';
     $default_user = '';
     $default_pass = '';
+    $default_host = '';
+    $default_port = '5432';
+
+    $cfg = getConfig();
+    if ( $cfg && isset($cfg->pg_host) ) $default_host = $cfg->pg_host;
+    if ( $cfg && isset($cfg->pg_port) ) $default_port = $cfg->pg_port;
 
     // Instructor / un-confgured defaults
     $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_COOKIE, 'pdo_database', $default_database));
-    $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_COOKIE, 'pdo_host'));
-    $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port'), '5432');
+    $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_COOKIE, 'pdo_host', $default_host));
+    $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port', $default_host));
     $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_COOKIE, 'pdo_user', $default_user));
     $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_COOKIE, 'pdo_pass', $default_pass));
 
@@ -246,7 +253,7 @@ function pg4e_user_db_form($LAUNCH, $terminalonly=false) {
     if (! $pdo_host || strlen($pdo_host) < 1 ) {
         echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
     }
-    if ( strlen($pdo_port) < 1 ) $pdo_port = "5432";
+
 ?>
 <form name="myform" method="post" >
 <p>
@@ -276,7 +283,7 @@ function setPGAdminCookies() {
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
 <?php if ( $LAUNCH->user->instructor || ! $cfg ) { ?>
-<input type="submit" name="default" value="Default Values">
+<input type="submit" name="default" value="Reset Values">
 <?php } ?>
 </form>
 </p>
@@ -490,7 +497,7 @@ function pg4e_user_es_data($LAUNCH) {
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
 
-    $cfg = getESConfig();
+    $cfg = getConfig();
 
     // Instructor / un-confgured defaults
     if ( true || $LAUNCH->user->instructor || ! $cfg ) {
@@ -635,13 +642,8 @@ function is_elastic7() {
 function pg4e_user_es_form($LAUNCH) {
     global $OUTPUT, $es_host, $es_prefix, $es_port, $es_user, $es_pass, $info;
 
-// TODO: Fix
-// echo("<p style=\"color: red;\">The elastic search assignments are currently under construction, Dr. Chuck will announce when they are again available...</p>\n");
-// return;
+    $cfg = getConfig();
 
-    $cfg = getESConfig();
-
-    $tunnel = $LAUNCH->link->settingsGet('tunnel');
     if ( ! $es_host || strlen($es_host) < 1 ) {
        echo('<p style="color:red">It appears that your ElasticSearch environment is not yet set up or is not running.</p>'."\n");
     }
