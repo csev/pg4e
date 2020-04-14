@@ -83,11 +83,14 @@ if ( ( count($_FILES) + count($_POST) ) > 0 &&
     return;
 }
 
-$menu = new \Tsugi\UI\MenuSet();
-$menu->addLeft(__('Grade Detail'), 'grades.php');
-$menu->addRight(__('Launches'), 'analytics');
-$menu->addRight(__('Configure'), 'config.php');
-$menu->addRight(__('Settings'), '#', /* push */ false, SettingsForm::attr());
+$menu = false;
+if ( $LAUNCH->user->instructor ) {
+    $menu = new \Tsugi\UI\MenuSet();
+    $menu->addLeft(__('Grade Detail'), 'grades.php');
+    $menu->addRight(__('Launches'), 'analytics');
+    $menu->addRight(__('Configure'), 'config.php');
+    $menu->addRight(__('Settings'), '#', /* push */ false, SettingsForm::attr());
+}
 
 // View
 $OUTPUT->header();
