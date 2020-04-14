@@ -46,6 +46,13 @@ rm /tmp/x
 sed "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" < /etc/postgresql/11/main/postgresql.conf > /tmp/x
 cp /tmp/x /etc/postgresql/11/main/postgresql.conf
 
+cat > /root/.vimrc << EOF
+set sw=4 ts=4 sts=4 et
+filetype plugin indent on
+autocmd FileType java setlocal sw=4 ts=4 sts=4 noet
+syntax on
+EOF
+
 echo "Restart PostgreSQL"
 service postgresql restart
 
