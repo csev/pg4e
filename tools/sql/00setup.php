@@ -115,6 +115,8 @@ if ( $admin_PDO ) {
     }
 }
 
+// Set up the meta table
+$meta = pg4e_setup_meta($LAUNCH, $user_PDO);
 
 ?>
 <h1>Your Database</h1>
@@ -132,7 +134,17 @@ Password: <span id="pass" style="display:none"><?= $pass ?></span> (<a href="#" 
 
 psql -h 127.0.0.1 -p 5000 -U <?= $user ?> <?= $db ?>
 </pre>
+<p>
 <form method="post">
 <input type="submit" class="btn btn-danger" name="reset" value="Delete and re-create database"
 onclick="return confirm('<?= __('Are you sure?') ?>')">
 </form>
+</p>
+<p>You will see a <b>pg4e_meta</b> table in your database that is used
+internally by the autograder to pass
+information from one assignment to another assignment.  The autograder will
+store mysterious stuff in this table and look at it later.  Leave this table alone.
+If this table does not exist or you change the data the autograder puts in
+this table, the autograder may refuse to grade your assignments, or your database
+may be deleted as part of a maintenance process.
+</p>

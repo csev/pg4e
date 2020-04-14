@@ -496,14 +496,6 @@ Python Notebook:
 <?php
 }
 
-function pg4e_insert_meta($pg_PDO, $keystr, $valstr) {
-    $pg_PDO->queryReturnError(
-        "INSERT INTO pg4e_meta (keystr, valstr) VALUES (:keystr, :valstr)
-                ON CONFLICT (keystr) DO UPDATE SET keystr=:keystr, updated_at=now();",
-        array(":keystr" => $keystr, ":valstr" => $valstr)
-    );
-}
-
 function pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass) {
     try {
         $pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass,
@@ -538,23 +530,10 @@ function pg4e_check_debug_table($LAUNCH, $pg_PDO) {
     );
     $sql = "SELECT id, keystr, valstr FROM pg4e_meta";
     if ( ! pg4e_query_return_error($pg_PDO, $sql) ) {
-        $_SESSION['error'] = "pg4e_debug exists, please create pg4e_meta";
+        $_SESSION['error'] = "pg4e_debug exists but not pg4e_meta";
         header( 'Location: '.addSession('index.php') ) ;
         return false;
     }
-
-    $stmt = $pg_PDO->queryReturnError($sql);
-    pg4e_insert_meta($pg_PDO, "user_id", $LAUNCH->user->id);
-    pg4e_insert_meta($pg_PDO, "context_id", $LAUNCH->context->id);
-    pg4e_insert_meta($pg_PDO, "key", $LAUNCH->context->key);
-    $valstr = md5($LAUNCH->context->key.'::'.$CFG->pg4e_unlock).'::42::'.
-                ($LAUNCH->user->id*42).'::'.($LAUNCH->context->id*42);
-
-    $pg_PDO->queryDie(
-        "INSERT INTO pg4e_meta (keystr, valstr) VALUES (:keystr, :valstr)
-                ON CONFLICT (keystr) DO NOTHING;",
-        array(":keystr" => "code", ":valstr" => $valstr)
-    );
     return true;
 }
 
@@ -899,6 +878,46 @@ Password: <span id="pass" style="display:none"><?= $es_pass ?></span> <input typ
 <?php
 }
 
+function pg4e_insert_meta($PDO, $keystr, $valstr) {
+    $PDO->queryDie(
+        "INSERT INTO pg4e_meta (keystr, valstr) VALUES (:keystr, :valstr)
+                ON CONFLICT (keystr) DO UPDATE SET valstr=:valstr, updated_at=now();",
+        array(":keystr" => $keystr, ":valstr" => $valstr)
+    );
+    $PDO->queryDie("COMMIT");
+}
+
+function pg4e_setup_meta($LAUNCH, $PDO ) {
+    global $CFG;
+    $sql = "
+CREATE TABLE IF NOT EXISTS pg4e_meta (
+  id SERIAL,
+  keystr VARCHAR(128) UNIQUE,
+  valstr VARCHAR(4096),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP,
+  PRIMARY KEY(id)
+);
+";
+    $stmt = $PDO->queryReturnError($sql);
+    if ( ! $stmt->success ) {
+        error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
+        return false;
+    }
+
+    // Put some stuff in there.
+    $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+    $date_utc = $date_utc->format('Y-m-d');
+    $valstr = md5($date_utc.'::'.$LAUNCH->context->key.'::'.md5($CFG->dbpass).'::42::'.
+                ($LAUNCH->user->id*42).'::'.($LAUNCH->context->id*42));
+    pg4e_insert_meta($PDO, "user_id", $LAUNCH->user->id);
+    pg4e_insert_meta($PDO, "context_id", $LAUNCH->context->id);
+    pg4e_insert_meta($PDO, "key", $LAUNCH->context->key);
+    pg4e_insert_meta($PDO, "access", $date_utc);
+    pg4e_insert_meta($PDO, "code", $valstr);
+
+}
+
 function get_connection($connection, $user, $pass) {
     try {
         $retval = new PDOX($connection, $user, $pass,
@@ -914,4 +933,3 @@ function get_connection($connection, $user, $pass) {
         return null;
     }
 }
-

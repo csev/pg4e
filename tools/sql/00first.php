@@ -19,6 +19,7 @@ $oldgrade = $RESULT->grade;
 if ( U::get($_POST,'check') ) {
     $pg_PDO = pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass);
     if ( ! $pg_PDO ) return;
+    $meta = pg4e_setup_meta($LAUNCH, $pg_PDO);
     if ( ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
 
 	$sql = "SELECT id, keystr, valstr, created_at, updated_at FROM pg4e_meta";
@@ -73,21 +74,6 @@ You can view the contents of this table after running the autograder with this c
 SELECT query, result, created_at FROM pg4e_debug;
 </pre>
 </p>
-<p>The <b>pg4e_meta</b> table is used internally by the autograder to pass
-information from one assignment to another assignment.  The autograder will
-store mysterious stuff in this table and look at it later.  Leave this table alone.
-If this table does not exist or you change the data the autograder puts in
-this table, your database may be deleted as part of a maintenance process.
-<pre>
-CREATE TABLE pg4e_meta (
-  id SERIAL,
-  keystr VARCHAR(128) UNIQUE,
-  valstr VARCHAR(4096),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP,
-  PRIMARY KEY(id)
-);
-</pre></p>
 <p>Creating the <b>pg4e_result</b> table is optional in the case you do not want to store any
 of your Personally Identifiable Information (PII) on a third party server.
 </p>
@@ -108,3 +94,10 @@ CREATE TABLE pg4e_result (
   updated_at TIMESTAMP
 );
 </pre></p>
+<p><b>Note:</b> You will see a <b>pg4e_meta</b> table in your database that is used
+internally by the autograder to pass
+information from one assignment to another assignment.  The autograder will
+store mysterious stuff in this table and look at it later.  Leave this table alone.
+If this table does not exist or you change the data the autograder puts in
+this table, the autograder may refuse to grade your assignments.
+</p>
