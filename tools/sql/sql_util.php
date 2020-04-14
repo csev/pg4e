@@ -40,6 +40,33 @@ function getUnique($LAUNCH) {
         '::'.$LAUNCH->user->id.'::'.$LAUNCH->context->id);
 }
 
+function getUserInfo($LAUNCH) {
+    global $CFG;
+
+    $retval = new \stdclass();
+    $unique = getUnique($LAUNCH);
+    $retval->db = getDbName($unique);
+    $retval->user = getDbUser($unique);
+    $retval->pass = getDbPass($unique);
+
+    $default_host = 'pg.pg4e.com';
+    $default_port = '5432';
+
+    $cfg = getConfig();
+    if ( $cfg && isset($cfg->pg_host) && strlen($cfg->pg_host) > 0 ) $default_host = $cfg->pg_host;
+    if ( $cfg && isset($cfg->pg_port) && strlen($cfg->pg_port) > 0 ) $default_port = $cfg->pg_port;
+
+    $retval->host = $default_host;
+    $retval->port = $default_port;
+
+    $retval->psql = "psql -h $retval->host -p $retval->port -U $retval->user $retval->db";
+
+    $retval->connection = "pgsql:host=$retval->host;port=$retval->port;dbname=$retval->db";
+    $retval->local_connection = "pgsql:host=localhost;port=5432;dbname=$retval->db";
+
+    return $retval;
+}
+
 function getDbName($unique) {
     return substr("pg4e_".$unique,0,10);
 }
@@ -168,7 +195,10 @@ function pg4e_user_db_post($LAUNCH) {
         setcookie("pdo_port", '', time()+31556926 ,'/');
         setcookie("pdo_user", '', time()+31556926 ,'/');
         setcookie("pdo_pass", '', time()+31556926 ,'/');
-        // header( 'Location: '.addSession('index.php') ) ;
+        setcookie("pg4e_desc", '', time()+31556926 ,'/');
+        setcookie("pg4e_host", '', time()+31556926 ,'/');
+        setcookie("pg4e_port", '', time()+31556926 ,'/');
+        //die('yada');
         redirect_200(addSession('index.php'));
         return true;
     }
@@ -195,22 +225,14 @@ function pg4e_user_db_data($LAUNCH) {
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
 
-    $default_database = '';
-    $default_user = '';
-    $default_pass = '';
-    $default_host = '';
-    $default_port = '5432';
+    $user_info = getUserInfo($LAUNCH);
 
-    $cfg = getConfig();
-    if ( $cfg && isset($cfg->pg_host) ) $default_host = $cfg->pg_host;
-    if ( $cfg && isset($cfg->pg_port) ) $default_port = $cfg->pg_port;
-
-    // Instructor / un-confgured defaults
-    $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_COOKIE, 'pdo_database', $default_database));
-    $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_COOKIE, 'pdo_host', $default_host));
-    $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port', $default_host));
-    $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_COOKIE, 'pdo_user', $default_user));
-    $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_COOKIE, 'pdo_pass', $default_pass));
+    // defaults
+    $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_COOKIE, 'pdo_database', $user_info->db));
+    $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_COOKIE, 'pdo_host', $user_info->host));
+    $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port', $user_info->port));
+    $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_COOKIE, 'pdo_user', $user_info->user));
+    $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_COOKIE, 'pdo_pass', $user_info->pass));
 
     // Store in the database...
     $json = $LAUNCH->result->getJSON();
@@ -265,7 +287,6 @@ Password: <span id="pass" style="display:none"><input type="text" name="pdo_pass
 </pre>
 <script>
 function setPGAdminCookies() {
-    global $CFG;
     var host = $("#pdo_host").val();
     var port = $("#pdo_port").val();
     var database = $("#pdo_database").val();
@@ -380,9 +401,6 @@ function pg4e_query_return_error($pg_PDO, $sql, $arr=false) {
 
 function pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate) {
     $scorestr = "Your answer is correct, score saved.";
-    if ( is_elastic7() ) {
-        $scorestr = "Your answer is correct - score saved.";
-    }
     if ( $dueDate->penalty > 0 ) {
         $gradetosend = $gradetosend * (1.0 - $dueDate->penalty);
         $scorestr = "Effective Score = $gradetosend after ".$dueDate->penalty*100.0." percent late penalty";
@@ -515,7 +533,6 @@ function pg4e_user_es_data($LAUNCH) {
     }
 
     if ( ! $es_host && $cfg ) {
-        if ( is_elastic7() ) {
             $es_host = $cfg->es_host;
             $es_port = $cfg->es_port;
             $es_prefix = $cfg->es_prefix;
@@ -526,37 +543,6 @@ function pg4e_user_es_data($LAUNCH) {
             $_SESSION['es_port'] = $es_port;
             $_SESSION['es_user'] = $es_user;
             $_SESSION['es_pass'] = $es_pass;
-        } else {
-            $retval = pg4e_request($project, 'info/es', $cfg);
-            if ( is_int($retval) && $retval == 500 ) {
-                echo("<pre>\n");
-                echo("Your Elastic Search server is not yet setup.\n\n");
-                return;
-            }
-            if ( is_int($retval) && $retval >= 300 ) {
-                echo("<pre>\n");
-                echo("Internal provisioning error. Please send the text below to csev@umich.edu\n\n");
-                echo("HTTP Code: ".$retval."\n\n");
-                echo("Requesting: ".$pg4e_request_url."\n\n");
-                echo("Result:\n");
-                echo(htmlentities(wordwrap($pg4e_request_result)));
-                die();
-            }
-            $info = false;
-            if ( is_object($retval) ) {
-                $info = pg4e_extract_es_info($retval);
-                if ( isset($info->ip) ) $es_host = $info->ip;
-                if ( isset($info->prefix) ) $es_prefix = $info->prefix;
-                if ( isset($info->port) ) $es_port = $info->port;
-                if ( isset($info->user) ) $es_user = $info->user;
-                if ( isset($info->password) ) $es_pass = $info->password;
-                $_SESSION['es_host'] = $es_host;
-                $_SESSION['es_prefix'] = $es_prefix;
-                $_SESSION['es_port'] = $es_port;
-                $_SESSION['es_user'] = $es_user;
-                $_SESSION['es_pass'] = $es_pass;
-            }
-        }
     }
 
     // Store in the database...
@@ -580,22 +566,6 @@ function pg4e_user_es_data($LAUNCH) {
     }
 
     return true;
-}
-
-function pg4e_extract_es_info($info) {
-    $user = false;
-    $password = false;
-    $ip = false;
-    try {
-        $retval = new \stdClass();
-         $retval->user = base64_decode($info->auth->data->ADMIN_USERNAME);
-         $retval->password = base64_decode($info->auth->data->ADMIN_PASSWORD);
-         $retval->ip = $info->ing->status->loadBalancer->ingress[0]->ip ?? null;
-         $retval->port = $info->svc->metadata->labels->port ?? null;
-        return $retval;
-    } catch(Exception $e) {
-        return null;
-    }
 }
 
 /*
@@ -632,11 +602,6 @@ function es_makepw($user, $secret) {
     $sig = hash('sha256', $base);
     $pw = $expire . '_' . substr($sig, 0, 8);
     return($pw);
-}
-
-function is_elastic7() {
-    $the_version = $_GET['es_version'] ?? $_COOKIE['es_version'] ?? 'elastic6';
-    return $the_version == 'elastic7';
 }
 
 function pg4e_user_es_form($LAUNCH) {
@@ -736,3 +701,4 @@ function get_connection($connection, $user, $pass) {
         return null;
     }
 }
+

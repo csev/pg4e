@@ -128,12 +128,7 @@ if ( ! $user_PDO ) {
 // Set up the meta table
 $meta = pg4e_setup_meta($LAUNCH, $user_PDO);
 
-$default_host = '127.0.0.1';
-$default_port = '127.0.0.1';
-
-$cfg = getConfig();
-if ( $cfg && isset($cfg->pg_host) && strlen($cfg->pg_host) > 0 ) $default_host = $cfg->pg_host;
-if ( $cfg && isset($cfg->pg_port) && strlen($cfg->pg_port) > 0 ) $default_port = $cfg->pg_port;
+$user_info = getUserInfo($LAUNCH);
 
 ?>
 <h1>Your Database</h1>
@@ -142,14 +137,14 @@ You will need access to a database to use for this course.  This tool creates yo
 you an account and password to use to connect to the database.
 </p>
 <pre>
-Host:     <?= $default_host ?> 
-Port:     <?= $default_host ?> 
-Database: <?= $db ?> 
-User:     <?= $user ?> 
-Password: <span id="pass" style="display:none"><?= $pass ?></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, $('#pass').text());return false;">copy</a>)
+Host:     <?= $user_info->host ?> 
+Port:     <?= $user_info->port ?> 
+Database: <?= $user_info->db ?> 
+User:     <?= $user_info->user ?> 
+Password: <span id="pass" style="display:none"><?= $user_info->pass ?></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, $('#pass').text());return false;">copy</a>)
 
 
-psql -h <?= $default_host ?> -p <?= $default_port ?> -U <?= $user ?> <?= $db ?>
+<?= $user_info->psql ?>
 </pre>
 <p>
 <form method="post">
