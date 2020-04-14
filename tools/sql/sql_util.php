@@ -173,8 +173,8 @@ function pg4e_user_db_load($LAUNCH) {
 function redirect_200($url) {
 ?>
 <html>
-<head><meta http-equiv="refresh" content=1;url="<?=$url?>"></head>
-<body><a href="<?=$url?>" style="text-decoration: none;">🍪</a></body>
+<head><meta http-equiv="refresh" content=0;url="<?=$url?>"></head>
+<body><a href="<?=$url?>" style="text-decoration: none;">...</a></body>
 </html>
 <?php
 }
@@ -303,9 +303,7 @@ function setPGAdminCookies() {
 </script>
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
-<?php if ( $LAUNCH->user->instructor || ! $cfg ) { ?>
 <input type="submit" name="default" value="Reset Values">
-<?php } ?>
 </form>
 </p>
 <p>
