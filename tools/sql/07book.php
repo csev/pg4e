@@ -120,7 +120,7 @@ in the following Elastic Search instance:
 You should download these files:
 <ul>
 <li>
-<a href="https://www.pg4e.com/code/elasticbook.py" target="_blank">https://www.pg4e.com/code/elasticbook.py</a>.
+<a href="https://www.pg4e.com/code/elasticbook.py" target="_blank">https://www.pg4e.com/code/elasticbook.py</a>
 </li>
 <li>(If you have not already done this)
 <a href="https://www.pg4e.com/code/hidden-dist.py" target="_blank">https://www.pg4e.com/code/hidden-dist.py</a>

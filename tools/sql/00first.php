@@ -40,21 +40,8 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 
-$cfg = getUMSIConfig();
-
 ?>
 <h1>Our First Tables</h1>
-<?php if ( $cfg ) { ?>
-<p>
-At this point you should have a database created
-and have given access to a role that you have created.  You will now create a few tables
-that the autograder will use to communicate with you.
-</p>
-<p>You <b>cannot</b> do this assignment
-using the superuser account.  You must use the <b><?= $pdo_user ?></b> role
-you created using the superuser for this assignment.
-</p>
-<?php } ?>
 <?php pg4e_user_db_form($LAUNCH); ?>
 <p>Log in to your database and create the following tables.</p>
 <p>The <b>pg4e_debug</b> table will let you see the queries that were run by the

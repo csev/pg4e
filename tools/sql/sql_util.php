@@ -52,36 +52,6 @@ function getEsUser($unique) {
     return "pg4e_".substr($unique,12,7);
 }
 
-function getUMSIConfig() {
-    global $CFG, $TSUGI_LAUNCH;
-
-    $settings = $TSUGI_LAUNCH->context->settingsGetAll();
-    $db_source = U::get($settings, 'db_source');
-    if ( $db_source == 'elephant' ) return false;
-
-    $retval = new \stdclass();
-    $umsi_url = U::get($settings, 'umsi_url');
-    $umsi_key = U::get($settings, 'umsi_key');
-    $umsi_password = U::get($settings, 'umsi_password');
-    if ( strlen($umsi_url) > 0 && strlen($umsi_key) > 0 || strlen($umsi_password) > 0 ) {
-        $retval->pg4e_api_url = $umsi_url;
-        $retval->pg4e_api_key = $umsi_key;
-        $retval->pg4e_api_password = $umsi_password;
-        return $retval;
-    }
-
-    $umsi_url = isset($CFG->pg4e_api_url) ? $CFG->pg4e_api_url : false;
-    $umsi_key = isset($CFG->pg4e_api_key) ? $CFG->pg4e_api_key : false;
-    $umsi_password = isset($CFG->pg4e_api_password) ? $CFG->pg4e_api_password : false;
-    if ( strlen($umsi_url) > 0 && strlen($umsi_key) > 0 || strlen($umsi_password) > 0 ) {
-        $retval->pg4e_api_url = $umsi_url;
-        $retval->pg4e_api_key = $umsi_key;
-        $retval->pg4e_api_password = $umsi_password;
-        return $retval;
-    }
-    return false;
-}
-
 function getCourseSettings() {
     global $TSUGI_LAUNCH;
 
@@ -99,10 +69,6 @@ function getESConfig() {
     $retval = new \stdclass();
     $retval->es_source = $es_source;
 
-    $retval->pg4e_api_url = U::get($settings, 'um_es_url');
-    $retval->pg4e_api_key = U::get($settings, 'um_es_key');
-    $retval->pg4e_api_password = U::get($settings, 'um_es_password');
-
     $retval->es_host = U::get($settings, 'es_host');
     $retval->es_prefix = U::get($settings, 'es_prefix');
     $retval->es_port = U::get($settings, 'es_port');
@@ -112,68 +78,6 @@ function getESConfig() {
 
 function getDbPass($unique) {
     return "pg4e_p_".substr($unique,20,8);
-}
-
-/**
- * Returns
- * Object if good JSON was recceived.
- * String if something went wrong
- * Number if something went wrong and all we have is the http code
- */
-function pg4e_request($dbname, $path='info/pg', $cfg) {
-    global $pg4e_request_result, $pg4e_request_url, $pg4e_request_status;
-
-    if ( ! $cfg ) {
-        return "UMSI API is not configured.";
-    }
-
-    $pg4e_request_result = false;
-    $pg4e_request_url = false;
-    $pg4e_request_url = $cfg->pg4e_api_url.'/'.$path.'/'.$dbname;
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $pg4e_request_url);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_USERPWD, $cfg->pg4e_api_key.':'.$cfg->pg4e_api_password);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-
-    $pg4e_request_result = curl_exec($ch);
-    if($pg4e_request_result === false)
-    {
-        return 'Curl error: ' . curl_error($ch);
-    }
-    $pg4e_request_status = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    if ( $pg4e_request_status != 200 ) return $pg4e_request_status;
-
-    // It seems as though create success returns '"" '
-    if ( $pg4e_request_status == 200 && trim($pg4e_request_result) == '""' ) return 200;
-
-    // Lets parse the JSON
-    $retval = json_decode($pg4e_request_result, false);  // As stdClass
-    if ( $retval == null ) {
-        error_log("JSON Error: ".json_last_error_msg());
-        error_log($pg4e_request_result);
-        return "JSON Error: ".json_last_error_msg();
-    }
-    return $retval;
-}
-
-function pg4e_extract_info($info) {
-    $user = false;
-    $password = false;
-    $ip = false;
-    try {
-        $retval = new \stdClass();
-         $retval->user = isset($info->auth->data->POSTGRES_USER) ? base64_decode($info->auth->data->POSTGRES_USER) : null;
-         $retval->password = isset($info->auth->data->POSTGRES_PASSWORD) ? base64_decode($info->auth->data->POSTGRES_PASSWORD) : null;
-         $retval->ip = $info->ing->status->loadBalancer->ingress[0]->ip ?? null;
-         $retval->port = $info->svc->metadata->labels->port ?? null;
-        return $retval;
-    } catch(Exception $e) {
-        return null;
-    }
 }
 
 function pg4e_unlock_code($LAUNCH) {
@@ -215,6 +119,7 @@ function pg4e_unlock($LAUNCH) {
 }
 
 // TODO: Remove
+// Really?? Is is used a lot
 function pg4e_user_db_load($LAUNCH) {
 
     // Transport the request to check past the redirect :)
@@ -267,10 +172,6 @@ function pg4e_user_db_post($LAUNCH) {
         return true;
     }
 
-    // Cannot set these from post unless we are unconfigured or instructor
-    $cfg = getUMSIConfig();
-    if ( $cfg && ! $LAUNCH->user->instructor ) return false;
-
     // If we have new values... copy them into SESSION
     $retval = false;
     foreach(array('pdo_database', 'pdo_host', 'pdo_port', 'pdo_user', 'pdo_pass') as $key) {
@@ -290,63 +191,19 @@ function pg4e_user_db_data($LAUNCH) {
     global $CFG;
     global $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
-    $cfg = getUMSIConfig();
-
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
 
     $default_database = '';
     $default_user = '';
     $default_pass = '';
-    if ( $cfg ) {
-        $default_database = 'pg4e';
-        $default_user = getDbUser($unique);
-        $default_pass = getDbPass($unique);
-    }
 
     // Instructor / un-confgured defaults
-    if ( $LAUNCH->user->instructor || ! $cfg ) {
-        $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_COOKIE, 'pdo_database', $default_database));
-        $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_COOKIE, 'pdo_host'));
-        $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port'), '5432');
-        $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_COOKIE, 'pdo_user', $default_user));
-        $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_COOKIE, 'pdo_pass', $default_pass));
-    } else {  // Student && Config
-        $pdo_database = U::get($_SESSION, 'pdo_database', $default_database);
-        $pdo_host = U::get($_SESSION, 'pdo_host');
-        $pdo_port = U::get($_SESSION, 'pdo_port', '5432');
-        $pdo_user = U::get($_SESSION, 'pdo_user', $default_user);
-        $pdo_pass = U::get($_SESSION, 'pdo_pass', $default_pass);
-    }
-
-    // If we don't yet have a host and we are configured, grab one from the server
-    if ( ! $pdo_host && $cfg ) {
-        $retval = pg4e_request($project, 'info/pg', $cfg);
-        if ( is_int($retval) && $retval == 500 ) {
-            echo("<pre>\n");
-            echo("Your PostgreSQL server is not yet setup.\n\n");
-            return;
-        }
-        if ( is_int($retval) && $retval >= 300 ) {
-            echo("<pre>\n");
-            echo("Internal provisioning error. Please send the text below to csev@umich.edu\n\n");
-            echo("HTTP Code: ".$retval."\n\n");
-            echo("Requesting: ".$pg4e_request_url."\n\n");
-            echo("Result:\n");
-            echo(htmlentities(wordwrap($pg4e_request_result)));
-            die();
-        }
-        $info = false;
-        if ( is_object($retval) ) {
-            $info = pg4e_extract_info($retval);
-            if ( isset($info->ip) ) $pdo_host = $info->ip;
-            if ( isset($info->port) ) $pdo_port = $info->port;
-            if ( strlen($pdo_port) < 1 ) $pdo_port = '5432';
-            // Save later API retrievals
-            $_SESSION['pdo_host'] = $pdo_host;
-            $_SESSION['pdo_port'] = $pdo_port;
-        }
-    }
+    $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_COOKIE, 'pdo_database', $default_database));
+    $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_COOKIE, 'pdo_host'));
+    $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port'), '5432');
+    $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_COOKIE, 'pdo_user', $default_user));
+    $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_COOKIE, 'pdo_pass', $default_pass));
 
     // Store in the database...
     $json = $LAUNCH->result->getJSON();
@@ -386,29 +243,13 @@ function pg4e_user_db_form($LAUNCH, $terminalonly=false) {
         return false;
     }
 
-    $cfg = getUMSIConfig();
-
-    $tunnel = $LAUNCH->link->settingsGet('tunnel');
-    if ( ! $cfg ) {
-    ?>
-<p>Please enter your PostgreSQL credentials below. You need to have an Internet-accessible
-database server so we can grade your assignments..
-There is company called
-<a href="https://www.elephantsql.com/plans.html" target="_blank">ElephantSQL</a> that provides
-a no-charge very small instance of PostgreSQL
-(Tiny Turtle) that should work for the purposes of these assignments.  Note that on ElephantSQL
-the database name and user name are the same.
-</p>
-<?php
-
-    } else if (! $pdo_host || strlen($pdo_host) < 1 ) {
+    if (! $pdo_host || strlen($pdo_host) < 1 ) {
         echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
     }
     if ( strlen($pdo_port) < 1 ) $pdo_port = "5432";
 ?>
 <form name="myform" method="post" >
 <p>
-<?php if ( $LAUNCH->user->instructor || ! $cfg ) { ?>
 Host: <input type="text" name="pdo_host" value="<?= htmlentities($pdo_host) ?>" id="pdo_host" onchange="setPGAdminCookies();"><br/>
 Port: <input type="text" name="pdo_port" value="<?= htmlentities($pdo_port) ?>" id="pdo_port" onchange="setPGAdminCookies();"><br/>
 Database: <input type="text" name="pdo_database" value="<?= htmlentities($pdo_database) ?>" id="pdo_database" onchange="setPGAdminCookies();"><br/>
@@ -432,21 +273,6 @@ function setPGAdminCookies() {
     document.cookie = 'pg4e_host='+host+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
 }
 </script>
-<?php } else { ?>
-<p>
-<pre>
-Host: <?= $pdo_host ?>
-
-Port: <?= $pdo_port ?>
-
-Database: <?= $pdo_database ?>
-
-Account: <?= $pdo_user ?>
-
-Password: <span id="pass" style="display:none"><?= $pdo_pass ?></span> <input type="hidden" name="pdo_pass" id="pdo_pass" value="<?= htmlentities($pdo_pass) ?>"/> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($pdo_pass) ?>');return false;">copy</a>)
-</pre>
-</p>
-<?php } ?>
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
 <?php if ( $LAUNCH->user->instructor || ! $cfg ) { ?>
@@ -463,27 +289,6 @@ You can do basic SQL commands using the
 For batch loading or file uploads using the <b>\copy</b> command or to run Python programs,
 you will need to access <b>python</b> or <b>psql</b> on the command line:</p>
 <pre>
-<?php if ( $tunnel == 'yes' ) {
-    $localport = $pdo_port;
-    if ( $pdo_port < 10000 ) $localport = $pdo_port + 10000;
-?>
-You may need to set up SSH port forwarding through a server that you have access to
-to connect to the database.  In one window, run
-
-ssh -4 -L <?= htmlentities($localport) ?>:<?= htmlentities($pdo_host) ?>:<?= htmlentities($pdo_port) ?> your-account@your-login-server
-
-In a second window, run:
-
-psql -h 127.0.0.1 -p <?= htmlentities($localport) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
-
-<!--
-Python Notebook:
-%load_ext sql
-%config SqlMagic.autocommit=False
-%sql postgres://<?= htmlentities($pdo_user) ?>:replacewithsecret@127.0.0.1:<?= htmlentities($pdo_port) ?>/<?= htmlentities($pdo_database) ?>
--->
-If you have psql running somewhere that is not behind a firewall, use the command:
-<?php } ?>
 psql -h <?= htmlentities($pdo_host) ?> -p <?= htmlentities($pdo_port) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
 <!--
 Python Notebook:
@@ -661,10 +466,6 @@ function pg4e_user_es_post($LAUNCH) {
         redirect_200(addSession('index.php'));
         return true;
     }
-
-    // Cannot set these from post unless we are unconfigured or instructor
-    $cfg = getUMSIConfig();
-    if ( $cfg && ! $LAUNCH->user->instructor ) return false;
 
     // If we have new values... copy them into SESSION
     $retval = false;

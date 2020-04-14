@@ -115,6 +115,16 @@ if ( $admin_PDO ) {
     }
 }
 
+// Get that connection after initial create finishes.
+if ( ! $user_PDO ) {
+    $user_PDO = get_connection($user_connection, $user, $pass);
+}
+
+if ( ! $user_PDO ) {
+    echo("<p>Unable to set up database.   Please see your instructor.</p>\n");
+    return;
+}
+
 // Set up the meta table
 $meta = pg4e_setup_meta($LAUNCH, $user_PDO);
 
