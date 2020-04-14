@@ -174,7 +174,7 @@ function redirect_200($url) {
 ?>
 <html>
 <head><meta http-equiv="refresh" content=1;url="<?=$url?>"></head>
-<body><a href="<?=$url?>">🍪 ...</a></body>
+<body><a href="<?=$url?>" style="text-decoration: none;">🍪</a></body>
 </html>
 <?php
 }
