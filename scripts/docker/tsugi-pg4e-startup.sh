@@ -6,6 +6,28 @@ bash /usr/local/bin/tsugi-dev-startup.sh return
 echo Starting PostgreSQL
 service postgresql start
 
+echo "Starting elasticsearch"
+
+service --status-all
+service elasticsearch start
+
+echo "Starting charles-server"
+
+CHARLES_POSTGRES_HOST=localhost ; export CHARLES_POSTGRES_HOST
+CHARLES_POSTGRES_PORT=5432 ; export CHARLES_POSTGRES_PORT
+CHARLES_POSTGRES_USER=postgres ; export CHARLES_POSTGRES_USER
+CHARLES_POSTGRES_PASSWORD=$PSQL_ROOT_PASSWORD ; export CHARLES_POSTGRES_PASSWORD
+CHARLES_ELASTICSEARCH_URI=http://localhost:9200 ; export CHARLES_ELASTICSEARCH_URI
+CHARLES_BASICAUTH_SECRET=secret ; export CHARLES_BASICAUTH_SECRET
+
+cd /charles-server
+source .venv/bin/activate
+python /charles-server/server --port 8001
+
+# Test with
+# curl -X GET http://127.0.0.1:8001/v1/elasticsearch
+# {"errors":[{"title":"Scope Error","detail":"No token provided.","status":403}]}
+
 COMPLETE=/usr/local/bin/tsugi-pg4e-complete
 if [ -f "$COMPLETE" ]; then
     echo "PG4E Startup Already has run"
@@ -80,6 +102,7 @@ php /usr/local/bin/composer.phar install
 echo $PWD
 
 fi
+
 
 touch $COMPLETE
 
