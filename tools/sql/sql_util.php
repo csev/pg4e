@@ -198,7 +198,6 @@ function pg4e_user_db_post($LAUNCH) {
         setcookie("pg4e_desc", '', time()+31556926 ,'/');
         setcookie("pg4e_host", '', time()+31556926 ,'/');
         setcookie("pg4e_port", '', time()+31556926 ,'/');
-        //die('yada');
         redirect_200(addSession('index.php'));
         return true;
     }
@@ -515,32 +514,23 @@ function pg4e_user_es_data($LAUNCH) {
 
     $cfg = getConfig();
 
-    // Instructor / un-confgured defaults
-    if ( true || $LAUNCH->user->instructor || ! $cfg ) {
-        $es_host = U::get($_SESSION, 'es_host', U::get($_COOKIE, 'es_host'));
-        $es_prefix = U::get($_SESSION, 'es_prefix', U::get($_COOKIE, 'es_prefix'));
-        $es_port = U::get($_SESSION, 'es_port', U::get($_COOKIE, 'es_port'));
-        $es_user = U::get($_SESSION, 'es_user', U::get($_COOKIE, 'es_user'));
-        $es_pass = U::get($_SESSION, 'es_pass', U::get($_COOKIE, 'es_pass'));
-    } else {  // Student && Config
-        $es_host = U::get($_SESSION, 'es_host');
-        $es_prefix = U::get($_SESSION, 'es_prefix');
-        $es_port = U::get($_SESSION, 'es_port');
-        $es_user = U::get($_SESSION, 'es_user');
-        $es_pass = U::get($_SESSION, 'es_pass');
-    }
+    $es_host = U::get($_SESSION, 'es_host', U::get($_COOKIE, 'es_host'));
+    $es_prefix = U::get($_SESSION, 'es_prefix', U::get($_COOKIE, 'es_prefix'));
+    $es_port = U::get($_SESSION, 'es_port', U::get($_COOKIE, 'es_port'));
+    $es_user = U::get($_SESSION, 'es_user', U::get($_COOKIE, 'es_user'));
+    $es_pass = U::get($_SESSION, 'es_pass', U::get($_COOKIE, 'es_pass'));
 
-    if ( ! $es_host && $cfg ) {
-            $es_host = $cfg->es_host;
-            $es_port = $cfg->es_port;
-            $es_prefix = $cfg->es_prefix;
-            $es_user = getEsUser($unique);
-            $es_pass = es_makepw($es_user, '12345');
-            $_SESSION['es_host'] = $es_host;
-            $_SESSION['es_prefix'] = $es_prefix;
-            $_SESSION['es_port'] = $es_port;
-            $_SESSION['es_user'] = $es_user;
-            $_SESSION['es_pass'] = $es_pass;
+    if ( strlen($es_host) < 1 && $cfg && strlen($cfg->password) > 1) {
+        $es_host = $cfg->es_host;
+        $es_port = $cfg->es_port;
+        $es_prefix = $cfg->es_prefix;
+        $es_user = getEsUser($unique);
+        $es_pass = es_makepw($es_user, $cfg->password);
+        $_SESSION['es_host'] = $es_host;
+        $_SESSION['es_prefix'] = $es_prefix;
+        $_SESSION['es_port'] = $es_port;
+        $_SESSION['es_user'] = $es_user;
+        $_SESSION['es_pass'] = $es_pass;
     }
 
     // Store in the database...
