@@ -520,12 +520,12 @@ function pg4e_user_es_data($LAUNCH) {
     $es_user = U::get($_SESSION, 'es_user', U::get($_COOKIE, 'es_user'));
     $es_pass = U::get($_SESSION, 'es_pass', U::get($_COOKIE, 'es_pass'));
 
-    if ( strlen($es_host) < 1 && $cfg && strlen($cfg->password) > 1) {
+    if ( strlen($es_host) < 1 && $cfg && strlen($cfg->es_password) > 1) {
         $es_host = $cfg->es_host;
         $es_port = $cfg->es_port;
         $es_prefix = $cfg->es_prefix;
         $es_user = getEsUser($unique);
-        $es_pass = es_makepw($es_user, $cfg->password);
+        $es_pass = es_makepw($es_user, $cfg->es_password);
         $_SESSION['es_host'] = $es_host;
         $_SESSION['es_prefix'] = $es_prefix;
         $_SESSION['es_port'] = $es_port;
