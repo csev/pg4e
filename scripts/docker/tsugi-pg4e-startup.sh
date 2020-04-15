@@ -11,8 +11,6 @@ echo "Starting elasticsearch"
 service --status-all
 service elasticsearch start
 
-echo "Starting charles-server"
-
 CHARLES_POSTGRES_HOST=localhost ; export CHARLES_POSTGRES_HOST
 CHARLES_POSTGRES_PORT=5432 ; export CHARLES_POSTGRES_PORT
 CHARLES_ELASTICSEARCH_URI=http://localhost:9200 ; export CHARLES_ELASTICSEARCH_URI
@@ -31,6 +29,7 @@ fi
 
 COMPLETE=/usr/local/bin/tsugi-pg4e-complete
 if [ -f "$COMPLETE" ]; then
+    echo "Starting charles-server"
     cd /charles-server
     source .venv/bin/activate
     python /charles-server/server --port 8001
@@ -69,6 +68,8 @@ EOF
 # https://stackoverflow.com/questions/61179852/how-to-configure-postgessql-to-accept-all-incoming-connections-except-postgres
 cat >> /etc/postgresql/11/main/pg_hba.conf << EOF
 host    all             postgres        0.0.0.0/0               reject
+host    all             charles         127.0.0.1/32            md5
+host    all             charles         0.0.0.0/0               reject
 host    all             all             0.0.0.0/0               md5
 EOF
 
@@ -112,6 +113,10 @@ echo $PWD
 
 fi
 
+echo "Starting charles-server"
+cd /charles-server
+source .venv/bin/activate
+python /charles-server/server --port 8001
 
 touch $COMPLETE
 
