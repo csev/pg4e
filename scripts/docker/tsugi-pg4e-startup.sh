@@ -15,21 +15,26 @@ echo "Starting charles-server"
 
 CHARLES_POSTGRES_HOST=localhost ; export CHARLES_POSTGRES_HOST
 CHARLES_POSTGRES_PORT=5432 ; export CHARLES_POSTGRES_PORT
-CHARLES_POSTGRES_USER=postgres ; export CHARLES_POSTGRES_USER
-CHARLES_POSTGRES_PASSWORD=$PSQL_ROOT_PASSWORD ; export CHARLES_POSTGRES_PASSWORD
 CHARLES_ELASTICSEARCH_URI=http://localhost:9200 ; export CHARLES_ELASTICSEARCH_URI
-CHARLES_AUTH_SECRET=secret ; export CHARLES_AUTH_SECRET
-
-cd /charles-server
-source .venv/bin/activate
-python /charles-server/server --port 8001
 
 # Test with
 # curl -X GET http://127.0.0.1:8001/v1/elasticsearch
 # {"errors":[{"title":"Scope Error","detail":"No token provided.","status":403}]}
 
+CHARLES_POSTGRES_USER=charles; export CHARLES_POSTGRES_USER
+if [ -z "$CHARLES_POSTGRES_PASSWORD" ]; then
+CHARLES_POSTGRES_PASSWORD=password; export CHARLES_POSTGRES_PASSWORD;
+fi
+if [ -z "$CHARLES_AUTH_SECRET" ]; then
+CHARLES_AUTH_SECRET=12345; export CHARLES_AUTH_SECRET;
+fi
+
 COMPLETE=/usr/local/bin/tsugi-pg4e-complete
 if [ -f "$COMPLETE" ]; then
+    cd /charles-server
+    source .venv/bin/activate
+    python /charles-server/server --port 8001
+
     echo "PG4E Startup Already has run"
 else
 
@@ -40,6 +45,10 @@ fi
 
 echo "Setting psql root password to $PSQL_ROOT_PASSWORD"
 sudo -i -u postgres psql -c "ALTER ROLE postgres WITH PASSWORD '$PSQL_ROOT_PASSWORD'"
+
+echo "Creating user/database for charles-server with password $CHARLES_POSTGRES_PASSWORD"
+sudo -i -u postgres psql -c "CREATE USER charles WITH PASSWORD '$CHARLES_POSTGRES_PASSWORD'"
+sudo -i -u postgres psql -c "CREATE DATABASE charles WITH OWNER charles"
 
 echo "Removing phpMyAdmin"
 rm -rf /var/www/html/phpMyAdmin /var/www/html/phppgadmin
