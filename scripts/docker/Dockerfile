@@ -23,6 +23,8 @@
 # curl -X GET http://127.0.0.1:8001/v1/elasticsearch
 # {"errors":[{"title":"Scope Error","detail":"No token provided.","status":403}]}
 
+# es_prefix: v1/basicauth/elasticsearch
+
 # mysql -u root --host=127.0.0.1 --port=3306 -p
 
 FROM tsugi_dev:latest
