@@ -34,6 +34,10 @@ if [ -f "$COMPLETE" ]; then
     source .venv/bin/activate
     python /charles-server/server --port 8001
 
+    echo "https://certbot.eff.org/lets-encrypt/ubuntubionic-apache"
+    echo " "
+    echo "certbot --apache --dry-run"
+    echo "cron: certbot renew --dry-run"
     echo "PG4E Startup Already has run"
 else
 
@@ -117,6 +121,11 @@ echo "Starting charles-server"
 cd /charles-server
 source .venv/bin/activate
 python /charles-server/server --port 8001
+
+echo "https://certbot.eff.org/lets-encrypt/ubuntubionic-apache"
+echo " "
+echo "certbot --apache --dry-run"
+echo "cron: certbot renew --dry-run"
 
 touch $COMPLETE
 
