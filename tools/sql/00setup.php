@@ -89,25 +89,35 @@ if ( $admin_PDO ) {
         array(":nam" => $db)
     );
 
+    // http://wiki.postgresql.org/wiki/Shared_Database_Hosting
+    // https://dba.stackexchange.com/questions/17790/created-user-can-access-all-databases-in-postgresql-without-any-grants
+    // https://stackoverflow.com/questions/3349136/how-to-prevent-a-user-from-being-able-to-see-other-databases-and-the-tables-from
+    // https://dba.stackexchange.com/a/17791/206399
     if ( ! $row ) {
         $user_row = $admin_PDO->rowDie("SELECT * FROM pg_user WHERE usename = '$user'");
         if ( ! $user_row ) {
             echo("<p>Creating database...</p>\n");
-            $sql = "CREATE USER $user WITH PASSWORD '$pass' ";
-            $stmt = $admin_PDO->queryReturnError($sql);
-            if ( ! $stmt->success ) {
-                error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
-                echo("<p>SQL Query Error: ".htmlentities($stmt->errorImplode)."</p>");
-                return false;
+
+            $sqls = array(
+                "CREATE ROLE $user NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT LOGIN PASSWORD '$pass' ",
+                "CREATE DATABASE $db WITH OWNER $user",
+                "REVOKE all ON DATABASE $db FROM public",
+                "REVOKE all ON SCHEMA public FROM public",
+                "GRANT all ON SCHEMA public TO postgres",
+                "GRANT connect ON DATABASE $db TO $user",
+            );
+            foreach($sqls as $sql) {
+                echo($sql."<br/>\n");
+                $stmt = $admin_PDO->queryReturnError($sql);
+                if ( ! $stmt->success ) {
+                    error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
+                    echo("<p>SQL Query Error: ".htmlentities($stmt->errorImplode)."</p>");
+                    return false;
+                 }
             }
-        }
-        $sql = "CREATE DATABASE $db WITH OWNER $user";
-        $stmt = $admin_PDO->queryReturnError($sql);
-        if ( ! $stmt->success ) {
-            error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
-            echo("<p>SQL Query Error: ".htmlentities($stmt->errorImplode)."</p>");
-            return false;
-        }
+	}
+
+    	// Check again
         $row = $admin_PDO->rowDie(
             "SELECT datname FROM pg_catalog.pg_database WHERE datname = :nam",
             array(":nam" => $db)
