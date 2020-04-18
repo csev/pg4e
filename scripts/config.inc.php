@@ -105,13 +105,13 @@
 	// will be denied. Only set this false once you have read the FAQ and
 	// understand how to change PostgreSQL's pg_hba.conf to enable
 	// passworded local connections.
-	$conf['extra_login_security'] = false;
+	$conf['extra_login_security'] = true;
 
 	// Only show owned databases?
 	// Note: This will simply hide other databases in the list - this does
 	// not in any way prevent your users from seeing other database by
 	// other means. (e.g. Run 'SELECT * FROM pg_database' in the SQL area.)
-	$conf['owned_only'] = false;
+	$conf['owned_only'] = true;
 
 	// Display comments on objects?  Comments are a good way of documenting
 	// a database, but they do take up space in the interface.
