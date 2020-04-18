@@ -107,7 +107,7 @@ if ( $admin_PDO ) {
                 "GRANT connect ON DATABASE $db TO $user",
             );
             foreach($sqls as $sql) {
-                echo($sql."<br/>\n");
+                // echo($sql."<br/>\n");
                 $stmt = $admin_PDO->queryReturnError($sql);
                 if ( ! $stmt->success ) {
                     error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
@@ -131,7 +131,16 @@ if ( ! $user_PDO ) {
 }
 
 if ( ! $user_PDO ) {
-    echo("<p>Unable to set up database.   Please see your instructor.</p>\n");
+?>
+<p>Problem accessing your database, perhaps a reset will work.
+In resetting your database does not work, please see your instructor.</p>
+<p>
+<form method="post">
+<input type="submit" class="btn btn-danger" name="reset" value="Delete and re-create database"
+onclick="return confirm('<?= __('Are you sure?') ?>')">
+</form>
+</p>
+<?php
     return;
 }
 

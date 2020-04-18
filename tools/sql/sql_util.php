@@ -105,7 +105,8 @@ function getConfig() {
 }
 
 function getDbPass($unique) {
-    return "pg4e_p_".substr($unique,20,8);
+    $un2 = md5($unique);
+    return "pg4e_p_".substr($un2,0,15);
 }
 
 function pg4e_unlock_code($LAUNCH) {
@@ -181,6 +182,7 @@ function redirect_200($url) {
 
 // Handle incoming POST request, redirecting if necessary
 function pg4e_user_db_post($LAUNCH) {
+
     global $CFG;
     global $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
