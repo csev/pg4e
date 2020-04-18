@@ -14,7 +14,7 @@ require "nav.php";
 <h1>PostgreSQL for Everybody</h1>
 <p>
 This web site is building a set of free / OER materials to help students
-learn the PostgreSQL database.  The site is 
+learn the <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a> database.  The site is 
 <b>under construction</b> but you are welcome to make use of it as
 it is being built.
 </p>
