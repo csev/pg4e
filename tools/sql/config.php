@@ -16,7 +16,7 @@ if ( ! $USER->instructor ) die("Must be instructor");
 
 $redirect = false;
 $postkeys = array('pg_host', 'pg_port', 
-    'es_source', 'es_host', 'es_port', 'es_prefix', 'es_password');
+    'es_source', 'es_scheme', 'es_host', 'es_port', 'es_prefix', 'es_password');
 
 if ( U::get($_POST, 'update') ) {
     foreach($postkeys as $key) {
@@ -70,6 +70,17 @@ Fill in these fields if you want to affect what the student sees in their <b>psq
 </select>
 </p>
 <p>ElasticProxy</p>
+<p>
+<select name="es_scheme">
+<option value="">-- Please select protocol --</option>
+<option value="http"
+<?php if ( U::get($settings, "es_scheme") == 'http' ) echo('selected'); ?>
+>http</option>
+<option value="https"
+<?php if ( U::get($settings, "es_scheme") == 'https' ) echo('selected'); ?>
+>https - Secure</option>
+</select>
+</p>
 <p>PR_ES_HOST <input type="text" name="es_host" value="<?= htmlentities(U::get($settings, 'es_host')) ?>"></p>
 <p>PR_ES_PORT <input type="text" name="es_port" value="<?= htmlentities(U::get($settings, 'es_port')) ?>"></p>
 <p>PR_ES_PREFIX <input type="text" name="es_prefix" value="<?= htmlentities(U::get($settings, 'es_prefix')) ?>"></p>

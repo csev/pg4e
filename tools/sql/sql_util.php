@@ -97,6 +97,7 @@ function getConfig() {
     $retval->pg_port = U::get($settings, 'pg_port');
 
     $retval->es_source = U::get($settings, 'es_source');
+    $retval->es_scheme = U::get($settings, 'es_scheme');
     $retval->es_host = U::get($settings, 'es_host');
     $retval->es_prefix = U::get($settings, 'es_prefix');
     $retval->es_port = U::get($settings, 'es_port');
@@ -473,15 +474,17 @@ function pg4e_user_es_load($LAUNCH) {
 function pg4e_user_es_post($LAUNCH) {
     global $CFG;
     global $pg4e_request_result, $pg4e_request_url;
-    global $es_host, $es_port, $es_prefix, $es_user, $es_pass, $info;
+    global $es_host, $es_scheme, $es_port, $es_prefix, $es_user, $es_pass, $info;
 
     if ( U::get($_POST,'default') ) {
         unset($_SESSION['es_host']);
+        unset($_SESSION['es_scheme']);
         unset($_SESSION['es_prefix']);
         unset($_SESSION['es_port']);
         unset($_SESSION['es_user']);
         unset($_SESSION['es_pass']);
         setcookie("es_host", '', time()+31556926 ,'/');
+        setcookie("es_scheme", '', time()+31556926 ,'/');
         setcookie("es_prefix", '', time()+31556926 ,'/');
         setcookie("es_port", '', time()+31556926 ,'/');
         setcookie("es_user", '', time()+31556926 ,'/');
@@ -493,7 +496,7 @@ function pg4e_user_es_post($LAUNCH) {
 
     // If we have new values... copy them into SESSION
     $retval = false;
-    foreach(array('es_host', 'es_prefix', 'es_port', 'es_user', 'es_pass') as $key) {
+    foreach(array('es_host', 'es_scheme', 'es_prefix', 'es_port', 'es_user', 'es_pass') as $key) {
         $value = U::get($_POST, $key);
         if ( ! $value ) continue;
         $_SESSION[$key] = $value;
@@ -509,7 +512,7 @@ function pg4e_user_es_post($LAUNCH) {
 function pg4e_user_es_data($LAUNCH) {
     global $CFG;
     global $pg4e_request_result, $pg4e_request_url;
-    global $es_host, $es_port, $es_prefix, $es_user, $es_pass, $info;
+    global $es_host, $es_scheme, $es_port, $es_prefix, $es_user, $es_pass, $info;
 
     $unique = getUnique($LAUNCH);
     $project = getDbName($unique);
@@ -517,6 +520,7 @@ function pg4e_user_es_data($LAUNCH) {
     $cfg = getConfig();
 
     $es_host = U::get($_SESSION, 'es_host', U::get($_COOKIE, 'es_host'));
+    $es_scheme = U::get($_SESSION, 'es_scheme', U::get($_COOKIE, 'es_scheme'));
     $es_prefix = U::get($_SESSION, 'es_prefix', U::get($_COOKIE, 'es_prefix'));
     $es_port = U::get($_SESSION, 'es_port', U::get($_COOKIE, 'es_port'));
     $es_user = U::get($_SESSION, 'es_user', U::get($_COOKIE, 'es_user'));
@@ -524,11 +528,13 @@ function pg4e_user_es_data($LAUNCH) {
 
     if ( strlen($es_host) < 1 && $cfg && strlen($cfg->es_password) > 1) {
         $es_host = $cfg->es_host;
+        $es_scheme = $cfg->es_scheme;
         $es_port = $cfg->es_port;
         $es_prefix = $cfg->es_prefix;
         $es_user = getEsUser($unique);
         $es_pass = es_makepw($es_user, $cfg->es_password);
         $_SESSION['es_host'] = $es_host;
+        $_SESSION['es_scheme'] = $es_scheme;
         $_SESSION['es_prefix'] = $es_prefix;
         $_SESSION['es_port'] = $es_port;
         $_SESSION['es_user'] = $es_user;
@@ -539,6 +545,7 @@ function pg4e_user_es_data($LAUNCH) {
     $json = $LAUNCH->result->getJSON();
     $new = json_encode(array(
         'es_host' => $es_host,
+        'es_scheme' => $es_scheme,
         'es_prefix' => $es_prefix,
         'es_port' => $es_port,
         'es_user' => $es_user,
@@ -547,8 +554,9 @@ function pg4e_user_es_data($LAUNCH) {
     if ( $new != $json ) $LAUNCH->result->setJSON($new);
 
     // If we have a full set - store the cookies for good measure
-    if ( $es_host &&  $es_port && $es_user && $es_pass ) {
+    if ( $es_host && $es_scheme &&  $es_port && $es_user && $es_pass ) {
         setcookie("es_host", $es_host, time()+31556926 ,'/');
+        setcookie("es_scheme", $es_scheme, time()+31556926 ,'/');
         setcookie("es_prefix", $es_prefix, time()+31556926 ,'/');
         setcookie("es_port", $es_port, time()+31556926 ,'/');
         setcookie("es_user", $es_user, time()+31556926 ,'/');
@@ -595,7 +603,7 @@ function es_makepw($user, $secret) {
 }
 
 function pg4e_user_es_form($LAUNCH) {
-    global $OUTPUT, $es_host, $es_prefix, $es_port, $es_user, $es_pass, $info;
+    global $OUTPUT, $es_host, $es_scheme, $es_prefix, $es_port, $es_user, $es_pass, $info;
 
     $cfg = getConfig();
 
@@ -607,6 +615,7 @@ function pg4e_user_es_form($LAUNCH) {
 <p>
 <?php if ( $LAUNCH->user->instructor || ! $cfg ) { ?>
 Host: <input type="text" name="es_host" value="<?= htmlentities($es_host) ?>" id="es_host"><br/>
+Scheme: <input type="text" name="es_scheme" value="<?= htmlentities($es_scheme) ?>" id="es_scheme"> (http / https)<br/>
 Prefix: <input type="text" name="es_prefix" value="<?= htmlentities($es_prefix) ?>" id="es_prefix"><br/>
 Port: <input type="text" name="es_port" value="<?= htmlentities($es_port) ?>" id="es_port"><br/>
 User: <input type="text" name="es_user" value="<?= htmlentities($es_user) ?>"><br/>
@@ -616,6 +625,8 @@ Password: <span id="pass" style="display:none"><input type="text" name="es_pass"
 <p>
 <pre>
 Host: <?= $es_host ?>
+
+Scheme: <?= $es_scheme ?>
 
 Prefix: <?= $es_prefix ?>
 
