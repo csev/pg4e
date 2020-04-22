@@ -14,7 +14,10 @@ import hidden
 
 secrets = hidden.elastic()
 
-url = 'http://'+secrets['user']+':'+secrets['pass']+'@'+secrets['host']+':'+str(secrets['port']);
+url = 'http://'
+if secrets['scheme'] == 'https' : 
+    url = 'https://'
+url = url+secrets['user']+':'+secrets['pass']+'@'+secrets['host']+':'+str(secrets['port']);
 if secrets.get('prefix') : 
     url = url + '/' + secrets['prefix']
 url = url + '/' + secrets['user']

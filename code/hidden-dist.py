@@ -10,25 +10,19 @@
 # %sql SELECT 1 as "Test"
 
 def secrets():
-    return {"host": "35.222.5.70",
-            "port": 13009,
-            "user": "pg4e_user_8187f",
-            "pass": "pg4e_pass_7f749",
-            "database": "pg4e"}
+    return {"host": "pg.pg4e.com",
+            "port": 5432,
+            "database": "pg4e_bee97",
+            "user": "pg4e_u_880afa77",
+            "pass": "pg4e_p_d5fab7440699124"}
 
-def elastic():
-    return {"host": "34.219.107.86",
+def elastic() : 
+    return {"host": "www.pg4e.com",
             "prefix" : "v1/basicauth/elasticsearch",
-            "port": 8001,
-            "user": "pg4e_0333a53",
-            "pass": "2005_975c9678"}
-
-def readonly():
-    return {"host": "35.239.113.162",
-            "port": 10014,
-            "user": "pg4e_data_read",
-            "pass": "pg4e_pass_9876d",
-            "database": "pg4e_data"}
+            "port": 9210,
+            "scheme": "https",
+            "user": "pg4e_f9d5ea1",
+            "pass": "2007_a9404abf"}
 
 # Return a psycopg2 connection string
 
