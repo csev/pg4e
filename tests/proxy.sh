@@ -1,6 +1,6 @@
 #! /bin//bash
 
-for file in https://swapi.py4e.com https://pokeapi.co https://mbox.dr-chuck.net http://mbox.dr-chuck.net https://www.gutenberg.org/ebooks/25990 https://www.gutenberg.org/ebooks/25990.txt.utf-8 http://www.gutenberg.org/ebooks/25990 http://www.gutenberg.org/ebooks/25990.txt.utf-8
+for file in https://swapi.py4e.com https://pokeapi.co https://mbox.dr-chuck.net http://mbox.dr-chuck.net http://www.gutenberg.org/cache/epub/25990/pg25990.txt http://www.gutenberg.org/cache/epub/25990/pg25990.txt
 do
         rm -f zap.txt
         wget -T 2 -O zap.txt $file
@@ -15,3 +15,4 @@ do
 
 done
 rm -f zap.txt
+
