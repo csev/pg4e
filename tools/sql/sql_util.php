@@ -187,20 +187,22 @@ function pg4e_user_db_post($LAUNCH) {
     global $CFG;
     global $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
+    // $cookie_expire = 31556926;  // One year
+    $cookie_expire = 60 * 60 * 24 * 7;  // 7 days
     if ( U::get($_POST,'default') ) {
         unset($_SESSION['pdo_host']);
         unset($_SESSION['pdo_port']);
         unset($_SESSION['pdo_database']);
         unset($_SESSION['pdo_user']);
         unset($_SESSION['pdo_pass']);
-        setcookie("pdo_database", '', time()+31556926 ,'/');
-        setcookie("pdo_host", '', time()+31556926 ,'/');
-        setcookie("pdo_port", '', time()+31556926 ,'/');
-        setcookie("pdo_user", '', time()+31556926 ,'/');
-        setcookie("pdo_pass", '', time()+31556926 ,'/');
-        setcookie("pg4e_desc", '', time()+31556926 ,'/');
-        setcookie("pg4e_host", '', time()+31556926 ,'/');
-        setcookie("pg4e_port", '', time()+31556926 ,'/');
+        setcookie("pdo_database", '', time()+$cookie_expire ,'/');
+        setcookie("pdo_host", '', time()+$cookie_expire ,'/');
+        setcookie("pdo_port", '', time()+$cookie_expire ,'/');
+        setcookie("pdo_user", '', time()+$cookie_expire ,'/');
+        setcookie("pdo_pass", '', time()+$cookie_expire ,'/');
+        setcookie("pg4e_desc", '', time()+$cookie_expire ,'/');
+        setcookie("pg4e_host", '', time()+$cookie_expire ,'/');
+        setcookie("pg4e_port", '', time()+$cookie_expire ,'/');
         redirect_200(addSession('index.php'));
         return true;
     }
@@ -229,12 +231,14 @@ function pg4e_user_db_data($LAUNCH) {
 
     $user_info = getUserInfo($LAUNCH);
 
+    $_NOT_COOKIE = array(); // TODO: Remove this after  July 2020
+
     // defaults
-    $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_COOKIE, 'pdo_database', $user_info->db));
-    $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_COOKIE, 'pdo_host', $user_info->host));
-    $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_COOKIE, 'pdo_port', $user_info->port));
-    $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_COOKIE, 'pdo_user', $user_info->user));
-    $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_COOKIE, 'pdo_pass', $user_info->pass));
+    $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_NOT_COOKIE, 'pdo_database', $user_info->db));
+    $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_NOT_COOKIE, 'pdo_host', $user_info->host));
+    $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_NOT_COOKIE, 'pdo_port', $user_info->port));
+    $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_NOT_COOKIE, 'pdo_user', $user_info->user));
+    $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_NOT_COOKIE, 'pdo_pass', $user_info->pass));
 
     // Store in the database...
     $json = $LAUNCH->result->getJSON();
@@ -247,19 +251,20 @@ function pg4e_user_db_data($LAUNCH) {
     ));
     if ( $new != $json ) $LAUNCH->result->setJSON($new);
 
-
+    // $cookie_expire = 31556926;  // One year
+    $cookie_expire = 60 * 60 * 24 * 7;  // 7 days
     // If we have a full set - store the cookies for good measure
     if ( $pdo_database && $pdo_host &&  $pdo_port && $pdo_user && $pdo_pass ) {
-        setcookie("pdo_database", $pdo_database, time()+31556926 ,'/');
-        setcookie("pdo_host", $pdo_host, time()+31556926 ,'/');
-        setcookie("pdo_port", $pdo_port, time()+31556926 ,'/');
-        setcookie("pdo_user", $pdo_user, time()+31556926 ,'/');
-        setcookie("pdo_pass", $pdo_pass, time()+31556926 ,'/');
+        setcookie("pdo_database", $pdo_database, time()+$cookie_expire ,'/');
+        setcookie("pdo_host", $pdo_host, time()+$cookie_expire ,'/');
+        setcookie("pdo_port", $pdo_port, time()+$cookie_expire ,'/');
+        setcookie("pdo_user", $pdo_user, time()+$cookie_expire ,'/');
+        setcookie("pdo_pass", $pdo_pass, time()+$cookie_expire ,'/');
 
         // Cookies for phppgadmin
-        setcookie("pg4e_desc", $pdo_database, time()+31556926 ,'/');
-        setcookie("pg4e_host", $pdo_host, time()+31556926 ,'/');
-        setcookie("pg4e_port", $pdo_port, time()+31556926 ,'/');
+        setcookie("pg4e_desc", $pdo_database, time()+$cookie_expire ,'/');
+        setcookie("pg4e_host", $pdo_host, time()+$cookie_expire ,'/');
+        setcookie("pg4e_port", $pdo_port, time()+$cookie_expire ,'/');
     }
 
     $pdo_connection = "pgsql:host=$pdo_host;port=$pdo_port;dbname=$pdo_database";
@@ -476,6 +481,8 @@ function pg4e_user_es_post($LAUNCH) {
     global $pg4e_request_result, $pg4e_request_url;
     global $es_host, $es_scheme, $es_port, $es_prefix, $es_user, $es_pass, $info;
 
+    // $cookie_expire = 31556926;  // One year
+    $cookie_expire = 60 * 60 * 24 * 7;  // 7 days
     if ( U::get($_POST,'default') ) {
         unset($_SESSION['es_host']);
         unset($_SESSION['es_scheme']);
@@ -483,12 +490,12 @@ function pg4e_user_es_post($LAUNCH) {
         unset($_SESSION['es_port']);
         unset($_SESSION['es_user']);
         unset($_SESSION['es_pass']);
-        setcookie("es_host", '', time()+31556926 ,'/');
-        setcookie("es_scheme", '', time()+31556926 ,'/');
-        setcookie("es_prefix", '', time()+31556926 ,'/');
-        setcookie("es_port", '', time()+31556926 ,'/');
-        setcookie("es_user", '', time()+31556926 ,'/');
-        setcookie("es_pass", '', time()+31556926 ,'/');
+        setcookie("es_host", '', time()+$cookie_expire ,'/');
+        setcookie("es_scheme", '', time()+$cookie_expire ,'/');
+        setcookie("es_prefix", '', time()+$cookie_expire ,'/');
+        setcookie("es_port", '', time()+$cookie_expire ,'/');
+        setcookie("es_user", '', time()+$cookie_expire ,'/');
+        setcookie("es_pass", '', time()+$cookie_expire ,'/');
         // header( 'Location: '.addSession('index.php') ) ;
         redirect_200(addSession('index.php'));
         return true;
@@ -519,12 +526,14 @@ function pg4e_user_es_data($LAUNCH) {
 
     $cfg = getConfig();
 
-    $es_host = U::get($_SESSION, 'es_host', U::get($_COOKIE, 'es_host'));
-    $es_scheme = U::get($_SESSION, 'es_scheme', U::get($_COOKIE, 'es_scheme'));
-    $es_prefix = U::get($_SESSION, 'es_prefix', U::get($_COOKIE, 'es_prefix'));
-    $es_port = U::get($_SESSION, 'es_port', U::get($_COOKIE, 'es_port'));
-    $es_user = U::get($_SESSION, 'es_user', U::get($_COOKIE, 'es_user'));
-    $es_pass = U::get($_SESSION, 'es_pass', U::get($_COOKIE, 'es_pass'));
+    $_NOT_COOKIE = array(); // TODO: Remove this after  July 2020
+
+    $es_host = U::get($_SESSION, 'es_host', U::get($_NOT_COOKIE, 'es_host'));
+    $es_scheme = U::get($_SESSION, 'es_scheme', U::get($_NOT_COOKIE, 'es_scheme'));
+    $es_prefix = U::get($_SESSION, 'es_prefix', U::get($_NOT_COOKIE, 'es_prefix'));
+    $es_port = U::get($_SESSION, 'es_port', U::get($_NOT_COOKIE, 'es_port'));
+    $es_user = U::get($_SESSION, 'es_user', U::get($_NOT_COOKIE, 'es_user'));
+    $es_pass = U::get($_SESSION, 'es_pass', U::get($_NOT_COOKIE, 'es_pass'));
 
     if ( strlen($es_host) < 1 && $cfg && strlen($cfg->es_password) > 1) {
         $es_host = $cfg->es_host;
@@ -553,14 +562,16 @@ function pg4e_user_es_data($LAUNCH) {
     ));
     if ( $new != $json ) $LAUNCH->result->setJSON($new);
 
+    // $cookie_expire = 31556926;  // One year
+    $cookie_expire = 60 * 60 * 24 * 7;  // 7 days
     // If we have a full set - store the cookies for good measure
     if ( $es_host && $es_scheme &&  $es_port && $es_user && $es_pass ) {
-        setcookie("es_host", $es_host, time()+31556926 ,'/');
-        setcookie("es_scheme", $es_scheme, time()+31556926 ,'/');
-        setcookie("es_prefix", $es_prefix, time()+31556926 ,'/');
-        setcookie("es_port", $es_port, time()+31556926 ,'/');
-        setcookie("es_user", $es_user, time()+31556926 ,'/');
-        setcookie("es_pass", $es_pass, time()+31556926 ,'/');
+        setcookie("es_host", $es_host, time()+$cookie_expire ,'/');
+        setcookie("es_scheme", $es_scheme, time()+$cookie_expire ,'/');
+        setcookie("es_prefix", $es_prefix, time()+$cookie_expire ,'/');
+        setcookie("es_port", $es_port, time()+$cookie_expire ,'/');
+        setcookie("es_user", $es_user, time()+$cookie_expire ,'/');
+        setcookie("es_pass", $es_pass, time()+$cookie_expire ,'/');
     }
 
     return true;
