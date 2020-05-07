@@ -31,6 +31,7 @@ if ( U::get($_POST,'check') ) {
 
 	// array(2) { [0]=> int(1) [1]=> string(11) "Arthur Dent" } 
 	$row = $stmt->fetch(\PDO::FETCH_NUM);
+        $stmt->closeCursor();
 
 	if ( ! is_int($row[0]) || $row[0] < 1 ) {
         $_SESSION['error'] = "Expecting id column to be an integer, found ".$row[0];

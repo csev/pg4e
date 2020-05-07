@@ -39,6 +39,7 @@ if ( U::get($_POST,'check') ) {
             return;
         }
     }
+    $stmt->closeCursor();
 
     $gradetosend = 1.0;
     pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);

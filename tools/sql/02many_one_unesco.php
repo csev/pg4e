@@ -99,6 +99,7 @@ if ( U::get($_POST,'check') ) {
         $good++;
         $pos++;
     }
+    $stmt->closeCursor();
 
     if ( $pos == 0 ) {
         $_SESSION['error'] = "No records found in unesco table";

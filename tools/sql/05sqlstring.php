@@ -58,6 +58,7 @@ if ( U::get($_POST,'check') ) {
         $found[$keyword]++;
         $correct++;
     }
+    $stmt->closeCursor();
 
     if ( !$failure && count($found) != count($gin) ) {
         $_SESSION['error'] = "Expected ". count($gin). ' keywords in your index, found '.count($found);

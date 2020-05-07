@@ -21,18 +21,19 @@ if ( U::get($_POST,'check') ) {
     $stmt = pg4e_query_return_error($pg_PDO, $sql);
     if ( ! $stmt ) return;
 
-	for($i=0;$i<5;$i++) {
-       	$record = rand(100000, 200000);
-       	$sql = "SELECT content FROM bigtext WHERE content LIKE '%".$record."%';";
-    	$stmt = pg4e_query_return_error($pg_PDO, $sql);
-    	if ( ! $stmt ) return;
-    	$row1 = $stmt->fetch(\PDO::FETCH_ASSOC);
-    	if ( ! $row1 ) {
-        	$_SESSION['error'] = "Could not fetch inserted row ".$record;
-        	header('Location: '.addSession('index.php'));
-        	return;
-    	}
-	}
+    for($i=0;$i<5;$i++) {
+        $record = rand(100000, 200000);
+        $sql = "SELECT content FROM bigtext WHERE content LIKE '%".$record."%';";
+        $stmt = pg4e_query_return_error($pg_PDO, $sql);
+        if ( ! $stmt ) return;
+        $row1 = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ( ! $row1 ) {
+            $_SESSION['error'] = "Could not fetch inserted row ".$record;
+            header('Location: '.addSession('index.php'));
+            return;
+        }
+        $stmt->closeCursor();
+    }
 
     $gradetosend = 1.0;
     pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);

@@ -35,6 +35,7 @@ if ( U::get($_POST,'check') ) {
         header('Location: '.addSession('index.php'));
         return;
     }
+    $stmt->closeCursor();
 
     $sql = "UPDATE keyvalue SET value=43 WHERE key='number';";
     $stmt = pg4e_query_return_error($pg_PDO, $sql);
@@ -50,14 +51,15 @@ if ( U::get($_POST,'check') ) {
         header('Location: '.addSession('index.php'));
         return;
     }
+    $stmt->closeCursor();
 
-	if ( $row1['created_at'] != $row2['created_at'] ) {
+    if ( $row1['created_at'] != $row2['created_at'] ) {
         $_SESSION['error'] = "The value for created_at was changed by an UPDATE. old=".$row1['created_at']." new=".$row2['created_at'];
         header('Location: '.addSession('index.php'));
         return;
     }
 
-	if ( $row1['updated_at'] == $row2['updated_at'] ) {
+    if ( $row1['updated_at'] == $row2['updated_at'] ) {
         $_SESSION['error'] = "The value for updated_at was not changed by an UPDATE. old=".$row1['updated_at']." new=".$row2['updated_at'];
         header('Location: '.addSession('index.php'));
         return;

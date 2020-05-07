@@ -32,6 +32,7 @@ if ( U::get($_POST,'check') ) {
     if ( ! $stmt ) return;
 
     $rows = $stmt->fetchAll(\PDO::FETCH_NUM);
+    $stmt->closeCursor();
     if ( count($rows) != count($database) ) {
         $_SESSION['error'] = "Expecting ".count($database)." rows, retrieved ".count($rows);
         header('Location: '.addSession('index.php'));

@@ -49,6 +49,7 @@ if ( U::get($_POST,'check') ) {
         $_SESSION['error'] = "Unable to retrieve a row with the keyword '$word'";
         $failure = true;
     }
+    $stmt->closeCursor();
 
     $found = array();
     $stmt = pg4e_query_return_error($pg_PDO, "EXPLAIN ".$sql);
@@ -64,6 +65,7 @@ if ( U::get($_POST,'check') ) {
             $failure = true;
         }
     }
+    $stmt->closeCursor();
 
     if ( $failure ) {
         header( 'Location: '.addSession('index.php') ) ;
