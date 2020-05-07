@@ -559,10 +559,10 @@ BMW,i3
 BMW,i3 (94Ah)
 BMW,i3 (94Ah) with Range Extender
 BMW,i3 BEV
-BMW,i3 BEV (60  Amp-hour battery)
+BMW,i3 BEV (60 Amp-hour battery)
 BMW,i3 BEV (94 Amp-hour battery)
 BMW,i3 REX
-BMW,i3 REX  (94 Amp-hour battery)
+BMW,i3 REX XWD (94 Amp-hour battery)
 BMW,i3 with Range Extender
 BMW,i3s
 BMW,i3s (94Ah)
@@ -793,7 +793,7 @@ Chevrolet,Cruze
 Chevrolet,Cruze Eco
 Chevrolet,Cruze Hatchback
 Chevrolet,Cruze Limited
-Chevrolet,Cruze Limited  Eco
+Chevrolet,Cruze Limited Eco
 Chevrolet,Cruze Premier
 Chevrolet,Cruze Premier Hatchback
 Chevrolet,El Camino Pickup 2WD
@@ -826,7 +826,7 @@ Chevrolet,G30 Van 2WD (cargo)
 Chevrolet,HHR FWD
 Chevrolet,HHR Panel FWD
 Chevrolet,Impala
-Chevrolet,Impala Bi-Fuel  (CNG)
+Chevrolet,Impala Bi-Fuel (CNG)
 Chevrolet,Impala Limited
 Chevrolet,Impala Police
 Chevrolet,Impala eAssist
@@ -914,7 +914,7 @@ Chevrolet,Spectrum
 Chevrolet,Spectrum Turbo
 Chevrolet,Sport Van G10/20 2WD
 Chevrolet,Sport Van G10/20 2WD (passenger)
-Chevrolet,Sport Van G30  2WD
+Chevrolet,Sport Van G30 XWD
 Chevrolet,Sport Van G30 2WD
 Chevrolet,Sport Van G30 2WD (cargo)
 Chevrolet,Sprint
@@ -971,7 +971,7 @@ Chevrolet,V10 (K10) Suburban 4WD
 Chevrolet,V10 Blazer 4WD
 Chevrolet,V10 Suburban 4WD
 Chevrolet,V20 Pickup 4WD
-Chevrolet,Van 15/25  2WD Conversion
+Chevrolet,Van 15/25 XWD Conversion
 Chevrolet,Van 15/25 2WD Conversion
 Chevrolet,Van 1500 2WD Cargo
 Chevrolet,Van 1500 2WD Conversion Cargo
@@ -1133,9 +1133,9 @@ Dodge,GLH-S
 Dodge,Grand Caravan
 Dodge,Intrepid
 Dodge,Journey
-Dodge,Journey  2WD
-Dodge,Journey  4WD
-Dodge,Journey  AWD
+Dodge,Journey 2WD
+Dodge,Journey 4WD
+Dodge,Journey XWD
 Dodge,Journey AWD
 Dodge,Journey FWD
 Dodge,Lancer
@@ -1569,16 +1569,16 @@ GMC,Safari AWD Conversion (cargo)
 GMC,Savana (cargo) (Bi-fuel)
 GMC,Savana 15/25 2WD Conversion (cargo)
 GMC,Savana 15/25 AWD Conversion (cargo)
-GMC,Savana 1500  2WD Conversion (cargo)
-GMC,Savana 1500  AWD (cargo)
-GMC,Savana 1500  AWD Conversion (cargo)
+GMC,Savana 1500 2WD Conversion (cargo)
+GMC,Savana 1500 AWD (cargo)
+GMC,Savana 1500 AWD Conversion (cargo)
 GMC,Savana 1500 2WD (Passenger)
 GMC,Savana 1500 2WD (cargo)
 GMC,Savana 1500 2WD Conversion (cargo)
 GMC,Savana 1500 AWD (Passenger)
 GMC,Savana 1500 AWD (cargo)
 GMC,Savana 1500 AWD Conversion (cargo)
-GMC,Savana 1500/2500  2WD (Passenger)
+GMC,Savana 1500/2500 XWD (Passenger)
 GMC,Savana 1500/2500 2WD (Passenger)
 GMC,Savana 1500/2500 2WD (cargo)
 GMC,Savana 1500/2500 2WD (passenger)
@@ -1643,7 +1643,7 @@ GMC,V25 Pickup 4WD
 GMC,Vandura 2500 2WD
 GMC,Vandura G15/25 2WD
 GMC,Vandura G15/25 2WD (cargo)
-GMC,Vandura G35  2WD
+GMC,Vandura G35 XWD
 GMC,Vandura G35 2WD
 GMC,Vandura G35 2WD (cargo)
 GMC,Yukon 1500 2WD
@@ -1900,13 +1900,13 @@ Infiniti,Q50 AWD
 Infiniti,Q50 Hybrid
 Infiniti,Q50 Hybrid AWD
 Infiniti,Q50 Red Sport
-Infiniti,Q50 Red Sport  AWD
+Infiniti,Q50 Red Sport AWD
 Infiniti,Q50S
 Infiniti,Q50S AWD
 Infiniti,Q50S Hybrid
 Infiniti,Q50S Hybrid AWD
 Infiniti,Q50S Red Sport
-Infiniti,Q50S Red Sport  AWD
+Infiniti,Q50S Red Sport AWD
 Infiniti,Q50a
 Infiniti,Q50a AWD
 Infiniti,Q60
@@ -2372,8 +2372,8 @@ Lincoln,Aviator AWD
 Lincoln,Aviator RWD
 Lincoln,Blackwood 2WD
 Lincoln,Continental
-Lincoln,Continental  AWD
-Lincoln,Continental  FWD
+Lincoln,Continental AWD
+Lincoln,Continental FWD
 Lincoln,Corsair AWD
 Lincoln,Corsair FWD
 Lincoln,LS
@@ -2480,8 +2480,8 @@ Maserati,Coupe Cambiocorsa/GT/G-Sport
 Maserati,Coupe Cambiocorsa/coupe GT
 Maserati,Coupe and Gransport
 Maserati,Ghibli
-Maserati,Ghibli  S RWD
-Maserati,Ghibli  V6 RWD
+Maserati,Ghibli S XWD
+Maserati,Ghibli V6 XWD
 Maserati,Ghibli S
 Maserati,Ghibli S RWD
 Maserati,Ghibli SQ4
@@ -3189,8 +3189,8 @@ Nissan,Pulsar/Pulsar-NX
 Nissan,Quest
 Nissan,Rogue AWD
 Nissan,Rogue FWD
-Nissan,Rogue Hybrid  AWD
-Nissan,Rogue Hybrid  FWD
+Nissan,Rogue Hybrid AWD
+Nissan,Rogue Hybrid FWD
 Nissan,Rogue Select AWD
 Nissan,Rogue Select FWD
 Nissan,Rogue Sport
@@ -3211,7 +3211,7 @@ Nissan,Stanza Wagon 4WD
 Nissan,Titan 2WD
 Nissan,Titan 2WD FFV
 Nissan,Titan 4WD
-Nissan,Titan 4WD  PRO4X
+Nissan,Titan 4WD XWD
 Nissan,Titan 4WD FFV
 Nissan,Titan 4WD PRO4X
 Nissan,Titan FE 2WD
@@ -3597,7 +3597,7 @@ Roush Performance,Stage 3 F150 Super Crew 4WD
 Roush Performance,Stage 3 Mustang
 Roush Performance,Stage 3 Mustang Coupe
 Ruf Automobile Gmbh,Ruf
-S and S Coach Company  E.p. Dutton,Funeral Coach  2WD
+S and S Coach Company E.p. Dutton,Funeral Coach 2WD
 SRT,Viper
 STI,S209
 Saab,9-2x Wagon AWD
@@ -3746,7 +3746,7 @@ Subaru,XT 4WD
 Subaru,XT-DL
 Subaru,XV Crosstrek AWD
 Subaru,XV Crosstrek Hybrid AWD
-Superior Coaches Div E.p. Dutton,Funeral Coach  2WD
+Superior Coaches Div E.p. Dutton,Funeral Coach 2WD
 Suzuki,Aerio
 Suzuki,Aerio 4WD
 Suzuki,Aerio AWD
@@ -3835,8 +3835,8 @@ TVR Engineering Ltd,TVR 280i/350i Coupe
 "Tecstar, LP",Foose F150 Super Crew 2WD
 "Tecstar, LP",Foose F150 Super Crew 4WD
 Tesla,Model 3 Long Range
-Tesla,Model 3 Long Range  AWD
-Tesla,Model 3 Long Range  AWD Performance
+Tesla,Model 3 Long Range XWD
+Tesla,Model 3 Long Range XWD Performance
 Tesla,Model 3 Long Range AWD
 Tesla,Model 3 Long Range AWD Performance
 Tesla,Model 3 Mid Range
