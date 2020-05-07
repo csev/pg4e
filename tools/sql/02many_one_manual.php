@@ -61,7 +61,7 @@ if ( U::get($_POST,'check') ) {
     $stmt->closeCursor();
 
     if ( $pos == 0 ) {
-        $_SESSION['error'] = "No records found in tracks table";
+        $_SESSION['error'] = "No records found in the make and model tables";
         $error = true;
     }
 
