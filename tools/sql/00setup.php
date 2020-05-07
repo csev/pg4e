@@ -122,6 +122,9 @@ if ( $admin_PDO ) {
             "SELECT datname FROM pg_catalog.pg_database WHERE datname = :nam",
             array(":nam" => $db)
         );
+	if ( $row ) {
+            echo("<p>Database created.</p>\n");
+	}
     }
 }
 
