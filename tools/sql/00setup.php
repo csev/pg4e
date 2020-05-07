@@ -136,7 +136,7 @@ if ( ! $user_PDO ) {
 if ( ! $user_PDO ) {
 ?>
 <p>Problem accessing your database, perhaps a reset will work.
-In resetting your database does not work, please see your instructor.</p>
+If resetting your database does not work, please contact your instructor.</p>
 <p>
 <form method="post">
 <input type="submit" class="btn btn-danger" name="reset" value="Delete and re-create database"
