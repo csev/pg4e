@@ -2,7 +2,7 @@
 
 # https://www.pg4e.com/code/hidden-dist.py
 
-# psql -h 35.239.113.162 -p 13009 -U pg4e_user_8187f pg4e
+# psql -h pg.pg4e.com -p 5432 -U pg4e_user_8187f pg4e
 
 # %load_ext sql
 # %config SqlMagic.autocommit=False
@@ -12,17 +12,17 @@
 def secrets():
     return {"host": "pg.pg4e.com",
             "port": 5432,
-            "database": "pg4e_bee97",
-            "user": "pg4e_u_880afa77",
+            "database": "pg4e_be9e729093",
+            "user": "pg4e_be9e729093",
             "pass": "pg4e_p_d5fab7440699124"}
 
-def elastic() : 
+def elastic() :
     return {"host": "es.pg4e.com",
             "prefix" : "v1/basicauth/elasticsearch",
             "port": 9210,
             "scheme": "https",
-            "user": "pg4e_f9d5ea1",
-            "pass": "2007_a9404abf"}
+            "user": "pg4e_86f9be92a2",
+            "pass": "2008_9d454b1f"}
 
 # Return a psycopg2 connection string
 
