@@ -45,7 +45,6 @@ es = Elasticsearch(
 # In our test world - we only get one index :(
 indexname = secrets['user']
 
-
 # Start fresh
 # https://elasticsearch-py.readthedocs.io/en/master/api.html#indices
 res = es.indices.delete(index=indexname, ignore=[400, 404])

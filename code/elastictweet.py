@@ -1,4 +1,4 @@
-# https://www.pg4e.com/code/elastic0.py
+# https://www.pg4e.com/code/elastictweet.py
 
 # Example from:
 # https://elasticsearch-py.readthedocs.io/en/master/
@@ -62,7 +62,7 @@ print("Index refreshed")
 print(res)
 
 # Read the documents with a search term
-
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
 x = {
   "query": {
     "bool": {
