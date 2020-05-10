@@ -17,8 +17,6 @@ import hidden
 
 secrets = hidden.elastic()
 
-print(secrets)
-
 es = Elasticsearch(
     [secrets['host']],
     http_auth=(secrets['user'], secrets['pass']),
