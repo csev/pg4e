@@ -35,7 +35,6 @@ if ( $pos >= count($book_ids) ) $pos = 0;
 
 $book_id = $book_ids[$pos];
 $book_url = 'http://www.gutenberg.org/cache/epub/'.$book_id.'/pg'.$book_id.'.txt';
-$alt_book_url = $CFG->apphome . '/proxy/'.$book_url;
 $word = $books[$book_id];
 
 $oldgrade = $RESULT->grade;
@@ -99,23 +98,20 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>Elastic Search 7.x Book Load</h1>
+<h1>Elastic Search Book Load</h1>
 <p>
 In this assignment you will download a book from:
 <pre>
 <a href="<?= $book_url ?>" target="_blank"><?= $book_url ?></a>
-<?php if ( U::get($config, 'proxy') == 'yes' ) { ?>
-
-or if you are behind a firewall, you can try this alternate URL:
-
-<a href="<?= $alt_book_url ?>" target="_blank"><?= $alt_book_url ?></a>
-<?php } ?>
 </pre>
 and
-create an elastic search 7.x index called <b><?= $es_user ?></b>
+create an elastic search index called <b><?= $es_user ?></b>
 in the following Elastic Search instance:
 <?php pg4e_user_es_form($LAUNCH); ?>
 </p>
+<p>
+Your code should clear out the index at the beginning so you start with a fresh index each
+time the code is executed.
 <p>
 You should download these files:
 <ul>
@@ -141,7 +137,7 @@ This autograder will run a command equivalent to using the <b>elastictool.py</b>
 $ python3 elastictool.py
 
 Enter command: search <?= htmlentities($word) ?> 
-http://testing:*****@34.219.107.86:8001/v1/basicauth/elasticsearch/testing/_search?pretty
+https://pg4e_86f9be92a2:*****@es.pg4e.com:9210/v1/basicauth/elasticsearch/pg4e_86f9be92a2/_search
 {"query": {"query_string": {"query": "distinct"}}}
 200
 {

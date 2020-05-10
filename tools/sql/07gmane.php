@@ -87,9 +87,9 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>Elastic Search 7.x Email Load</h1>
+<h1>Elastic Search Email Load</h1>
 <p>
-You should folder and download these files:
+You should download these files:
 <ul>
 <li>
 <a href="https://www.pg4e.com/code/elasticmail.py" target="_blank">https://www.pg4e.com/code/elasticmail.py</a>
@@ -127,23 +127,14 @@ pip install elasticsearch
 
 ?>
 -->
-<?php if ( U::get($config, 'proxy') == 'yes' ) { ?>
-<p>
-If you are behind a firewall, you may need to change urls in your Python code like:
-<pre>
-http://mbox.dr-chuck.net/sakai.devel/100/101
-</pre>
-to
-<pre>
-<?= $CFG->apphome ?>/proxy/http://mbox.dr-chuck.net/sakai.devel/100/101
-</pre>
-To retrieve the data through a firewall.
-</p>
-<?php } ?>
-
 <?php
 if ( $LAUNCH->user->instructor ) {
   echo("<p>Note to instructors: Students can view source to see the last elastic search request and response</p>");
 }
 ?>
-
+<p>
+You must clear out your index and load at least the first 100 messages from 
+<a href="http://mbox.dr-chuck.net/sakai.devel/" target="_blank">http://mbox.dr-chuck.net/sakai.devel/</a>
+into the index to complete this assignment.  You should not need to change any code to make this happen.
+This example code you can refer to in the future of pulling data from an API and pushing it into ElasticSearch.
+</p>

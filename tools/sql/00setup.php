@@ -135,7 +135,7 @@ if ( ! $user_PDO ) {
 
 if ( ! $user_PDO ) {
 ?>
-<p>Problem accessing your database, perhaps a reset will work.
+<p>If you are having a problem accessing your database, perhaps a reset will work.
 If resetting your database does not work, please contact your instructor.</p>
 <p>
 <form method="post">
@@ -175,7 +175,7 @@ Password: <span id="pass" style="display:none"><?= $user_info->pass ?></span> (<
 </pre>
 <!-- If we have DB credentials no reset should be needed - but if you really want to reset - unhide this form :) -->
 <p>
-<form method="post" style="display:none;">
+<form method="post" style="display:block;">
 <input type="submit" class="btn btn-danger" name="reset" value="Delete and re-create database"
 onclick="return confirm('<?= __('If you have database credentials, usually there is no need to reset your database.  Are you sure?') ?>')">
 </form>

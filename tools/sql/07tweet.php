@@ -86,9 +86,9 @@ if ( $dueDate->message ) {
 }
 
 ?>
-<h1>Elastic Search 7.x Tweets</h1>
+<h1>Elastic Search Tweets</h1>
 <p>
-In this assignment you will create an elastic search 7.x index 
+In this assignment you will create an elastic search index 
 in the following Elastic Search instance:
 <?php 
 pg4e_user_es_form($LAUNCH); 
@@ -128,10 +128,10 @@ pip install elasticsearch    # or pip3
 <p>
 This autograder will run a command equivalent to using the <b>elastictool.py</b> command as follows:
 <pre>
-elastic7 csev$ python3 elastictool.py
+$ python3 elastictool.py
 
 Enter command: <b>search conversation</b>
-http://testing:*****@34.219.107.86:8001/v1/basicauth/elasticsearch/testing/_search?pretty
+https://pg4e_86f9be92a2:*****@es.pg4e.com:9210/v1/basicauth/elasticsearch/pg4e_86f9be92a2/_search
 {"query": {"query_string": {"query": "conversation"}}}
 200
 {
@@ -170,8 +170,8 @@ Enter command:
 And expect to get at least one hit.
 </p>
 <p>
-You can download the Elastic Search 7 version of <b>elastictool.py</b> at 
-<a href="https://www.pg4e.com/code/elastic7/elastictool.py" target="_blank">https://www.pg4e.com/code/elastic7/elastictool.py</a>.
+You can download the code for <b>elastictool.py</b> at 
+<a href="https://www.pg4e.com/code/elastictool.py" target="_blank">https://www.pg4e.com/code/elastictool.py</a>.
 This depends on having the account values in <b>hidden.py</b>.
 </p>
 <!--

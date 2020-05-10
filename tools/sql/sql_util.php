@@ -67,16 +67,44 @@ function getUserInfo($LAUNCH) {
     return $retval;
 }
 
+function checkForDB($dbname) {
+    global $CFG;
+    $admin_user = 'postgres';
+    $admin_pass = $CFG->psql_root_password ?? false;
+    $admin_connection = "pgsql:host=localhost;port=5432";
+    $admin_PDO = get_connection($admin_connection, $admin_user, $admin_pass);
+    if ( ! $admin_PDO ) {
+	return false;
+    }
+    $row = $admin_PDO->rowDie(
+        "SELECT datname FROM pg_catalog.pg_database WHERE datname = :nam",
+        array(":nam" => $dbname)
+    );
+    if ( ! $row ) return false;
+    return true;
+}
+
+// TODO: Eventually only return the both
 function getDbName($unique) {
-    return substr("pg4e_".$unique,0,10);
+    $dbname = substr("pg4e_".$unique,0,10);
+    if ( checkForDB($dbname) ) return $dbname;
+    $dbboth = substr("pg4e_".$unique,0,15);
+    return $dbboth;
 }
 
 function getDbUser($unique) {
-    return "pg4e_u_".substr($unique,15,8);
+    $username = "pg4e_u_".substr($unique,15,8);
+    $dbname = substr("pg4e_".$unique,0,10);
+    if ( checkForDB($dbname) ) return $username;
+    $dbboth = substr("pg4e_".$unique,0,15);
+    return $dbboth;
 }
 
+// TODO: Same as the db user and db name - remove old
 function getEsUser($unique) {
-    return "pg4e_".substr($unique,12,7);
+    $old = "pg4e_".substr($unique,12,7);
+    $new = substr("pg4e_".$unique,0,15);
+    return $new;
 }
 
 function getCourseSettings() {
@@ -270,7 +298,7 @@ function pg4e_user_db_data($LAUNCH) {
     $pdo_connection = "pgsql:host=$pdo_host;port=$pdo_port;dbname=$pdo_database";
 }
 
-function pg4e_user_db_form($LAUNCH, $terminalonly=false) {
+function pg4e_user_db_form($LAUNCH, $terminalonly=true) {
     global $CFG, $OUTPUT, $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     if ( ! $pdo_host && ! $LAUNCH->user->instructor ) {
@@ -315,12 +343,7 @@ function setPGAdminCookies() {
 </p>
 <p>
 <?php if ( strlen($pdo_host) < 1 ) return; ?>
-<?php if ( ! $terminalonly ) { ?>
-You can do basic SQL commands using the
-<a href="<?= $CFG->apphome ?>/phppgadmin" target="_blank">Online PostgreSQL Client</a> in your browser.
-<?php } ?>
-For batch loading or file uploads using the <b>\copy</b> command or to run Python programs,
-you will need to access <b>python</b> or <b>psql</b> on the command line:</p>
+Here is the the <b>psql</b> command to access your database:
 <pre>
 psql -h <?= htmlentities($pdo_host) ?> -p <?= htmlentities($pdo_port) ?> -U <?= htmlentities($pdo_user) ?> <?= htmlentities($pdo_database) ?>
 <!--
@@ -629,7 +652,7 @@ Host: <input type="text" name="es_host" value="<?= htmlentities($es_host) ?>" id
 Scheme: <input type="text" name="es_scheme" value="<?= htmlentities($es_scheme) ?>" id="es_scheme"> (http / https)<br/>
 Prefix: <input type="text" name="es_prefix" value="<?= htmlentities($es_prefix) ?>" id="es_prefix"><br/>
 Port: <input type="text" name="es_port" value="<?= htmlentities($es_port) ?>" id="es_port"><br/>
-User: <input type="text" name="es_user" value="<?= htmlentities($es_user) ?>"><br/>
+User/Index: <input type="text" name="es_user" value="<?= htmlentities($es_user) ?>"><br/>
 Password: <span id="pass" style="display:none"><input type="text" name="es_pass" id="es_pass" value="<?= htmlentities($es_pass) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($es_pass) ?>');return false;">copy</a>) <br/>
 </pre>
 <?php } else { ?>
@@ -651,7 +674,8 @@ Password: <span id="pass" style="display:none"><?= $es_pass ?></span> <input typ
 <?php } ?>
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
-<input type="submit" name="default" value="Reset Values">
+<!-- If you need to reset values - set the display to block to unlock reset -->
+<input type="submit" name="default" value="Reset Values" style="display:none;">
 </form>
 </p>
 </p>
