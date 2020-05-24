@@ -84,12 +84,13 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>String Array GIN Index</h1>
 <?php if ( $fulltext ) { ?>
+<h1>GIN ts_vector Index</h1>
 <p>In this assignment, you will create a table of documents and then
 produce a GIN-based <b>ts_vector</b> index on the documents.
 </p>
 <?php } else { ?>
+<h1>String Array GIN Index</h1>
 <p>In this assignment, you will create a table of documents and then
 produce a GIN-based <b>text[]</b> reverse index
 for those documents that identifies each document
@@ -98,10 +99,12 @@ which contains a particular word using SQL.
 <p>
 FYI: In <i>contrast</i> with the provided sample SQL, you will
 map all the words
-in the GIN index to lower case (i.e. Python, PYTHON, and python
+in the GIN index to <i>lower</i> case (i.e. Python, PYTHON, and python
 should all end up as "python" in the GIN index).
 </p>
 <?php } ?>
+<p>Connection Details:</p>
+<?php pg4e_user_db_form($LAUNCH); ?>
 <p>
 The goal of this assignment is to run these queries:
 <pre>
@@ -137,7 +140,6 @@ PostgreSQL uses its index:
 INSERT INTO docs03 (doc) SELECT 'Neon ' || generate_series(10000,20000);
 </pre>
 </p>
-<?php pg4e_user_db_form($LAUNCH); ?>
 <?php if ( ! $fulltext ) { ?>
 <h2>Operator Class Errors</h2>
 <p>

@@ -111,6 +111,8 @@ in the reverse index to lower case (i.e. Python, PYTHON, and python
 should all end up as "python" in the inverted index).
 </p>
 <?php } ?>
+<p>Connection details:</p>
+<?php pg4e_user_db_form($LAUNCH); ?>
 <pre>
 CREATE TABLE <?= $table ?> (id SERIAL, doc TEXT, PRIMARY KEY(id));
 
@@ -154,7 +156,6 @@ echo(";\n");
 ?>
 </pre>
 <?php } ?>
-<?php pg4e_user_db_form($LAUNCH); ?>
 <p>
 Here is a sample for the first few expected rows of your reverse index:
 <?php $max_rows = 10; ?>
