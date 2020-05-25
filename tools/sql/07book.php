@@ -98,15 +98,15 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>Elastic Search Book Load</h1>
+<h1>Elasticsearch Book Load</h1>
 <p>
 In this assignment you will download a book from:
 <pre>
 <a href="<?= $book_url ?>" target="_blank"><?= $book_url ?></a>
 </pre>
 and
-create an elastic search index called <b><?= $es_user ?></b>
-in the following Elastic Search instance:
+create an Elasticsearch index called <b><?= $es_user ?></b>
+in the following Elasticsearch instance:
 <?php pg4e_user_es_form($LAUNCH); ?>
 </p>
 <p>
@@ -122,11 +122,11 @@ You should download these files:
 <a href="https://www.pg4e.com/code/hidden-dist.py" target="_blank">https://www.pg4e.com/code/hidden-dist.py</a>
 </li>
 </ul>
-If necessary, copy <b>hidden-dist.py</b> to <b>hidden.py</b> and put your elastic search host/prefix/port/account/password values
+If necessary, copy <b>hidden-dist.py</b> to <b>hidden.py</b> and put your Elasticsearch host/prefix/port/account/password values
 into the <b>elastic()</b> method.  You should also put your PostgreSQL secrets into this file as well.
 </p>
 <p>
-You will need to install the Python ElasticSearch library if you have not already done so.
+You will need to install the Python Elasticsearch library if you have not already done so.
 <pre>
 pip install elasticsearch
 </pre>
@@ -177,21 +177,21 @@ And expect to get at least one hit.
 <p>
 You can download <b>elastictool.py</b> at 
 <a href="https://www.pg4e.com/code/elastictool.py" target="_blank">https://www.pg4e.com/code/elastictool.py</a>.
-You will need to setup the <b>hidden.py</b> with your elastic search host/port/account/password values.
+You will need to setup the <b>hidden.py</b> with your Elasticsearch host/port/account/password values.
 </p>
 <!--
 <?php
   if ( isset($_SESSION['last_parms']) ) {
 	$jsonstr = json_encode($_SESSION['last_parms'], JSON_PRETTY_PRINT);
 	unset($_SESSION['last_parms']);
-	echo("Last elastic search query:\n\n");
+	echo("Last Elasticsearch query:\n\n");
 	echo(htmlentities($jsonstr, ENT_NOQUOTES));
 	echo("\n\n");
   }
   if ( isset($_SESSION['last_response']) ) {
 	$jsonstr = json_encode($_SESSION['last_response'], JSON_PRETTY_PRINT);
 	unset($_SESSION['last_response']);
-	echo("Last elastic search response:\n\n");
+	echo("Last Elasticsearch response:\n\n");
 	echo(htmlentities($jsonstr, ENT_NOQUOTES));
 	echo("\n");
  }
@@ -200,7 +200,7 @@ You will need to setup the <b>hidden.py</b> with your elastic search host/port/a
 -->
 <?php
 if ( $LAUNCH->user->instructor ) {
-  echo("<p>Note to instructors: Students can view source to see the last elastic search request and response</p>");
+  echo("<p>Note to instructors: Students can view source to see the last Elasticsearch request and response</p>");
 }
 ?>
 

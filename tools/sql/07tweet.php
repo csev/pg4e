@@ -86,10 +86,10 @@ if ( $dueDate->message ) {
 }
 
 ?>
-<h1>Elastic Search Tweets</h1>
+<h1>Elasticsearch Tweets</h1>
 <p>
-In this assignment you will create an elastic search index 
-in the following Elastic Search instance:
+In this assignment you will create an Elasticsearch index 
+in the following Elasticsearch instance:
 <?php 
 pg4e_user_es_form($LAUNCH); 
 ?>
@@ -116,11 +116,11 @@ You should download these files:
 <a href="https://www.pg4e.com/code/hidden-dist.py" target="_blank">https://www.pg4e.com/code/hidden-dist.py</a>
 </li>
 </ul>
-Then copy <b>hidden-dist.py</b> to <b>hidden.py</b> and put your elastic search host/prefix/port/account/password values
+Then copy <b>hidden-dist.py</b> to <b>hidden.py</b> and put your Elasticsearch host/prefix/port/account/password values
 into the <b>elastic()</b> method.  You should also put your PostgreSQL secrets into this file as well.
 </p>
 <p>
-You will need to install the Python ElasticSearch library:
+You will need to install the Python Elasticsearch library:
 <pre>
 pip install elasticsearch    # or pip3
 </pre>
@@ -179,14 +179,14 @@ This depends on having the account values in <b>hidden.py</b>.
   if ( isset($_SESSION['last_parms']) ) {
 	$jsonstr = json_encode($_SESSION['last_parms'], JSON_PRETTY_PRINT);
 	unset($_SESSION['last_parms']);
-	echo("Last elastic search query:\n\n");
+	echo("Last Elasticsearch query:\n\n");
 	echo(htmlentities($jsonstr, ENT_NOQUOTES));
 	echo("\n\n");
   }
   if ( isset($_SESSION['last_response']) ) {
 	$jsonstr = json_encode($_SESSION['last_response'], JSON_PRETTY_PRINT);
 	unset($_SESSION['last_response']);
-	echo("Last elastic search response:\n\n");
+	echo("Last Elasticsearch response:\n\n");
 	echo(htmlentities($jsonstr, ENT_NOQUOTES));
 	echo("\n");
  }
@@ -195,7 +195,7 @@ This depends on having the account values in <b>hidden.py</b>.
 -->
 <?php
 if ( $LAUNCH->user->instructor ) {
-  echo("<p>Note to instructors: Students can view source to see the last elastic search request and response</p>");
+  echo("<p>Note to instructors: Students can view source to see the last Elasticsearch request and response</p>");
 }
 ?>
 

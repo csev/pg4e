@@ -42,9 +42,9 @@ $assignments = array(
     '05ginstring.php' => 'Inverted string index using GIN',
     '05fulltext.php' => 'Full text GIN using tsvector',
     '06pokeapi.php' => 'Loading JSON from PokeAPI',
-    '07tweet.php' => 'Elastic Search Tweets',
-    '07book.php' => 'Elastic Search Book Text',
-    '07gmane.php' => 'Elastic Search Email',
+    '07tweet.php' => 'Elasticsearch Tweets',
+    '07book.php' => 'Elasticsearch Book Text',
+    '07gmane.php' => 'Elasticsearch Email',
 );
 
 $oldsettings = Settings::linkGetAll();

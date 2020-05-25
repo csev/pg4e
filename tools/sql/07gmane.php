@@ -87,7 +87,7 @@ if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
 ?>
-<h1>Elastic Search Email Load</h1>
+<h1>Elasticsearch Email Load</h1>
 <p>
 You should download these files:
 <ul>
@@ -100,7 +100,7 @@ You should download these files:
 </ul>
 </p>
 <p>
-You will need to install the Python ElasticSearch library if you have not already done so.
+You will need to install the Python Elasticsearch library if you have not already done so.
 <pre>
 pip install elasticsearch
 </pre>
@@ -113,14 +113,14 @@ pip install elasticsearch
   if ( isset($_SESSION['last_parms']) ) {
 	$jsonstr = json_encode($_SESSION['last_parms'], JSON_PRETTY_PRINT);
 	unset($_SESSION['last_parms']);
-	echo("Last elastic search query:\n\n");
+	echo("Last Elasticsearch query:\n\n");
 	echo(htmlentities($jsonstr, ENT_NOQUOTES));
 	echo("\n\n");
   }
   if ( isset($_SESSION['last_response']) ) {
 	$jsonstr = json_encode($_SESSION['last_response'], JSON_PRETTY_PRINT);
 	unset($_SESSION['last_response']);
-	echo("Last elastic search response:\n\n");
+	echo("Last Elasticsearch response:\n\n");
 	echo(htmlentities($jsonstr, ENT_NOQUOTES));
 	echo("\n");
  }
@@ -129,12 +129,12 @@ pip install elasticsearch
 -->
 <?php
 if ( $LAUNCH->user->instructor ) {
-  echo("<p>Note to instructors: Students can view source to see the last elastic search request and response</p>");
+  echo("<p>Note to instructors: Students can view source to see the last Elasticsearch request and response</p>");
 }
 ?>
 <p>
 You must clear out your index and load at least the first 100 messages from 
 <a href="http://mbox.dr-chuck.net/sakai.devel/" target="_blank">http://mbox.dr-chuck.net/sakai.devel/</a>
 into the index to complete this assignment.  You should not need to change any code to make this happen.
-This example code you can refer to in the future of pulling data from an API and pushing it into ElasticSearch.
+This example code you can refer to in the future of pulling data from an API and pushing it into Elasticsearch.
 </p>

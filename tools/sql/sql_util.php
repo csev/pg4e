@@ -642,7 +642,7 @@ function pg4e_user_es_form($LAUNCH) {
     $cfg = getConfig();
 
     if ( ! $es_host || strlen($es_host) < 1 ) {
-       echo('<p style="color:red">It appears that your ElasticSearch environment is not yet set up or is not running.</p>'."\n");
+       echo('<p style="color:red">It appears that your Elasticsearch environment is not yet set up or is not running.</p>'."\n");
     }
 ?>
 <form name="myform" method="post" >
