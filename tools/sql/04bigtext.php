@@ -50,8 +50,9 @@ if ( $dueDate->message ) {
 <h1>Generating Text</h1>
 <p>In this assignment you will create a table named
 <b>bigtext</b> with a single <b>TEXT</b> column named
-<b>content</b>.  Insert 100000 records into the table
-that look as follows:
+<b>content</b>.  Insert 100001 records with numbers starting
+at 100000 and going through 200000 into the table
+as shown below:
 <pre>
 This is record number 100000 of quite a few text records.
 This is record number 100001 of quite a few text records.
