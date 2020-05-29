@@ -120,7 +120,7 @@ your database and look for the data it expects to see:
 The expected result of this query on your database is:
 <table border="2">
 <tr>
-<th>track</th><th>album</th><th>artist</th>
+<th>title</th><th>album</th><th>artist</th>
 </tr>
 <?php
 $pos=0;
