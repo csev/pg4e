@@ -55,12 +55,15 @@ if ( $dueDate->message ) {
 ?>
 <h1>Loading JSON from PokéAPI</h1>
 <p>In this assignment, you will load the first 100 Pokémon JSON documents from the 
-<a href="https://pokeapi.co/" target="_blank">PokéAPI</a> and store them in this table:
+<a href="https://pokeapi.co/" target="_blank">PokéAPI</a> and store them in a table.
+</p>
+<?php pg4e_user_db_form($LAUNCH); ?>
+<p>
+Here is the table to create:
 <pre>
 CREATE TABLE IF NOT EXISTS pokeapi (id INTEGER, body JSONB);
 </pre>
 </p>
-<?php pg4e_user_db_form($LAUNCH); ?>
 <p>
 This assignment is not an adaptation of any of the sample code we provide.  Instead it takes
 some of the JSON techniques from
