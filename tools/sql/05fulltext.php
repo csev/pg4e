@@ -116,7 +116,11 @@ and (a) get the correct document(s) and (b) use the GIN index (i.e. not use a se
 <pre>
 CREATE TABLE docs03 (id SERIAL, doc TEXT, PRIMARY KEY(id));
 
+<?php if ( $fulltext ) { ?>
 CREATE INDEX fulltext03 ON docs03 USING gin(...);
+<?php } else { ?>
+CREATE INDEX array03 ON docs03 USING gin(...);
+<?php } ?>
 </pre>
 </p>
 <?php if ( $fulltext ) { ?>
