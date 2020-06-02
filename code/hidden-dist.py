@@ -27,9 +27,9 @@ def elastic() :
 def readonly():
     return {"host": "pg.pg4e.com",
             "port": 5432,
-            "database": "pg4e_data",
-            "user": "pg4e_data_read",
-            "pass": "pg4e_p_d5fab7440699124"}
+            "database": "readonly",
+            "user": "readonly",
+            "pass": "readonly_password"}
 
 # Return a psycopg2 connection string
 
