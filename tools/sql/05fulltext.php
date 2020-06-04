@@ -144,24 +144,48 @@ PostgreSQL uses its index:
 INSERT INTO docs03 (doc) SELECT 'Neon ' || generate_series(10000,20000);
 </pre>
 </p>
-<?php if ( ! $fulltext ) { ?>
-<h2>Operator Class Errors</h2>
 <p>
-If you try to create the index using the <b>_text_ops</b> operator class
-and it fails as follows switch to using <b>array_ops</b> as the operator class:
+It might take from a few seconds to a minute or two before PostgreSQL catches up with its indexing.
+The autograder won't work if the index is incomplete.  If the <b>EXPLAIN</b> command says that it
+is using <b>Seq Scan</b> - the index has not completed yet.
+Run the above <b>EXPLAIN</b> multiple times if necessary until you verify that PostgreSQL has finished making the index:
+<?php if ( $fulltext ) { ?>
 <pre>
-ERROR:  operator class "_text_ops" does not exist for access method "gin"
+pg4e=&gt; EXPLAIN SELECT id, doc FROM docs03 WHERE to_tsquery('english', 'instructions') @@ to_tsvector('english', doc);
+                                       QUERY PLAN
+-----------------------------------------------------------------------------------------
+ Bitmap Heap Scan on docs03  (cost=208.27..268.71 rows=35 width=36)
+   Recheck Cond: ('''instruct'''::tsquery @@ to_tsvector('english'::regconfig, doc))
+   -&gt;  Bitmap Index Scan on fulltext03  (cost=0.00..208.26 rows=35 width=0)
+         Index Cond: ('''instruct'''::tsquery @@ to_tsvector('english'::regconfig, doc))
+(4 rows)
+
+pg4e=&gt;
 </pre>
-PostgreSQL 9.6 uses <b>_text_ops</b> and PostgresSQL 11 has collapsed all the
-array operator classes into a more flexible <b>array_ops</b> operators
- class. To check to see which version of PostgreSQL you are using, use this command:
+<?php } else { ?>
 <pre>
-pg4e=> select version();
-                                        version
----------------------------------------------------------------------------------------
- PostgreSQL 11.2 on x86_64-pc-linux-musl, compiled by gcc (Alpine 8.3.0) 8.3.0, 64-bit
+pg4e=&gt; EXPLAIN SELECT id, doc FROM docs03 WHERE '{conversation}' &lt;@ string_to_array(lower(doc), ' ');
+                                   QUERY PLAN
+--------------------------------------------------------------------------------
+ Seq Scan on docs03  (cost=0.00..177.24 rows=35 width=36)
+   Filter: ('{conversation}'::text[] &lt;@ string_to_array(lower(doc), ' '::text))
+(2 rows)
+
+
+<b>TIME PASSES......</b>
+
+
+pg4e=&gt; EXPLAIN SELECT id, doc FROM docs03 WHERE '{conversation}' &lt;@ string_to_array(lower(doc), ' ');
+                                        QUERY PLAN
+------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on docs03  (cost=12.02..21.97 rows=3 width=15)
+   Recheck Cond: ('{conversation}'::text[] &lt;@ string_to_array(lower(doc), ' '::text))
+   -&gt;  Bitmap Index Scan on array03  (cost=0.00..12.02 rows=3 width=0)
+         Index Cond: ('{conversation}'::text[] &lt;@ string_to_array(lower(doc), ' '::text))
+(4 rows)
+
+pg4e=&gt;
 </pre>
-</p>
 <?php } ?>
 <?php
 if ( $LAUNCH->user->instructor ) {
