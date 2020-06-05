@@ -72,16 +72,11 @@ CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
 
 -- The GIN (General Inverted Index) thinks about columns that contain arrays
 -- A GIN needs to know what kind of data will be in the arrays
--- array_ops (_text_ops for PostgreSQL 9) means that it is expecting
--- text[] (arrays of strings) and WHERE clauses will use array
--- operators (i.e. like <@ )
+-- array_ops means that it is expecting text[] (arrays of strings)
+-- and WHERE clauses will use array operators (i.e. like <@ )
 
 DROP INDEX gin1;
 
--- PostgreSQL 9
-CREATE INDEX gin1 ON docs USING gin(string_to_array(doc, ' ')  _text_ops);
-
--- PostgreSQL >= 11
 CREATE INDEX gin1 ON docs USING gin(string_to_array(doc, ' ')  array_ops);
 
 INSERT INTO docs (doc) VALUES

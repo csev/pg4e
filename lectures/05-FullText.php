@@ -312,7 +312,7 @@ We can build a simple GIN index like the manual index above:
 <pre>
 CREATE TABLE docs (id SERIAL, doc TEXT, PRIMARY KEY(id));
 
-CREATE INDEX gin1 ON docs USING gin(string_to_array(doc, ' ')  _text_ops);
+CREATE INDEX gin1 ON docs USING gin(string_to_array(doc, ' ')  array_ops);
 
 INSERT INTO docs (doc) VALUES
 ('This is SQL and Python and other fun teaching stuff'),
@@ -589,7 +589,6 @@ SELECT am.amname AS index_method, opc.opcname AS opclass_name
  spgist       | poly_ops
  spgist       | quad_point_ops
  spgist       | range_ops
- spgist       | text_ops
 (134 rows)
 </pre>
 <footer style="margin-top: 50px;">
