@@ -164,29 +164,38 @@ pg4e=&gt;
 </pre>
 <?php } else { ?>
 <pre>
-pg4e=&gt; EXPLAIN SELECT id, doc FROM docs03 WHERE '{conversation}' &lt;@ string_to_array(lower(doc), ' ');
+pg4e=&gt; EXPLAIN SELECT id, doc FROM docs03 WHERE '{<?= $word ?>}' &lt;@ string_to_array(lower(doc), ' ');
                                    QUERY PLAN
 --------------------------------------------------------------------------------
  Seq Scan on docs03  (cost=0.00..177.24 rows=35 width=36)
-   Filter: ('{conversation}'::text[] &lt;@ string_to_array(lower(doc), ' '::text))
+ Filter: ('{<?= $word ?>}'::text[] &lt;@ string_to_array(lower(doc), ' '::text))
 (2 rows)
 
 
 <b>TIME PASSES......</b>
 
 
-pg4e=&gt; EXPLAIN SELECT id, doc FROM docs03 WHERE '{conversation}' &lt;@ string_to_array(lower(doc), ' ');
+pg4e=&gt; EXPLAIN SELECT id, doc FROM docs03 WHERE '{<?= $word ?>}' &lt;@ string_to_array(lower(doc), ' ');
                                         QUERY PLAN
 ------------------------------------------------------------------------------------------
  Bitmap Heap Scan on docs03  (cost=12.02..21.97 rows=3 width=15)
-   Recheck Cond: ('{conversation}'::text[] &lt;@ string_to_array(lower(doc), ' '::text))
+ Recheck Cond: ('{<?= $word ?>}'::text[] &lt;@ string_to_array(lower(doc), ' '::text))
    -&gt;  Bitmap Index Scan on array03  (cost=0.00..12.02 rows=3 width=0)
-         Index Cond: ('{conversation}'::text[] &lt;@ string_to_array(lower(doc), ' '::text))
+   Index Cond: ('{<?= $word ?>}'::text[] &lt;@ string_to_array(lower(doc), ' '::text))
 (4 rows)
 
 pg4e=&gt;
 </pre>
 <?php } ?>
+<h2>References</h2>
+<p>
+Here are some links on monitoring the building of indexes:
+<ul>
+<li><p><a href="https://wiki.postgresql.org/wiki/Index_Maintenance" target="_blank">PostgreSQL Wiki:
+Index Maintenance</a></p></li>
+<li><p><a href="https://dba.stackexchange.com/a/161992/206399" target="_blank">Stackoverflow:
+Monitoring Progress of Index Construction in PostgreSQL</a></p></li>
+</ul>
 <?php
 if ( $LAUNCH->user->instructor ) {
     echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");
