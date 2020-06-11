@@ -65,25 +65,20 @@ CREATE TABLE IF NOT EXISTS pokeapi (id INTEGER, body JSONB);
 </pre>
 </p>
 <p>
-This assignment is not an adaptation of any of the sample code we provide.  Instead it takes
-some of the JSON techniques from
-<a href="https://www.pg4e.com/code/swapi.py" target="_blank">https://www.pg4e.com/code/swapi.py</a> 
-but the application you write can be far simpler.  All you need to do is loop through and retrieve
-the API data for urls ending in 1..100.
+This assignment is <b>not</b> an adaptation of any of the sample code
+we provide.  You will probably have to write this assignment from scratch.
+You can look at the code for
+<a href="https://www.pg4e.com/code/swapi.py" target="_blank">https://www.pg4e.com/code/swapi.py</a>
+and use it to help you write your application - 
+but your application will be be much simpler than the <b>swapi.py</b>
+application.
+All you need to do is loop through and retrieve
+the JSON data for urls ending in 1..100 and store it in the above table.
 </p>
-<?php if ( U::get($config, 'proxy') == 'yes' ) { ?>
 <p>
-If you are behind a firewall, you may need to change references to:
-<pre>
-https://pokeapi.co/people/...
-</pre>
-to
-<pre>
-<?= $CFG->apphome ?>/proxy/https://pokeapi.co/people/...
-</pre>
-To retrieve the data through a firewall.
+There is no need to have a status fields or have a retartable process for this assignment.  
+Just get the first 100 JSOB items and store them in the above table.
 </p>
-<?php } ?>
 <?php
 if ( $LAUNCH->user->instructor ) {
     echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");
