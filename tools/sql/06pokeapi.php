@@ -70,14 +70,14 @@ we provide.  You will probably have to write this assignment from scratch.
 You can look at the code for
 <a href="https://www.pg4e.com/code/swapi.py" target="_blank">https://www.pg4e.com/code/swapi.py</a>
 and use it to help you write your application - 
-but your application will be be much simpler than the <b>swapi.py</b>
+but your application will be much simpler than the <b>swapi.py</b>
 application.
 All you need to do is loop through and retrieve
 the JSON data for urls ending in 1..100 and store it in the above table.
 </p>
 <p>
-There is no need to have a status fields or have a retartable process for this assignment.  
-Just get the first 100 JSOB items and store them in the above table.
+There is no need to have a status field or have a retartable process for this assignment.  
+Just get the first 100 JSON items and store them in the above table.
 </p>
 <?php
 if ( $LAUNCH->user->instructor ) {
