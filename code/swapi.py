@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS swapi
 created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ);
 '''
 print(sql)
-myutils.doQuery(cur, sql)
+cur.execute(sql)
 
 # Check to see if we have urls in the table, if not add starting points
 # for each of the object trees
@@ -58,7 +58,7 @@ if count < 1:
     for obj in objects:
         sql = f"INSERT INTO swapi (url) VALUES ( 'https://swapi.py4e.com/api/{obj}/1/' )";
         print(sql)
-        myutils.doQuery(cur, sql, (defaulturl, ))
+        cur.execute(sql, (defaulturl))
     conn.commit()
 
 many = 0
@@ -81,11 +81,13 @@ while True:
 
     text = "None"
     try:
+        print('=== Url is', url)
         response = requests.get(url)
         text = response.text
+        print('=== Text is', text)
         status = response.status_code
         sql = 'UPDATE swapi SET status=%s, body=%s, updated_at=NOW() WHERE url = %s;'
-        myutils.doQuery(cur, sql, (status, text, url))
+        row = cur.execute(sql, (status, text, url))
         count = count + 1
         chars = chars + len(text)
     except KeyboardInterrupt:
@@ -112,7 +114,7 @@ while True:
         if not isinstance(stuff, list) : continue
         for item in stuff:
             sql = 'INSERT INTO swapi (url) VALUES ( %s ) ON CONFLICT (url) DO NOTHING;';
-            myutils.doQuery(cur, sql, (item, ))
+            cur.execute(sql, (item, ))
 
     many = many - 1
     if count % 25 == 0 :
