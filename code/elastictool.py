@@ -12,6 +12,9 @@ import requests
 import json
 import hidden
 
+import warnings
+warnings.filterwarnings('ignore', message='Unverified HTTPS request')
+
 secrets = hidden.elastic()
 
 url = 'http://'
@@ -91,8 +94,13 @@ while True:
         response = requests.post(queryurl, verify=False, headers=hdict, data=body)
         text = response.text
         status = response.status_code
-        print(status)
-        print(json.dumps(json.loads(text), indent=2))
+        if status == 200:
+            print(status)
+            print(json.dumps(json.loads(text), indent=2))
+        else :
+            print(text)
+            print()
+            print("Error, status=", status)
         continue
 
     print()
