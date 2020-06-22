@@ -56,7 +56,7 @@ while True:
         body=json.dumps( {"query": {"match_all": {}}} )
 
         hdict = {'Content-type': 'application/json; charset=UTF-8'}
-        response = requests.post(queryurl, headers=hdict, data=body)
+        response = requests.post(queryurl, verify=False, headers=hdict, data=body)
         text = response.text
         status = response.status_code
         print(status)
@@ -69,7 +69,7 @@ while True:
         prurl = queryurl.replace(secrets['pass'],'*****')
         print(prurl)
 
-        response = requests.get(queryurl)
+        response = requests.get(queryurl, verify=False)
         text = response.text
         status = response.status_code
         print(status)
@@ -88,7 +88,7 @@ while True:
         print(body)
 
         hdict = {'Content-type': 'application/json; charset=UTF-8'}
-        response = requests.post(queryurl, headers=hdict, data=body)
+        response = requests.post(queryurl, verify=False, headers=hdict, data=body)
         text = response.text
         status = response.status_code
         print(status)
