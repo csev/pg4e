@@ -97,17 +97,18 @@ foreach ($headers_indexed_arr as $value) {
 // Log the access
 error_log("$request_method $tail input=".strlen($request_body)." response code:".$response_code." output=".strlen($request_body));
 $sql = "INSERT INTO ${p}elastic_log
-    (index_name, auth_user, auth_pw,
+    (index_name, auth_user, auth_pw, request_method,
     request_url, request_body, request_headers,
     response_code, response_body, response_headers)
     VALUES
-    (:index_name, :auth_user, :auth_pw,
+    (:index_name, :auth_user, :auth_pw, :request_method,
     :request_url, :request_body, :request_headers,
     :response_code, :response_body, :response_headers);";
 $values = array(
     ":index_name" => $pieces->controller,
     ":auth_user" => $auth_user,
     ":auth_pw" => $auth_pw,
+    ":request_method" => $request_method,
     ":request_url" => $request_url,
     ":request_body" => $request_body,
     ":request_headers" => json_encode($request_headers),
@@ -116,6 +117,12 @@ $values = array(
     ":response_headers" => json_encode($response_headers),
 );
 $PDOX->queryDie($sql, $values);
+
+// Clean up the table after a while
+$sql = "DELETE FROM ${p}elastic_log
+    WHERE DATE(created_at) < (curdate() - INTERVAL 2 DAY)
+    LIMIT 3000;";
+$PDOX->queryDie($sql);
 
 // Send back the response
 http_response_code($response_code);
