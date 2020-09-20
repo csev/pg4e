@@ -5,6 +5,7 @@ use \Tsugi\Util\U;
 if ( ! defined('COOKIE_SESSION') ) define('COOKIE_SESSION', true);
 
 require_once "../tsugi/config.php";
+require_once "../tools/sql/sql_util.php";
 
 if ( ! function_exists('endsWith') ) {
 function endsWith($haystack, $needle) {
@@ -21,13 +22,26 @@ if ( strlen($pieces->controller) < 1 || strlen($pieces->controller) < 1 ) {
     return;
 }
 
+// Check Basic Authentication
+$auth_user = U::get($_SERVER, 'PHP_AUTH_USER');
+$auth_pw = U::get($_SERVER, 'PHP_AUTH_PW');
+
+$backend_pw = $CFG->elasticsearch_password;
+$es_pass = es_makepw($auth_user, $backend_pw);
+
+if ( $es_pass != $auth_pw ) {
+    header('HTTP/1.0 403 Forbidden');
+    error_log("403 user=$auth_user pw=$auth_pw backend=$es_pass");
+    return;
+}
+
+// Pull in all the data from the input request
 $apache_headers = apache_request_headers();
 $curl_headers = array();
 foreach($apache_headers as $key => $val ) {
    $curl_headers[] = $key.": ".$val;
 }
 
-// $base_url = 'http://localhost:9200';
 $base_url = $CFG->elasticsearch_backend;
 $method = $_SERVER['REQUEST_METHOD'];
 $tail = $pieces->controller;
@@ -35,11 +49,8 @@ if ( $pieces->extra ) $tail .= '/' . $pieces->extra;
 $tail = U::reconstruct_query($tail, $_GET);
 $entityBody = file_get_contents('php://input');
 $es_url = $base_url . '/' . $tail;
-if ( strlen($entityBody) > 0 ) {
-    error_log(substr($entityBody, 0, 100));
-}
-// error_log("$es_url");
 
+// Make the proxy request
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $es_url);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
@@ -51,6 +62,7 @@ if ( strlen($entityBody) > 0 ) {
 }
 $response = curl_exec($ch);
 
+// Extract the response headers
 // https://beamtic.com/curl-response-headers
 $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 $headers = substr($response, 0, $header_size);
@@ -59,15 +71,14 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 error_log("$method $tail input=".strlen($entityBody)." response code:".$httpCode." output=".strlen($body));
+if ( strlen($entityBody) > 0 ) {
+    error_log(substr($entityBody, 0, 100));
+}
 
-// echo("<pre>\n"); echo("Code: $httpCode\n"); echo($headers); echo("\n"); echo($body); echo("\n");
 $headers_indexed_arr = explode("\r\n", $headers);
-// Define as array before using in loop
-$headers_arr = array();
-// Remember the status message in a separate variable
 $status_message = array_shift($headers_indexed_arr);
-
 // Create an associative array containing the response headers
+$headers_arr = array();
 foreach ($headers_indexed_arr as $value) {
   if(false !== ($matches = explode(':', $value, 2))) {
     if ( count($matches) != 2 ) continue;
@@ -75,7 +86,7 @@ foreach ($headers_indexed_arr as $value) {
   }
 }
 
-// Prepare the response
+// Send back the response
 http_response_code($httpCode);
 
 foreach($headers_arr as $key => $value) {
