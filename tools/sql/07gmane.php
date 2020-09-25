@@ -136,5 +136,5 @@ if ( $LAUNCH->user->instructor ) {
 You must clear out your index and load at least the first 100 messages from 
 <a href="http://mbox.dr-chuck.net/sakai.devel/" target="_blank">http://mbox.dr-chuck.net/sakai.devel/</a>
 into the index to complete this assignment.  You should not need to change any code to make this happen.
-This example code you can refer to in the future of pulling data from an API and pushing it into Elasticsearch.
+This is example code you can refer to in the future of pulling data from an API and pushing it into Elasticsearch.
 </p>
