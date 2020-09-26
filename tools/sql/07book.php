@@ -42,28 +42,29 @@ $oldgrade = $RESULT->grade;
 if ( U::get($_POST,'check') ) {
 
     $pg_PDO = false;
-	$client = get_es_connection();
+    // $client = get_es_connection();
+    $client = get_es_local();
     if ( ! $client ) return;
 
-	$params = [
-        'index' => $es_prefix .'/' . $es_user,
-    	'body'  => [
-        	'query' => [
-            	'match' => [
-                	'content' => $word
-            	]
-        	]
-    	]
-	];
-	$_SESSION['last_parms'] = $params;
+    $params = [
+        'index' => $es_user,
+        'body'  => [
+            'query' => [
+                'match' => [
+                    'content' => $word
+                ]
+            ]
+        ]
+    ];
+    $_SESSION['last_parms'] = $params;
     pg4e_debug_note($pg_PDO, json_encode($params, JSON_PRETTY_PRINT));
 
-	try {
-		unset($_SESSION['last_response']);
-		$response = $client->search($params);
-		$_SESSION['last_response'] = $response;
-		pg4e_debug_note($pg_PDO, json_encode($response, JSON_PRETTY_PRINT));
-		// echo("<pre>\n");print_r($response);echo("</pre>\n");
+    try {
+        unset($_SESSION['last_response']);
+        $response = $client->search($params);
+        $_SESSION['last_response'] = $response;
+        pg4e_debug_note($pg_PDO, json_encode($response, JSON_PRETTY_PRINT));
+        // echo("<pre>\n");print_r($response);echo("</pre>\n");
         if ( ! isset($response['hits']['hits']) ) {
             $msg = 'Error looking for '.$word;
             if ( isset($response['error']['type'])) $msg .= ' | ' . $response['error']['type'];
@@ -72,16 +73,16 @@ if ( U::get($_POST,'check') ) {
             header( 'Location: '.addSession('index.php') ) ;
             return;
         }
-		$hits = count($response['hits']['hits']);
-		if ( $hits < 1 ) {
-			$_SESSION['error'] = 'Query / match did not find '.$word;
-        	header( 'Location: '.addSession('index.php') ) ;
-        	return;
-    	}
-			
-	} catch(Exception $e) {
-         pg4e_debug_note($pg_PDO, $e->getMessage());
-		$_SESSION['error'] = 'Error: '.$e->getMessage();
+        $hits = count($response['hits']['hits']);
+        if ( $hits < 1 ) {
+            $_SESSION['error'] = 'Query / match did not find '.$word;
+            header( 'Location: '.addSession('index.php') ) ;
+            return;
+        }
+            
+    } catch(Exception $e) {
+        pg4e_debug_note($pg_PDO, $e->getMessage());
+        $_SESSION['error'] = 'Error: '.$e->getMessage();
         header( 'Location: '.addSession('index.php') ) ;
         return;
     }
@@ -182,18 +183,18 @@ You will need to setup the <b>hidden.py</b> with your Elasticsearch host/port/ac
 <!--
 <?php
   if ( isset($_SESSION['last_parms']) ) {
-	$jsonstr = json_encode($_SESSION['last_parms'], JSON_PRETTY_PRINT);
-	unset($_SESSION['last_parms']);
-	echo("Last Elasticsearch query:\n\n");
-	echo(htmlentities($jsonstr, ENT_NOQUOTES));
-	echo("\n\n");
+    $jsonstr = json_encode($_SESSION['last_parms'], JSON_PRETTY_PRINT);
+    unset($_SESSION['last_parms']);
+    echo("Last Elasticsearch query:\n\n");
+    echo(htmlentities($jsonstr, ENT_NOQUOTES));
+    echo("\n\n");
   }
   if ( isset($_SESSION['last_response']) ) {
-	$jsonstr = json_encode($_SESSION['last_response'], JSON_PRETTY_PRINT);
-	unset($_SESSION['last_response']);
-	echo("Last Elasticsearch response:\n\n");
-	echo(htmlentities($jsonstr, ENT_NOQUOTES));
-	echo("\n");
+    $jsonstr = json_encode($_SESSION['last_response'], JSON_PRETTY_PRINT);
+    unset($_SESSION['last_response']);
+    echo("Last Elasticsearch response:\n\n");
+    echo(htmlentities($jsonstr, ENT_NOQUOTES));
+    echo("\n");
  }
 
 ?>

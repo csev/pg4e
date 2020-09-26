@@ -6,22 +6,40 @@ use Elasticsearch\ClientBuilder;
 function get_es_connection() {
     global $es_host, $es_scheme, $es_port, $es_prefix, $es_user, $es_pass;
 
-	$hosts = [
-    	[
-        	'host' => $es_host,
-        	'port' => $es_port,
-                // Has no idea about prefix - hack the index string
-        	// 'url_prefix' => $es_prefix,
-        	'scheme' => $es_scheme,
-        	'user' => $es_user,
-        	'pass' => $es_pass
-    	]
-	];
-	$client = Elasticsearch\ClientBuilder::create()
-    	->setHosts($hosts)
-    	->setRetries(0)
-    	->build();
+    $hosts = [
+        [
+            // https://github.com/elastic/elasticsearch-php/issues/239
+            'host' => $es_host . '/' . $es_prefix,
+            'port' => $es_port,
+            'scheme' => $es_scheme,
+            'user' => $es_user,
+            'pass' => $es_pass
+        ]
+    ];
+    $client = Elasticsearch\ClientBuilder::create()
+        ->setHosts($hosts)
+        ->setRetries(0)
+        ->build();
 
-	return $client;
+    return $client;
+}
+
+function get_es_local() {
+    global $CFG;
+    if ( ! isset($CFG->elasticsearch_backend) ) return false;
+    $pieces = parse_url($CFG->elasticsearch_backend);
+
+    $hosts = [
+        [
+            'host' => $pieces["host"],
+            'scheme' => $pieces['scheme'],
+        ]
+    ];
+    $client = Elasticsearch\ClientBuilder::create()
+        ->setHosts($hosts)
+        ->setRetries(0)
+        ->build();
+
+    return $client;
 }
 
