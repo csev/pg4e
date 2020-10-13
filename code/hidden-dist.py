@@ -17,9 +17,9 @@ def secrets():
             "pass": "pg4e_p_d5fab7440699124"}
 
 def elastic() :
-    return {"host": "es.pg4e.com",
-            "prefix" : "v1/basicauth/elasticsearch",
-            "port": 9210,
+    return {"host": "www.pg4e.com",
+            "prefix" : "elasticsearch",
+            "port": 443,
             "scheme": "https",
             "user": "pg4e_86f9be92a2",
             "pass": "2008_9d454b1f"}
