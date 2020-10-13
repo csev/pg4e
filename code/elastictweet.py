@@ -12,6 +12,7 @@
 
 from datetime import datetime
 from elasticsearch import Elasticsearch
+from elasticsearch import RequestsHttpConnection
 
 import hidden
 
@@ -22,7 +23,8 @@ es = Elasticsearch(
     http_auth=(secrets['user'], secrets['pass']),
     url_prefix = secrets['prefix'],
     scheme=secrets['scheme'],
-    port=secrets['port']
+    port=secrets['port'],
+    connection_class=RequestsHttpConnection,
 )
 indexname = secrets['user']
 

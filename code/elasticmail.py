@@ -22,6 +22,7 @@ import hidden
 import dateutil.parser as parser # If this import fails - just comment it out
 
 from elasticsearch import Elasticsearch
+from elasticsearch import RequestsHttpConnection
 
 def parsemaildate(md) :
     try:
@@ -39,7 +40,8 @@ es = Elasticsearch(
     http_auth=(secrets['user'], secrets['pass']),
     url_prefix = secrets['prefix'],
     scheme=secrets['scheme'],
-    port=secrets['port']
+    port=secrets['port'],
+    connection_class=RequestsHttpConnection,
 )
 
 # In our test world - we only get one index :(
