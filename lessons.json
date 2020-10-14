@@ -48,6 +48,58 @@
     ]
 },
 {
+    "title": "Week 2",
+    "anchor": "week2",
+    "icon" : "fa-globe",
+    "description": "This is a test",
+    "videos" : [
+        {
+            "title" : "Relational Database Design Part 1",
+            "ai": "mads.sqldatabases.01.050619.mov",
+            "youtube" : "9mldwpXgEhs"
+        },
+        {
+            "title" : "Relational Database Design Part 2",
+            "ai": "mads.sqldatabases.02.050619.mov",
+            "youtube" : "S2kEcw9H888"
+        },
+        {
+            "title" : "Database Keys",
+            "ai": "mads.sqldatabases.03.050619.mov",
+            "youtube" : "5Zb6UiwqUSA"
+        },
+        {
+            "title" : "Database Normalization",
+            "ai": "mads.sqldatabases.04.050619.mov",
+            "youtube" : "RC5dZc2O9Js"
+        },
+        {
+            "title" : "Building Tables",
+            "ai": "mads.sqldatabases.05.050619.mov",
+            "youtube" : "MHHfu51IXbA"
+        },
+        {
+            "title" : "Inserting Data",
+            "ai": "mads.sqldatabases.01.051319.mov",
+            "youtube" : "QdpVO6IAquY"
+        },
+        {
+            "title" : "Using JOIN Across Tables",
+            "ai": "mads.sqldatabase.02.051319v2.mov",
+            "youtube" : "AVDm4dEv-OU"
+        },
+        {
+            "title" : "Many-to-Many Relationships",
+            "ai": "mads.sqldatabases.03.051319.mov",
+            "youtube" : "hyFgX9_ynw4"
+        }
+    ], 
+    "references" : [
+    ],
+    "lti" : [
+    ]
+},
+{
     "title": "Hello World (Beta test)",
     "anchor": "hello",
     "icon" : "fa-globe",
