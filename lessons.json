@@ -11,6 +11,43 @@
 ],
 "modules": [
 {
+    "title": "Week 1",
+    "anchor": "week1",
+    "icon" : "fa-globe",
+    "description": "This is a test",
+    "videos" : [
+        {
+            "title" : "Relational Databases and PostgreSQL",
+            "ai": "mads.sqldatabases.01.032519.mov",
+            "youtube" : "4wordgUuF8M"
+        },
+        {
+            "title" : "SQL Architecture",
+            "ai": "mads.sqldatabases.02.032519.mov",
+            "youtube" : "7EZjwJI1k_k"
+        },
+        {
+            "title" : "SQL Commands",
+            "ai": "mads.sqldatabases.03.032519.mov",
+            "youtube" : "ifCqRFfZxdk"
+        },
+        {
+            "title" : "Data Types in SQL",
+            "ai": "mads.sqldatabases.04.032519.mov",
+            "youtube" : "LQusrJ0Ssks"
+        },
+        {
+            "title" : "Database Keys and Indexes",
+            "ai": "mads.sqldatabases.05.032519.mov",
+            "youtube" : "23ALVJNhMl8"
+        }
+    ], 
+    "references" : [
+    ],
+    "lti" : [
+    ]
+},
+{
     "title": "Hello World (Beta test)",
     "anchor": "hello",
     "icon" : "fa-globe",
