@@ -41,7 +41,7 @@
             "ai": "mads.sqldatabases.05.032519.mov",
             "youtube" : "23ALVJNhMl8"
         }
-    ], 
+    ],
     "references" : [
     ],
     "lti" : [
@@ -93,7 +93,54 @@
             "ai": "mads.sqldatabases.03.051319.mov",
             "youtube" : "hyFgX9_ynw4"
         }
-    ], 
+    ],
+    "references" : [
+    ],
+    "lti" : [
+    ]
+},
+{
+    "title": "Week 3",
+    "anchor": "week3",
+    "icon" : "fa-globe",
+    "description": "This is a test",
+    "videos" : [
+        {
+            "title" : "Tools and Techniques",
+            "ai": "mads.sqldatabases.02.061919v2.mov",
+            "youtube" : "r_HbRGHt0Cg"
+        },
+        {
+            "title" : "Dates",
+            "ai": "mads.sqldatabases.03.061919v2.mov",
+            "youtube" : "Rj68mCIgWa4"
+        },
+        {
+            "title" : "DISTINCT / GROUP BY",
+            "ai": "mads.sqldatabases.04.061919.mov",
+            "youtube" : "ZwE9p3F0mcs"
+        },
+        {
+            "title" : "Sub-Queries",
+            "ai": "mads.sqldatabases.05.061919.mov",
+            "youtube" : "mo8Q_jsZrfI"
+        },
+        {
+            "title" : "Concurrency",
+            "ai": "mads.sqldatabases.06.061919.mov",
+            "youtube" : "1Gbxl_dbUvI"
+        },
+        {
+            "title" : "TBD - Stored Procedures",
+            "ai": "mads.sqldatabases.07.061919v2.mov",
+            "youtube" : ""
+        },
+        {
+            "title" : "TBD - Demonstration: Reading and Parsing Files",
+            "ai": "mads.sqldatabases.08.061919.mov",
+            "youtube" : ""
+        }
+    ],
     "references" : [
     ],
     "lti" : [
@@ -105,7 +152,7 @@
     "icon" : "fa-globe",
     "description": "This is a test",
     "videos" : [
-    ], 
+    ],
     "references" : [
     ],
     "lti" : [
@@ -128,7 +175,7 @@
     "icon" : "fa-globe",
     "description": "This is a test",
     "videos" : [
-    ], 
+    ],
     "references" : [
     ],
     "lti" : [
