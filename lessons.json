@@ -40,6 +40,16 @@
             "title" : "Database Keys and Indexes",
             "ai": "mads.sqldatabases.05.032519.mov",
             "youtube" : "23ALVJNhMl8"
+        },
+        {
+            "title" : "Making our First Tables",
+            "project": "00-first-2020-04-18-save.mov",
+            "youtube" : "f0DPs29Pfg0"
+        },
+        {
+            "title" : "Musical Track Database (CSV)",
+            "project": "01_single_track.mov",
+            "youtube" : "QyTdXedYbhc"
         }
     ],
     "references" : [
