@@ -147,6 +147,58 @@
     ]
 },
 {
+    "title": "Week 4",
+    "anchor": "week4",
+    "icon" : "fa-globe",
+    "description": "This is a test",
+    "videos" : [
+        {
+            "title" : "Text in Databases",
+            "ai": "mads.sqldatabases.01.070319.mov",
+            "youtube" : ""
+        },
+        {
+            "title" : "Text Functions",
+            "ai": "mads.sqldatabases.02.070319.mov",
+            "youtube" : ""
+        },
+        {
+            "title" : "Character Sets",
+            "ai": "mads.sqldatabases.03.070319.mov",
+            "youtube" : ""
+        },
+        {
+            "title" : "Character Sets in Python",
+            "ai": "mads.sqldatabases.04.070319.mov",
+            "youtube" : ""
+        },
+        {
+            "title" : "Inside Hashes",
+            "ai": "mads.sqldatabases.05.070319.mov",
+            "youtube" : ""
+        },
+        {
+            "title" : "Index Choices and Techniques",
+            "ai": "mads.sqldatabases.06.070319.mov",
+            "youtube" : ""
+        },
+        {
+            "title" : "Regular Expressions",
+            "ai": "mads.sqldatabases.01.070919.mov",
+            "youtube" : ""
+        },
+        {
+            "title" : "Using Regular Expressions",
+            "ai": "mads.sqldatabases.02.070919.mov",
+            "youtube" : ""
+        }
+    ],
+    "references" : [
+    ],
+    "lti" : [
+    ]
+},
+{
     "title": "Hello World (Beta test)",
     "anchor": "hello",
     "icon" : "fa-globe",
