@@ -102,6 +102,11 @@
             "title" : "Many-to-Many Relationships",
             "ai": "mads.sqldatabases.03.051319.mov",
             "youtube" : "hyFgX9_ynw4"
+        },
+        {
+            "title" : "Demonstration: Database Design and Many to Many",
+            "project": "02-Database-Design-Many-To-Many.mov",
+            "youtube" : "HWXAIDeT5UM"
         }
     ],
     "references" : [
@@ -149,6 +154,42 @@
             "title" : "Demonstration: Reading and Parsing Files",
             "ai": "mads.sqldatabases.08.061919.mov",
             "youtube" : "OsfoKmvZR10"
+        },
+        {
+            "title" : "Demonstration: Creating and Loading a Database",
+            "project": "03-Techniques-01-Create-Load.mov",
+            "youtube" : "tWLPO-_016g"
+        },
+        {
+            "title" : "Demonstration: SELECT DISTINCT",
+            "project": "03-Techniques-02-Distinct.mov",
+            "youtube" : "T2sGwt7S378"
+        },
+        {
+            "title" : "Demonstration: GROUP BY",
+            "project": "03-Techniques-03-Group-By.mov",
+            "note": "Uploaded to Coursera as 03-Techniques-02-Group-By.mov",
+            "youtube" : "RVXn0lxKgM4"
+        },
+        {
+            "title" : "Demonstration: Sub Query",
+            "project": "03-Techniques-04-Subquery.mov",
+            "youtube" : "jEsEba_SYKU"
+        },
+        {
+            "title" : "Demonstration: Transactions",
+            "project": "03-Techniques-05-Transactions.mov",
+            "youtube" : "f4eJGQ6bV0E"
+        },
+        {
+            "title" : "Demonstration: Stored Procedures",
+            "project": "03-Techniques-06-Stored-Proc.mov",
+            "youtube" : "H-k_Gzo8aow"
+        },
+        {
+            "title" : "Demonstration: Loading and Normalizing CSV Data",
+            "project": "03-Techniques-07-CSV-Load.mov",
+            "youtube" : "L3FgCZnYvSE"
         }
     ],
     "references" : [
