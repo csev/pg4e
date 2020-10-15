@@ -131,14 +131,14 @@
             "youtube" : "1Gbxl_dbUvI"
         },
         {
-            "title" : "TBD - Stored Procedures",
+            "title" : "Stored Procedures",
             "ai": "mads.sqldatabases.07.061919v2.mov",
-            "youtube" : ""
+            "youtube" : "ei0XPaacesg"
         },
         {
-            "title" : "TBD - Demonstration: Reading and Parsing Files",
+            "title" : "Demonstration: Reading and Parsing Files",
             "ai": "mads.sqldatabases.08.061919.mov",
-            "youtube" : ""
+            "youtube" : "OsfoKmvZR10"
         }
     ],
     "references" : [
@@ -155,12 +155,12 @@
         {
             "title" : "Text in Databases",
             "ai": "mads.sqldatabases.01.070319.mov",
-            "youtube" : ""
+            "youtube" : "l6VXvUKMj3E"
         },
         {
             "title" : "Text Functions",
             "ai": "mads.sqldatabases.02.070319.mov",
-            "youtube" : ""
+            "youtube" : "mP1ODCgUH_Q"
         },
         {
             "title" : "Character Sets",
