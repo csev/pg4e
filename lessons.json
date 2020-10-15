@@ -199,6 +199,73 @@
     ]
 },
 {
+    "title": "Week 5",
+    "anchor": "week5",
+    "icon" : "fa-globe",
+    "description": "This is a test",
+    "videos" : [
+        {
+            "title" : "Lecture: 05 FullText 01 Blocks 1080",
+            "project": "Lecture: 05 FullText 01 Blocks 1080",
+            "youtube" : "D5WWAH1P3F8"
+        },
+        {
+            "title" : "Lecture: 05 FullText 02 Index 1080",
+            "project": "Lecture: 05 FullText 02 Index 1080",
+            "youtube" : "-joun4la9LA"
+        },
+        {
+            "title" : "Lecture: 05 FullText 03 Invert SQL 1080",
+            "project": "Lecture: 05 FullText 03 Invert SQL 1080",
+            "youtube" : "e7Qx8ud2cfs"
+        },
+        {
+            "title" : "Demonstration: 05 01 Inverted SQL edited",
+            "project": "Demonstration: 05 01 Inverted SQL edited",
+            "youtube" : "p6xFBJZtRmM"
+        },
+        {
+            "title" : "Lecture: 05 FullText 04 Invert PG 1080",
+            "project": "Lecture: 05 FullText 04 Invert PG 1080",
+            "youtube" : "vfMooBDgrBw"
+        },
+        {
+            "title" : "Demonstration: 05 02 String GIN raw",
+            "project": "Demonstration: 05 02 String GIN raw",
+            "youtube" : "0NY20ast0yo"
+        },
+        {
+            "title" : "Lecture: 05 FullText 05 Natural SQL 1080",
+            "project": "Lecture: 05 FullText 05 Natural SQL 1080",
+            "youtube" : "qlimiFYOius"
+        },
+        {
+            "title" : "Demonstration: 05 03 stop stem raw",
+            "project": "Demonstration: 05 03 stop stem raw",
+            "youtube" : "wHL1VVejFEk"
+        },
+        {
+            "title" : "Lecture: 05 FullText 06 Natural PG 1080",
+            "project": "Lecture: 05 FullText 06 Natural PG 1080",
+            "youtube" : "OV08eCK9Ymc"
+        },
+        {
+            "title" : "Demonstration: 05 04 fulltext functions raw",
+            "project": "Demonstration: 05 04 fulltext functions raw",
+            "youtube" : "LmTnMz6Il3A"
+        },
+        {
+            "title" : "Demonstration: 05 05 tsvector gin raw",
+            "ai": "Demonstration: 05 05 tsvector gin raw",
+            "youtube" : "aQnFBLaUos8"
+        }
+    ],
+    "references" : [
+    ],
+    "lti" : [
+    ]
+},
+{
     "title": "Hello World (Beta test)",
     "anchor": "hello",
     "icon" : "fa-globe",
