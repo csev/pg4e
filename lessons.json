@@ -242,6 +242,21 @@
             "title" : "Using Regular Expressions",
             "ai": "mads.sqldatabases.02.070919.mov",
             "youtube" : "BjfemxvHwno"
+        },
+        {
+            "title" : "Demonstration: Generating and Scanning Text",
+            "project": "04-Text-01-Functions-edited.mov",
+            "youtube" : "BG9buwh_abo"
+        },
+        {
+            "title" : "Demonstration: Regular Expressions",
+            "project": "04-Text-02-RegEx.mov",
+            "youtube" : "0DIejmpwy7c"
+        },
+        {
+            "title" : "Demonstration: Flat files, Regex, Email",
+            "project": "04-Text-03-Email-Edited.mov",
+            "youtube" : "2hh2lcDHxJ8"
         }
     ],
     "references" : [
