@@ -266,6 +266,88 @@
     ]
 },
 {
+    "title": "Week 6",
+    "anchor": "week6",
+    "icon" : "fa-globe",
+    "description": "This is a test",
+    "videos" : [
+        {
+            "title" : "Lecture: PY-PG 06 01 Python 1080",
+            "project": "Lecture: PY-PG 06 01 Python 1080",
+            "youtube" : "x_hHGVLh1r4"
+        },
+        {
+            "title" : "Demonstration: 06 01 simple raw",
+            "project": "Demonstration: 06 01 simple raw",
+            "youtube" : "j1p-AfH-Gww"
+        },
+        {
+            "title" : "Lecture: Mail 06 02 Gmane",
+            "project": "Lecture: Mail 06 02 Gmane",
+            "youtube" : "0Psz8eMaw7Y"
+        },
+        {
+            "title" : "Demonstration: Mail 1/3 06 03 gmane raw",
+            "project": "Demonstration: Mail 1/3 06 03 gmane raw",
+            "youtube" : "WAWmA2ru0Pw"
+        },
+        {
+            "title" : "Demonstration: Mail 2/3 06 04 gmane edited",
+            "project": "Demonstration: Mail 2/3 06 04 gmane edited",
+            "youtube" : "qCOjlnsuG0U"
+        },
+        {
+            "title" : "Lecture: Ranking 06 03 Rank 1080",
+            "project": "Lecture: Ranking 06 03 Rank 1080",
+            "youtube" : "ELgDJemd_Yg"
+        },
+        {
+            "title" : "Demonstration: Mail 3/3 06 05 gmane raw",
+            "project": "Demonstration: Mail 3/3 06 05 gmane raw",
+            "youtube" : "MKjxxms_Fu8"
+        },
+        {
+            "title" : "Lecture: JSON 06 04 JSON 1080",
+            "project": "Lecture: JSON 06 04 JSON 1080",
+            "youtube" : "rBs-mOwTv-4"
+        },
+        {
+            "title" : "Lecture: 06 05 JSON Python 1080",
+            "project": "Lecture: 06 05 JSON Python 1080",
+            "youtube" : "EnTGM_E-vgE"
+        },
+        {
+            "title" : "Lecture: PG+JSONB 06 06 PostgreSQL JSON 1080",
+            "project": "Lecture: PG+JSONB 06 06 PostgreSQL JSON 1080",
+            "youtube" : "G8ySI_nnRAA"
+        },
+        {
+            "title" : "Demonstration: Tracks 06 06 jsonb raw",
+            "project": "Demonstration: Tracks 06 06 jsonb raw",
+            "youtube" : "4ooyafEnUzw"
+        },
+        {
+            "title" : "Lecture: 06 07 Swapi 1080",
+            "project": "Lecture: 06 07 Swapi 1080",
+            "youtube" : "j3LrZIxDGV8"
+        },
+        {
+            "title" : "Demonstration: API 1/2 06 07 swapi raw",
+            "project": "Demonstration: API 1/2 06 07 swapi raw",
+            "youtube" : "hqrfotnwd_Y"
+        },
+        {
+            "title" : "Demonstration: API 2/2 06 08 swapi raw",
+            "project": "Demonstration: API 2/2 06 08 swapi raw",
+            "youtube" : "UYhn9h1OnLs"
+        }
+    ],
+    "references" : [
+    ],
+    "lti" : [
+    ]
+},
+{
     "title": "Hello World (Beta test)",
     "anchor": "hello",
     "icon" : "fa-globe",
