@@ -348,6 +348,95 @@
     ]
 },
 {
+    "title": "Week 7",
+    "anchor": "week7",
+    "icon" : "fa-globe",
+    "description": "This is a test",
+    "videos" : [
+        {
+            "title" : "Database Architectures (07 01 acid base)",
+            "project": "Database Architectures (07 01 acid base)",
+            "youtube" : "2k3GiQWTcnY"
+        },
+        {
+            "title" : "Scaling ACID Databases (07 02 acid scale) (fixed)",
+            "project": "Scaling ACID Databases (07 02 acid scale) (fixed)",
+            "youtube" : "WRuuhgMdn6w"
+        },
+        {
+            "title" : "True Cloud Applications (Part 1) 07 03 cloud first gen 1 1080",
+            "project": "True Cloud Applications (Part 1) 07 03 cloud first gen 1 1080",
+            "youtube" : "apUkKLbckSg"
+        },
+        {
+            "title" : "Google I/O '08 Keynote by Marissa Mayer",
+            "youtube" : "6x0cAzQ7PVs"
+        },
+        {
+            "title" : "Google container data center tour",
+            "youtube" : "zRwPSFpLX8I"
+        },
+        {
+            "title" : "How Search Works - Matt Cutts",
+            "youtube" : "BNHR6IQJGZs"
+        },
+        {
+            "title" : "First Generation Cloud Applications (Part 2) (07 04 cloud first gen 2 fixed)",
+            "project": "First Generation Cloud Applications (Part 2) (07 04 cloud first gen 2 fixed)",
+            "youtube" : "W6z7A2ZDgck"
+        },
+        {
+            "title" : "Second Generation Cloud Applications (07 05 cloud second gen fixed)1080",
+            "project": "Second Generation Cloud Applications (07 05 cloud second gen fixed)1080",
+            "youtube" : "jj3W-VU4Mhg"
+        },
+        {
+            "title" : "Emerging BASE Databases 07 06 base",
+            "project": "Emerging BASE Databases 07 06 base",
+            "youtube" : "bbEx6tkyblM"
+        },
+        {
+            "title" : "Evolving ACID Databases (07 07 acid reaction 1080)",
+            "project": "Evolving ACID Databases (07 07 acid reaction 1080)",
+            "youtube" : "3CBSqWh_-JE"
+        },
+        {
+            "title" : "Elastic Search Overview (7.x)",
+            "project": "Elastic Search Overview (7.x)",
+            "youtube" : "T5LzslZid9s"
+        },
+        {
+            "title" : "Elastic Search 7.x Python Code",
+            "project": "Elastic Search 7.x Python Code",
+            "youtube" : "oy49afXmvtY"
+        },
+        {
+            "title" : "Demonstration: Loading a book into Elastic Search",
+            "project": "Demonstration: Loading a book into Elastic Search",
+            "youtube" : "xdjXB6RutQU"
+        },
+        {
+            "title" : "Demonstration: Using Elastic Search's REST API",
+            "project": "Demonstration: Using Elastic Search's REST API",
+            "youtube" : "933wuij1-_I"
+        },
+        {
+            "title" : "Demonstration: Scraping an Email API and Loading it into Elastic Search",
+            "project": "Demonstration: Scraping an Email API and Loading it into Elastic Search",
+            "youtube" : "dBQ7eP-U7YE"
+        },
+        {
+            "title" : "Demonstration: Loading A Tweet into Elastic Search",
+            "project": "Demonstration: Loading A Tweet into Elastic Search",
+            "youtube" : "h3_pPEXuWx8"
+        }
+    ],
+    "references" : [
+    ],
+    "lti" : [
+    ]
+},
+{
     "title": "Hello World (Beta test)",
     "anchor": "hello",
     "icon" : "fa-globe",
