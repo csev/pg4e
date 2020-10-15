@@ -42,12 +42,12 @@
             "youtube" : "23ALVJNhMl8"
         },
         {
-            "title" : "Making our First Tables",
+            "title" : "Demonstration: Making our First Tables",
             "project": "00-first-2020-04-18-save.mov",
             "youtube" : "f0DPs29Pfg0"
         },
         {
-            "title" : "Musical Track Database (CSV)",
+            "title" : "Demonstration: Musical Track Database (CSV)",
             "project": "01_single_track.mov",
             "youtube" : "QyTdXedYbhc"
         }
@@ -151,7 +151,7 @@
             "youtube" : "ei0XPaacesg"
         },
         {
-            "title" : "Demonstration: Reading and Parsing Files",
+            "title" : "Reading and Parsing Files",
             "ai": "mads.sqldatabases.08.061919.mov",
             "youtube" : "OsfoKmvZR10"
         },
