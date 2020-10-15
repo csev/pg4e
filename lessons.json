@@ -11,10 +11,10 @@
 ],
 "modules": [
 {
-    "title": "Week 1",
+    "title": "Single Table SQL",
     "anchor": "week1",
     "icon" : "fa-globe",
-    "description": "This is a test",
+    "description": "Single Table SQL",
     "videos" : [
         {
             "title" : "Relational Databases and PostgreSQL",
@@ -55,13 +55,24 @@
     "references" : [
     ],
     "lti" : [
+        {
+        "title" : "Autograder: Set up some tables",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_00_first",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "00first.php"
+            }
+        ]
+        }
     ]
 },
 {
-    "title": "Week 2",
+    "title": "Data Relationships",
     "anchor": "week2",
     "icon" : "fa-globe",
-    "description": "This is a test",
+    "description": "Multi-Table SQL and Relationships.",
     "videos" : [
         {
             "title" : "Relational Database Design Part 1",
@@ -115,10 +126,10 @@
     ]
 },
 {
-    "title": "Week 3",
+    "title": "SQL Techniques",
     "anchor": "week3",
     "icon" : "fa-globe",
-    "description": "This is a test",
+    "description": "Intermediate PostgreSQL techniques.",
     "videos" : [
         {
             "title" : "Tools and Techniques",
@@ -198,10 +209,10 @@
     ]
 },
 {
-    "title": "Week 4",
+    "title": "Text in PostgreSQL",
     "anchor": "week4",
     "icon" : "fa-globe",
-    "description": "This is a test",
+    "description": "Handling text in PostgreSQL (but not Natural Language).",
     "videos" : [
         {
             "title" : "Text in Databases",
@@ -265,10 +276,10 @@
     ]
 },
 {
-    "title": "Week 5",
+    "title": "Natural Language",
     "anchor": "week5",
     "icon" : "fa-globe",
-    "description": "This is a test",
+    "description": "Handling Natural Language fields and indexes in PostgreSQL.",
     "videos" : [
         {
             "title" : "Lecture: 05 FullText 01 Blocks 1080",
@@ -332,10 +343,10 @@
     ]
 },
 {
-    "title": "Week 6",
+    "title": "JSON",
     "anchor": "week6",
     "icon" : "fa-globe",
-    "description": "This is a test",
+    "description": "Handling JSON in PostgreSQL and using PostgreSQL with Python.",
     "videos" : [
         {
             "title" : "Lecture: PY-PG 06 01 Python 1080",
@@ -414,10 +425,10 @@
     ]
 },
 {
-    "title": "Week 7",
+    "title": "Database Architectures",
     "anchor": "week7",
     "icon" : "fa-globe",
-    "description": "This is a test",
+    "description": "Database architectures, production deplopyment, scalability, and NoSQL. Also ElasticSearch.",
     "videos" : [
         {
             "title" : "Database Architectures (07 01 acid base)",
@@ -503,34 +514,41 @@
     ]
 },
 {
-    "title": "Hello World (Beta test)",
-    "anchor": "hello",
+    "title": "Elastic Search",
+    "anchor": "week7a",
     "icon" : "fa-globe",
-    "description": "This is a test",
+    "description": "Using ElasticSearch to explore NoSQL.",
     "videos" : [
-    ],
-    "references" : [
-    ],
-    "lti" : [
         {
-        "title" : "Autograder: Set up some tables",
-        "launch" : "tools/sql/",
-        "resource_link_id" : "pg4e_00_first",
-        "custom" : [
-            {
-                "key": "exercise",
-                "value": "00first.php"
-            }
-        ]
+            "title" : "Elastic Search Overview (7.x)",
+            "project": "Elastic Search Overview (7.x)",
+            "youtube" : "T5LzslZid9s"
+        },
+        {
+            "title" : "Elastic Search 7.x Python Code",
+            "project": "Elastic Search 7.x Python Code",
+            "youtube" : "oy49afXmvtY"
+        },
+        {
+            "title" : "Demonstration: Loading a book into Elastic Search",
+            "project": "Demonstration: Loading a book into Elastic Search",
+            "youtube" : "xdjXB6RutQU"
+        },
+        {
+            "title" : "Demonstration: Using Elastic Search's REST API",
+            "project": "Demonstration: Using Elastic Search's REST API",
+            "youtube" : "933wuij1-_I"
+        },
+        {
+            "title" : "Demonstration: Scraping an Email API and Loading it into Elastic Search",
+            "project": "Demonstration: Scraping an Email API and Loading it into Elastic Search",
+            "youtube" : "dBQ7eP-U7YE"
+        },
+        {
+            "title" : "Demonstration: Loading A Tweet into Elastic Search",
+            "project": "Demonstration: Loading A Tweet into Elastic Search",
+            "youtube" : "h3_pPEXuWx8"
         }
-    ]
-},
-{
-    "title": "Elastic World (Beta test)",
-    "anchor": "elastic",
-    "icon" : "fa-globe",
-    "description": "This is a test",
-    "videos" : [
     ],
     "references" : [
     ],
