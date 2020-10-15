@@ -428,7 +428,7 @@
     "title": "Database Architectures",
     "anchor": "week7",
     "icon" : "fa-globe",
-    "description": "Database architectures, production deplopyment, scalability, and NoSQL. Also ElasticSearch.",
+    "description": "Database architectures, production deplopyment, scalability, and NoSQL.",
     "videos" : [
         {
             "title" : "Database Architectures (07 01 acid base)",
@@ -476,36 +476,6 @@
             "title" : "Evolving ACID Databases (07 07 acid reaction 1080)",
             "project": "Evolving ACID Databases (07 07 acid reaction 1080)",
             "youtube" : "3CBSqWh_-JE"
-        },
-        {
-            "title" : "Elastic Search Overview (7.x)",
-            "project": "Elastic Search Overview (7.x)",
-            "youtube" : "T5LzslZid9s"
-        },
-        {
-            "title" : "Elastic Search 7.x Python Code",
-            "project": "Elastic Search 7.x Python Code",
-            "youtube" : "oy49afXmvtY"
-        },
-        {
-            "title" : "Demonstration: Loading a book into Elastic Search",
-            "project": "Demonstration: Loading a book into Elastic Search",
-            "youtube" : "xdjXB6RutQU"
-        },
-        {
-            "title" : "Demonstration: Using Elastic Search's REST API",
-            "project": "Demonstration: Using Elastic Search's REST API",
-            "youtube" : "933wuij1-_I"
-        },
-        {
-            "title" : "Demonstration: Scraping an Email API and Loading it into Elastic Search",
-            "project": "Demonstration: Scraping an Email API and Loading it into Elastic Search",
-            "youtube" : "dBQ7eP-U7YE"
-        },
-        {
-            "title" : "Demonstration: Loading A Tweet into Elastic Search",
-            "project": "Demonstration: Loading A Tweet into Elastic Search",
-            "youtube" : "h3_pPEXuWx8"
         }
     ],
     "references" : [
