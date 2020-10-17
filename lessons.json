@@ -17,27 +17,27 @@
     "description": "Single Table SQL",
     "videos" : [
         {
-            "title" : "Relational Databases and PostgreSQL",
+            "title" : "History of Relational Databases",
             "ai": "mads.sqldatabases.01.032519.mov",
             "youtube" : "4wordgUuF8M"
         },
         {
-            "title" : "SQL Architecture Part 1",
+            "title" : "SQL Architecture",
             "ai": "mads.sqldatabases.02.032519.mov",
             "youtube" : "pppvrhN7-tg"
         },
         {
-            "title" : "SQL Architecture Part 2 - Commands",
+            "title" : "Working with Tables and PostgreSQL",
             "ai": "mads.sqldatabases.03.032519.mov",
             "youtube" : "ifCqRFfZxdk"
         },
         {
-            "title" : "Data Types in SQL",
+            "title" : "Data Types in PostgreSQL",
             "ai": "mads.sqldatabases.04.032519.mov",
             "youtube" : "LQusrJ0Ssks"
         },
         {
-            "title" : "Database Keys and Indexes",
+            "title" : "Database Keys and Indexes in PostgreSQL",
             "ai": "mads.sqldatabases.05.032519.mov",
             "youtube" : "23ALVJNhMl8"
         },
