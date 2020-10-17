@@ -56,13 +56,57 @@
     ],
     "lti" : [
         {
-        "title" : "Autograder: Set up some tables",
+        "title" : "Autograder: Initial Database Setup",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_00_setup",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "00setup.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Making our first tables",
         "launch" : "tools/sql/",
         "resource_link_id" : "pg4e_00_first",
         "custom" : [
             {
                 "key": "exercise",
                 "value": "00first.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Inserting some data into a table",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_01_single",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "01single.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Serial Fields / Auto Increment",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_01_auto",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "01auto.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Musical Track Database",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_01_single_track",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "01single_track.php"
             }
         ]
         }
