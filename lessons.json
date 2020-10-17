@@ -272,6 +272,39 @@
     "references" : [
     ],
     "lti" : [
+        {
+        "title" : "Autograder: Musical Tracks Many-to-One",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_02many_one_track",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "02many_one_track.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Unesco Heritage Sites Many-to-One",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_02many_one_unesco",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "02many_one_unesco.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Musical Track Database plus Artists",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_03many_to_many_track",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "03many_to_many_track.php"
+            }
+        ]
+        }
     ]
 },
 {
