@@ -167,6 +167,28 @@
     "references" : [
     ],
     "lti" : [
+        {
+        "title" : "Autograder: Entering Many-to-One Data - Automobiles",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_02many_one_manual",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "02many_one_manual.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Building a many-to-many roster",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_03many_to_many_roster",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "03many_to_many_roster.php"
+            }
+        ]
+        }
     ]
 },
 {
