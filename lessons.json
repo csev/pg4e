@@ -587,6 +587,17 @@
     "references" : [
     ],
     "lti" : [
+        {
+        "title" : "Loading JSON from PokéAPI",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_06pokeapi",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "06pokeapi.php"
+            }
+        ]
+        }
     ]
 },
 {
@@ -689,9 +700,31 @@
     ],
     "lti" : [
         {
-        "title" : "Autograder: Elastic",
+        "title" : "Autograder: Elasticsearch Book Load",
         "launch" : "tools/sql/",
-        "resource_link_id" : "pg4e_07_tweet",
+        "resource_link_id" : "pg4e_07book",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07book.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Elasticsearch Email Load",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_07gmane",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07gmane.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Elasticsearch Tweets",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_07tweet",
         "custom" : [
             {
                 "key": "exercise",
