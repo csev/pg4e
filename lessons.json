@@ -372,6 +372,28 @@
     "references" : [
     ],
     "lti" : [
+        {
+        "title" : "Autograder: Creating a Stored Procedure",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_03updated",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "03updated.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Generating Text",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_04bigtext",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "04bigtext.php"
+            }
+        ]
+        }
     ]
 },
 {
