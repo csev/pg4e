@@ -461,6 +461,50 @@
     "references" : [
     ],
     "lti" : [
+        {
+        "title" : "Autograder: Inverted Index in SQL",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_05sqlstring",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "05sqlstring.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Reverse Index (with stop words) in SQL",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_05sqlstop",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "05sqlstop.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: String Array GIN Index",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_05ginstring",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "05ginstring.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: GIN ts_vector Index",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_05fulltext",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "05fulltext.php"
+            }
+        ]
+        }
     ]
 },
 {
