@@ -648,8 +648,8 @@
     ]
 },
 {
-    "title": "JSON PostgreSQL",
-    "anchor": "week6",
+    "title": "JSON and PostgreSQL",
+    "anchor": "week6b",
     "icon" : "fa-globe",
     "description": "Handling JSON in PostgreSQL.",
     "slides": [
