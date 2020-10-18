@@ -15,6 +15,7 @@
     "anchor": "week1",
     "icon" : "fa-globe",
     "description": "Single Table SQL",
+    "slides": "{apphome}/lectures/01-Intro-to-SQL.ppt",
     "videos" : [
         {
             "title" : "History of Relational Databases",
@@ -126,6 +127,7 @@
     "anchor": "week2",
     "icon" : "fa-globe",
     "description": "Multi-Table SQL and Relationships.",
+    "slides": "{apphome}/lectures/02-Database-Design-Many-to-Many.ppt",
     "videos" : [
         {
             "title" : "Relational Database Design Part 1",
@@ -210,6 +212,7 @@
     "anchor": "week3",
     "icon" : "fa-globe",
     "description": "Intermediate PostgreSQL techniques.",
+    "slides": "{apphome}/lectures/03-Techniques.pptx",
     "videos" : [
         {
             "title" : "Tools and Techniques",
@@ -331,6 +334,7 @@
     "anchor": "week4",
     "icon" : "fa-globe",
     "description": "Handling text in PostgreSQL (but not Natural Language).",
+    "slides": "{apphome}/lectures/04-Text.pptx",
     "videos" : [
         {
             "title" : "Text in Databases",
@@ -425,6 +429,7 @@
     "anchor": "week5",
     "icon" : "fa-globe",
     "description": "Handling Natural Language fields and indexes in PostgreSQL.",
+    "slides": "{apphome}/lectures/05-FullText.php",
     "videos" : [
         {
             "title" : "Lecture: 05 FullText 01 Blocks 1080",
@@ -541,6 +546,10 @@
     "anchor": "week6",
     "icon" : "fa-globe",
     "description": "Handling JSON in PostgreSQL and using PostgreSQL with Python.",
+    "slides": [
+        "{apphome}/lectures/06-JSON.php",
+        "{apphome}/lectures/06-Python.php"
+    ],
     "videos" : [
         {
             "title" : "Lecture: PY-PG 06 01 Python 1080",
@@ -639,6 +648,9 @@
     "anchor": "week7",
     "icon" : "fa-globe",
     "description": "Database architectures, production deplopyment, scalability, and NoSQL.",
+    "slides": [
+        "{apphome}/lectures/07-Architecture.pptx"
+    ],
     "videos" : [
         {
             "title" : "Database Architectures (07 01 acid base)",
@@ -698,6 +710,9 @@
     "anchor": "week7a",
     "icon" : "fa-globe",
     "description": "Using ElasticSearch to explore NoSQL.",
+    "slides": [
+        "{apphome}/lectures/07-Elastic.pptx"
+    ],
     "videos" : [
         {
             "title" : "Elastic Search Overview (7.x)",
