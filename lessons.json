@@ -60,7 +60,7 @@
     ],
     "lti" : [
         {
-            "title" : "Quiz: Week 1",
+            "title" : "Quiz: Single Table SQL",
             "launch" : "mod/gift/?quiz=01-Intro.txt",
             "resource_link_id" : "pg4e_01_quiz"
         },
@@ -177,7 +177,7 @@
     ],
     "lti" : [
         {
-            "title" : "Quiz: Week 2",
+            "title" : "Quiz: Data Relationships",
             "launch" : "mod/gift/?quiz=02-Database-Design-Many-to-Many.txt",
             "resource_link_id" : "pg4e_02_quiz"
         },
@@ -287,7 +287,7 @@
     ],
     "lti" : [
         {
-            "title" : "Quiz: Week 3",
+            "title" : "Quiz: SQL Techniques",
             "launch" : "mod/gift/?quiz=03-Techniques.txt",
             "resource_link_id" : "pg4e_03_quiz"
         },
@@ -392,7 +392,7 @@
     ],
     "lti" : [
         {
-            "title" : "Quiz: Week 4",
+            "title" : "Quiz: Text in PostgreSQL",
             "launch" : "mod/gift/?quiz=04-Text.txt",
             "resource_link_id" : "pg4e_04_quiz"
         },
@@ -486,7 +486,7 @@
     ],
     "lti" : [
         {
-            "title" : "Quiz: Week 5",
+            "title" : "Quiz: Natural Language",
             "launch" : "mod/gift/?quiz=05-FullText.txt",
             "resource_link_id" : "pg4e_05_quiz"
         },
@@ -537,7 +537,7 @@
     ]
 },
 {
-    "title": "JSON",
+    "title": "JSON PostgreSQL",
     "anchor": "week6",
     "icon" : "fa-globe",
     "description": "Handling JSON in PostgreSQL and using PostgreSQL with Python.",
@@ -617,7 +617,7 @@
     ],
     "lti" : [
         {
-            "title" : "Quiz: Week 6",
+            "title" : "Quiz: JSON in PostgreSQL",
             "launch" : "mod/gift/?quiz=06-JSON.txt",
             "resource_link_id" : "pg4e_06_quiz"
         },
@@ -734,7 +734,7 @@
     ],
     "lti" : [
         {
-            "title" : "Quiz: Week 7",
+            "title" : "Quiz: Database Architecture",
             "launch" : "mod/gift/?quiz=07-Arch.txt",
             "resource_link_id" : "pg4e_07_quiz"
         },
