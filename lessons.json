@@ -767,6 +767,11 @@
         }
     ],
     "lti" : [
+        {
+            "title" : "Quiz: Database Architecture",
+            "launch" : "mod/gift/?quiz=07-Arch.txt",
+            "resource_link_id" : "pg4e_07_quiz"
+        }
     ]
 },
 {
@@ -816,11 +821,6 @@
         }
     ],
     "lti" : [
-        {
-            "title" : "Quiz: Database Architecture",
-            "launch" : "mod/gift/?quiz=07-Arch.txt",
-            "resource_link_id" : "pg4e_07_quiz"
-        },
         {
         "title" : "Autograder: Elasticsearch Book Load",
         "launch" : "tools/sql/",
