@@ -594,12 +594,11 @@
     ]
 },
 {
-    "title": "JSON PostgreSQL",
-    "anchor": "week6",
+    "title": "Python and PostgreSQL",
+    "anchor": "week6a",
     "icon" : "fa-globe",
-    "description": "Handling JSON in PostgreSQL and using PostgreSQL with Python.",
+    "description": "Using PostgreSQL with Python.",
     "slides": [
-        "{apphome}/lectures/06-JSON.php",
         "{apphome}/lectures/06-Python.php"
     ],
     "videos" : [
@@ -637,7 +636,26 @@
             "title" : "Demonstration: Mail 3/3 06 05 gmane raw",
             "project": "Demonstration: Mail 3/3 06 05 gmane raw",
             "youtube" : "MKjxxms_Fu8"
-        },
+        }
+    ],
+    "references" : [
+        {
+            "title" : "Sample SQL For Python Lecture",
+            "href" : "{apphome}/lectures/06-Python.txt"
+        }
+    ],
+    "lti" : [
+    ]
+},
+{
+    "title": "JSON PostgreSQL",
+    "anchor": "week6",
+    "icon" : "fa-globe",
+    "description": "Handling JSON in PostgreSQL.",
+    "slides": [
+        "{apphome}/lectures/06-JSON.php"
+    ],
+    "videos" : [
         {
             "title" : "Lecture: JSON 06 04 JSON 1080",
             "project": "Lecture: JSON 06 04 JSON 1080",
@@ -675,10 +693,6 @@
         }
     ],
     "references" : [
-        {
-            "title" : "Sample SQL For Python Lecture",
-            "href" : "{apphome}/lectures/06-Python.txt"
-        },
         {
             "title" : "Sample SQL For JSON Lecture",
             "href" : "{apphome}/lectures/06-JSON.txt"
