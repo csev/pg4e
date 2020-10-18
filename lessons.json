@@ -597,7 +597,7 @@
     "title": "Python and PostgreSQL",
     "anchor": "week6a",
     "icon" : "fa-globe",
-    "description": "Using PostgreSQL with Python.",
+    "description": "Using PostgreSQL with Python.  Using PostgreSQL to retrieve and store API data.",
     "slides": [
         "{apphome}/lectures/06-Python.php"
     ],
