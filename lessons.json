@@ -22,6 +22,10 @@
             "youtube" : "4wordgUuF8M"
         },
         {
+            "title" : "Bonus Video: Elizabeth Fong and SQL Standards",
+            "youtube" : "rLUm3vst87g"
+        },
+        {
             "title" : "SQL Architecture",
             "ai": "mads.sqldatabases.02.032519.mov",
             "youtube" : "pppvrhN7-tg"
@@ -55,6 +59,11 @@
     "references" : [
     ],
     "lti" : [
+        {
+            "title" : "Quiz: Week 1",
+            "launch" : "mod/gift/?quiz=01-Intro.txt",
+            "resource_link_id" : "pg4e_01_quiz"
+        },
         {
         "title" : "Autograder: Initial Database Setup",
         "launch" : "tools/sql/",
@@ -168,6 +177,11 @@
     ],
     "lti" : [
         {
+            "title" : "Quiz: Week 2",
+            "launch" : "mod/gift/?quiz=02-Database-Design-Many-to-Many.txt",
+            "resource_link_id" : "pg4e_02_quiz"
+        },
+        {
         "title" : "Autograder: Entering Many-to-One Data - Automobiles",
         "launch" : "tools/sql/",
         "resource_link_id" : "pg4e_02many_one_manual",
@@ -273,6 +287,11 @@
     ],
     "lti" : [
         {
+            "title" : "Quiz: Week 3",
+            "launch" : "mod/gift/?quiz=03-Techniques.txt",
+            "resource_link_id" : "pg4e_03_quiz"
+        },
+        {
         "title" : "Autograder: Musical Tracks Many-to-One",
         "launch" : "tools/sql/",
         "resource_link_id" : "pg4e_02many_one_track",
@@ -373,6 +392,11 @@
     ],
     "lti" : [
         {
+            "title" : "Quiz: Week 4",
+            "launch" : "mod/gift/?quiz=04-Text.txt",
+            "resource_link_id" : "pg4e_04_quiz"
+        },
+        {
         "title" : "Autograder: Creating a Stored Procedure",
         "launch" : "tools/sql/",
         "resource_link_id" : "pg4e_03updated",
@@ -461,6 +485,11 @@
     "references" : [
     ],
     "lti" : [
+        {
+            "title" : "Quiz: Week 5",
+            "launch" : "mod/gift/?quiz=05-FullText.txt",
+            "resource_link_id" : "pg4e_05_quiz"
+        },
         {
         "title" : "Autograder: Inverted Index in SQL",
         "launch" : "tools/sql/",
@@ -588,6 +617,11 @@
     ],
     "lti" : [
         {
+            "title" : "Quiz: Week 6",
+            "launch" : "mod/gift/?quiz=06-JSON.txt",
+            "resource_link_id" : "pg4e_06_quiz"
+        },
+        {
         "title" : "Loading JSON from PokéAPI",
         "launch" : "tools/sql/",
         "resource_link_id" : "pg4e_06pokeapi",
@@ -699,6 +733,11 @@
     "references" : [
     ],
     "lti" : [
+        {
+            "title" : "Quiz: Week 7",
+            "launch" : "mod/gift/?quiz=07-Arch.txt",
+            "resource_link_id" : "pg4e_07_quiz"
+        },
         {
         "title" : "Autograder: Elasticsearch Book Load",
         "launch" : "tools/sql/",
