@@ -58,6 +58,14 @@
         }
     ],
     "references" : [
+        {
+            "title" : "Sample SQL For Lecture",
+            "href" : "{apphome}/lectures/01-Intro-to-SQL.txt"
+        },
+        {
+            "title" : "High Contrast / Printable Slides",
+            "href" : "{apphome}/lectures/01-Intro-to-SQL-BW.pdf"
+        }
     ],
     "lti" : [
         {
@@ -176,6 +184,14 @@
         }
     ],
     "references" : [
+        {
+            "title" : "Sample SQL For Lecture",
+            "href" : "{apphome}/lectures/02-Database-Design-Many-to-Many.txt"
+        },
+        {
+            "title" : "High Contrast / Printable Slides",
+            "href" : "{apphome}/lectures/02-Database-Design-Many-to-Many-BW.pdf"
+        }
     ],
     "lti" : [
         {
@@ -287,6 +303,22 @@
         }
     ],
     "references" : [
+        {
+            "title" : "Sample SQL For Lecture",
+            "href" : "{apphome}/lectures/03-Techniques.txt"
+        },
+        {
+            "title" : "Sample SQL For CSV Loading",
+            "href" : "{apphome}/lectures/03-Techniques-Load.txt"
+        },
+        {
+            "title" : "Sample CSV Data",
+            "href" : "{apphome}/lectures/03-Techniques.csv"
+        },
+        {
+            "title" : "High Contrast / Printable Slides",
+            "href" : "{apphome}/lectures/03-Techniques-BW.pdf"
+        }
     ],
     "lti" : [
         {
@@ -393,6 +425,18 @@
         }
     ],
     "references" : [
+        {
+            "title" : "Sample SQL For Lecture",
+            "href" : "{apphome}/lectures/04-Text.txt"
+        },
+        {
+            "title" : "Regular Expression Handout",
+            "href" : "{apphome}/lectures/04-Text-Regex-Handout.txt"
+        },
+        {
+            "title" : "High Contrast / Printable Slides",
+            "href" : "{apphome}/lectures/04-Text-BW.pdf"
+        }
     ],
     "lti" : [
         {
@@ -488,6 +532,14 @@
         }
     ],
     "references" : [
+        {
+            "title" : "Sample SQL For Lecture",
+            "href" : "{apphome}/lectures/05-FullText.txt"
+        },
+        {
+            "title" : "High Contrast / Printable Slides",
+            "href" : "{apphome}/lectures/05-FullText-BW.pdf"
+        }
     ],
     "lti" : [
         {
@@ -623,6 +675,14 @@
         }
     ],
     "references" : [
+        {
+            "title" : "Sample SQL For Python Lecture",
+            "href" : "{apphome}/lectures/06-Python.txt"
+        },
+        {
+            "title" : "Sample SQL For JSON Lecture",
+            "href" : "{apphome}/lectures/06-JSON.txt"
+        }
     ],
     "lti" : [
         {
@@ -701,6 +761,10 @@
         }
     ],
     "references" : [
+        {
+            "title" : "High Contrast / Printable Slides",
+            "href" : "{apphome}/lectures/07-Architecture-BW.pdf"
+        }
     ],
     "lti" : [
     ]
@@ -746,6 +810,10 @@
         }
     ],
     "references" : [
+        {
+            "title" : "High Contrast / Printable Slides",
+            "href" : "{apphome}/lectures/07-Elastic-BW.pdf"
+        }
     ],
     "lti" : [
         {

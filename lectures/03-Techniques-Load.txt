@@ -1,5 +1,5 @@
 
--- https://www.pg4e.com/lectures/03-Techniques-Load.sql
+-- https://www.pg4e.com/lectures/03-Techniques-Load.txt
 
 -- Start fresh - Cascade deletes it all
 

@@ -1,5 +1,5 @@
 
--- https://www.pg4e.com/lectures/06-JSON.sql
+-- https://www.pg4e.com/lectures/06-JSON.txt
 
 DROP TABLE IF EXISTS jtrack CASCADE;
 

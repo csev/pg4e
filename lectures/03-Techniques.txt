@@ -1,6 +1,6 @@
 -- Python for Everybody Database Handout
 
--- https://www.pg4e.com/lectures/03-Techniques.sql
+-- https://www.pg4e.com/lectures/03-Techniques.txt
 
 sudo -u postgres psql postgres
 \l       -- list databases
