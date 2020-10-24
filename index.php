@@ -14,16 +14,22 @@ require "nav.php";
 <h1>PostgreSQL for Everybody</h1>
 <p>
 This web site is building a set of free / OER materials to help students
-learn the <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a> database.  The site is 
-<b>under construction</b> but you are welcome to make use of it as
-it is being built.
+learn the <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a> database.
 </p>
 <p>
-To do this course you need access to an Internet-Accessible PostgreSQL server.
-There is company called
-<a href="https://www.elephantsql.com/plans.html" target="_blank">ElephantSQL</a> that provides
-a no-charge very small instance of PostgreSQL
-(Tiny Turtle) that should work for the purposes of these assignments.
+When you take this course we will provide you with a small PostgreSQL server with limited capabilities.
+You will need a PostgreSQL client to run your SQL commands and send them to your PostgreSQL server.
+All the examples in the course use the simple "least common demoninator" command line client called <b>psql</b>.
+</p>
+<p>
+We have arranged to make it so you can run <b>psql</b> for this course using a completely free
+account from <a href="assn/pg4e_pyaw_psql.md">PythonAnywhere</a>.
+</p>
+<p>
+You can install a wide range of
+<a href="https://wiki.postgresql.org/wiki/PostgreSQL_Clients" target="_blank">PostgreSQL Clients</a>
+for your system if you like.  Some will work better than others with the limited database that we
+give you for this course.
 </p>
 <h2>Technology</h2>
 <p>
