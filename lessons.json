@@ -59,6 +59,10 @@
     ],
     "references" : [
         {
+            "title" : "Using PostgreSQL on PythonAnywhere",
+            "href" : "{apphome}/assn/pg4e_pyaw_psql.md"
+        },
+        {
             "title" : "Sample SQL For Lecture",
             "href" : "{apphome}/lectures/01-Intro-to-SQL.txt"
         },
