@@ -5,11 +5,9 @@ You use <a href="https://www.pythonanywhere.com" target="_blank">PythonAnywhere<
 to do the exercises for this course.  Follow their instructions to create a free/beginner
 account.   You should not need anything beyond the free account for this account.
 
-<!--
 You can view a
-<a href="https://www.youtube.com/watch?v=d32UKww3h1c" target="_blank">video walkthrough</a>
-of this assignment.
--->
+<a href="https://youtu.be/a6-1bsy9kxw" target="_blank">video walkthrough</a>
+of this handout.
 
 Running Linux Commands in the Shell
 -----------------------------------
