@@ -71,6 +71,11 @@ a[target="_blank"]:after {
 $OUTPUT->bodyStart();
 // $OUTPUT->topNav();
 
+$assignments = array(
+    "pg4e_pyaw_psql.md" => "Using PostgreSQL on PythonAnywhere",
+    "pg4e_model.md" => "Unesco Data Model",
+);
+
 if ( $contents != false ) {
 ?>
 <script>
@@ -81,7 +86,11 @@ function onSelect() {
 </script>
 <div style="float:right">
 <select id="chapters" onchange="onSelect();">
-  <option <?= x_sel("pg4e_model.md") ?>>Unesco Data Model</option>
+<?php
+foreach($assignments as $key => $value ) {
+  echo('<option '.x_sel($key).' >'.$value."</option>\n");
+}
+?>
 </select>
 </div>
 <?php
@@ -93,7 +102,11 @@ function onSelect() {
 These are the assignments for PostgreSQL for Everybody (PG4E).
 </p>
 <ul>
-<li><a href="pg4e_model.md">Unesco Data Model</a></li>
+<?php
+foreach($assignments as $key => $value ) {
+  echo('<li><a href="'.$key.'">'.$value."</a></li>\n");
+}
+?>
 </ul>
 <p>
 If you find a mistake in these pages, feel free to send me a fix using
