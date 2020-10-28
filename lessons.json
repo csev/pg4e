@@ -840,6 +840,10 @@
         {
             "title" : "High Contrast / Printable Slides",
             "href" : "{apphome}/lectures/07-Elastic-BW.pdf"
+        },
+        {
+            "title" : "Using ElasticSearch on PythonAnywhere",
+            "href" : "{apphome}/assn/pg4e_pyaw_es.md"
         }
     ],
     "lti" : [

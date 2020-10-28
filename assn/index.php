@@ -74,6 +74,7 @@ $OUTPUT->bodyStart();
 $assignments = array(
     "pg4e_pyaw_psql.md" => "Using PostgreSQL on PythonAnywhere",
     "pg4e_model.md" => "Unesco Data Model",
+    "pg4e_pyaw_es.md" => "Using ElasticSearch on PythonAnywhere",
 );
 
 if ( $contents != false ) {
