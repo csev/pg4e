@@ -35,6 +35,7 @@ if ( $pos >= count($book_ids) ) $pos = 0;
 
 $book_id = $book_ids[$pos];
 $book_url = 'http://www.gutenberg.org/cache/epub/'.$book_id.'/pg'.$book_id.'.txt';
+$book_url = 'https://www.pg4e.com/gutenberg/cache/epub/'.$book_id.'/pg'.$book_id.'.txt';
 $word = $books[$book_id];
 
 $oldgrade = $RESULT->grade;

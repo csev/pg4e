@@ -25,10 +25,11 @@ if ( ! endsWith($pieces->extra, '.txt') ) {
     echo("This only retrieves .txt files");
     return;
 }
-
-// echo("<pre>\n");var_dump($pieces);
-
+$filename = basename($pieces->extra);
 $url = "http://www.gutenberg.org/".$pieces->controller.'/'.$pieces->extra;
+if ( file_exists($filename) ) {
+    $url = $filename;
+}
 
 $content = file_get_contents($url);
 header('Content-Type: text/plain');
