@@ -188,3 +188,28 @@ If this table does not exist or you change the data the autograder puts in
 this table, the autograder may refuse to grade your assignments, or your database
 may be deleted as part of a maintenance process.
 </p>
+<h2>Technical Detail</h2>
+<p>
+This database is on a shared instance of PostgreSQL. You have full access to your database
+but will not have access to some of the server-wide database wide tables that contain data about
+the other users on the server.  This can cause many desktop 
+PostgreSQL clients to complain with errors like the following when they try to access
+these server-wide databases and schemas:
+<pre>
+ERROR: permission denied for pg_database
+</pre>
+</p>
+<p>
+You will be able to use run SQL statements that only access the tables in your
+particular database from any client.
+</p>
+<p>
+References:
+<ul>
+<li><a href="https://wiki.postgresql.org/wiki/Shared_Database_Hosting#template1"
+target="_blank">Postgres Shared Database Hosting</a></li>
+<!--
+https://wiki.postgresql.org/wiki/Cloud#Multi-Tenancy
+-->
+</ul>
+</p>
