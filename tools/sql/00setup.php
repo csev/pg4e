@@ -163,12 +163,13 @@ $retval = LTIX::gradeSend($gradetosend, false, $debug_log);
 You will need access to a database to use for this course.  This tool creates your database and gives
 you an account and password to use to connect to the database.
 </p>
+<!-- The blanks at the end of the lines are needed below -->
 <pre>
-Host:     <?= $user_info->host ?>
-Port:     <?= $user_info->port ?>
-Database: <?= $user_info->db ?>
-User:     <?= $user_info->user ?>
-Password: <span id="pass" style="display:none"><?= $user_info->pass ?></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, $('#pass').text());return false;">copy</a>)
+Host:     <?= $user_info->host ?> 
+Port:     <?= $user_info->port ?> 
+Database: <?= $user_info->db ?> 
+User:     <?= $user_info->user ?> 
+Password: <span id="pass" style="display:none"><?= $user_info->pass ?></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, $('#pass').text());return false;">copy</a>) 
 
 
 <?= $user_info->psql ?>
