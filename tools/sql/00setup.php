@@ -197,7 +197,7 @@ database wide tables that contain data about the other users on the server.  Thi
 PostgreSQL clients to complain with errors like the following when they try to access
 these server-wide databases and schemas:
 <pre>
-ERROR:  permission denied for view pg_roles
+ERROR: permission denied for view pg_roles
 ERROR: permission denied for pg_database
 </pre>
 </p>
