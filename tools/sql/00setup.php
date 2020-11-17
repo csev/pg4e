@@ -203,7 +203,7 @@ ERROR: permission denied for pg_database
 </p>
 <p>
 In a real production environment, you (or someone) will have a access to the all-powerful
-<b>postgres</b> account and most accouts have at least read-access to these cross-database tables.
+<b>postgres</b> account and most accounts have at least read-access to these cross-database tables.
 </p>
 <p>
 References:
