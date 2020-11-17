@@ -208,7 +208,7 @@ In a real production environment, you (or someone) will have a access to the all
 References:
 <ul>
 <li><a href="https://wiki.postgresql.org/wiki/Shared_Database_Hosting#template1"
-target="_blank">Postgres Shared Database Hosting</a></li>
+target="_blank">PostgreSQL Shared Database Hosting</a></li>
 <!--
 https://wiki.postgresql.org/wiki/Cloud#Multi-Tenancy
 -->
