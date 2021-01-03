@@ -11,7 +11,7 @@
 ],
 "discussions" : [
     {
-    "title" : "Welcome to PostgresSQL for Everybody",
+    "title" : "Welcome to PostgreSQL for Everybody",
     "launch" : "mod/tdiscus/",
     "resource_link_id": "discussion_welcome"
     }
@@ -23,6 +23,13 @@
     "icon" : "fa-globe",
     "description": "Single Table SQL",
     "slides": "{apphome}/lectures/01-Intro-to-SQL.ppt",
+    "discussions" : [
+        {
+        "title" : "Single Table SQL",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_01_sql"
+        }
+    ],
     "videos" : [
         {
             "title" : "History of Relational Databases",
@@ -151,6 +158,13 @@
     "icon" : "fa-globe",
     "description": "Multi-Table SQL and Relationships.",
     "slides": "{apphome}/lectures/02-Database-Design-Many-to-Many.ppt",
+    "discussions" : [
+        {
+        "title" : "Data Relationships",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_02_model"
+        }
+    ],
     "videos" : [
         {
             "title" : "Relational Database Design Part 1",
@@ -244,6 +258,13 @@
     "icon" : "fa-globe",
     "description": "Intermediate PostgreSQL techniques.",
     "slides": "{apphome}/lectures/03-Techniques.pptx",
+    "discussions" : [
+        {
+        "title" : "SQL Techniques",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_03_techniques"
+        }
+    ],
     "videos" : [
         {
             "title" : "Tools and Techniques",
@@ -382,6 +403,13 @@
     "icon" : "fa-globe",
     "description": "Handling text in PostgreSQL (but not Natural Language).",
     "slides": "{apphome}/lectures/04-Text.pptx",
+    "discussions" : [
+        {
+        "title" : "Text in PostgreSQL",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_04_text"
+        }
+    ],
     "videos" : [
         {
             "title" : "Text in Databases",
@@ -489,6 +517,13 @@
     "icon" : "fa-globe",
     "description": "Handling Natural Language fields and indexes in PostgreSQL.",
     "slides": "{apphome}/lectures/05-FullText.php",
+    "discussions" : [
+        {
+        "title" : "Natural Language",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_05_language"
+        }
+    ],
     "videos" : [
         {
             "title" : "Lecture: 05 FullText 01 Blocks 1080",
@@ -616,6 +651,13 @@
     "slides": [
         "{apphome}/lectures/06-Python.php"
     ],
+    "discussions" : [
+        {
+        "title" : "Python and PostgreSQL",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_06_python"
+        }
+    ],
     "videos" : [
         {
             "title" : "Lecture: PY-PG 06 01 Python 1080",
@@ -669,6 +711,13 @@
     "description": "Handling JSON in PostgreSQL.",
     "slides": [
         "{apphome}/lectures/06-JSON.php"
+    ],
+    "discussions" : [
+        {
+        "title" : "JSON and PostgreSQL",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_07_json"
+        }
     ],
     "videos" : [
         {
@@ -740,6 +789,13 @@
     "slides": [
         "{apphome}/lectures/07-Architecture.pptx"
     ],
+    "discussions" : [
+        {
+        "title" : "Database Architectures",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_08_arch"
+        }
+    ],
     "videos" : [
         {
             "title" : "Database Architectures (07 01 acid base)",
@@ -810,6 +866,13 @@
     "description": "Using ElasticSearch to explore NoSQL.",
     "slides": [
         "{apphome}/lectures/07-Elastic.pptx"
+    ],
+    "discussions" : [
+        {
+        "title" : "Elastic Search",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_09_elastic"
+        }
     ],
     "videos" : [
         {
