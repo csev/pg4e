@@ -9,6 +9,13 @@
 ],
 "badges": [
 ],
+"discussions" : [
+    {
+    "title" : "Welcome to PostgresSQL for Everybody",
+    "launch" : "mod/tdiscus/",
+    "resource_link_id": "discussion_welcome"
+    }
+],
 "modules": [
 {
     "title": "Single Table SQL",

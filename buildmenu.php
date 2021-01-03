@@ -10,11 +10,12 @@ function buildMenu() {
 
     if ( isset($CFG->lessons) ) {
         $set->addLeft('Lessons', $R.'lessons');
-    if ( isset($_SESSION['id']) ) {
-        $set->addLeft('My Progress', $R.'assignments');
-    } else {
-        $set->addLeft('Assignments', $R.'assn');
-    }
+        if ( isset($CFG->tdiscus) && $CFG->tdiscus  ) $set->addLeft('Discussions', $R.'discussions');
+        if ( isset($_SESSION['id']) ) {
+            $set->addLeft('My Progress', $R.'assignments');
+        } else {
+            $set->addLeft('Assignments', $R.'assn');
+        }
     }
 
     if ( isset($_SESSION['id']) ) {
