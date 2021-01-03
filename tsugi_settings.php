@@ -7,7 +7,7 @@
  */
 
 $CFG->servicename = 'PG4E';
-$CFG->servicedesc = 'Postgres for Everybody';
+$CFG->servicedesc = 'PostgreSQL for Everybody';
 
 // Information on the owner of this system
 $CFG->ownername = 'Charles Severance';
@@ -18,6 +18,8 @@ $CFG->context_title = "Postgres for Everybody";
 $CFG->lessons = $CFG->dirroot.'/../lessons.json';
 $CFG->giftquizzes = $CFG->dirroot.'/../pg4e-private/quiz';
 $CFG->tdiscus = $CFG->apphome . '/mod/tdiscus/';
+
+$CFG->launcherror = $CFG->apphome . "/launcherror";
 
 $CFG->theme = array(
     "primary" => "#336791", //default color for nav background, splash background, buttons, text of tool menu
