@@ -67,8 +67,8 @@
         },
         {
             "title" : "Demonstration: Musical Track Database (CSV)",
-            "project": "01_single_track.mov",
-            "youtube" : "QyTdXedYbhc"
+            "project": "01_single_track_music-pyaw-21-01.mov",
+            "youtube" : "p9W7mEnJvp0"
         }
     ],
     "references" : [
@@ -303,8 +303,8 @@
         },
         {
             "title" : "Demonstration: Creating and Loading a Database",
-            "project": "03-Techniques-01-Create-Load.mov",
-            "youtube" : "tWLPO-_016g"
+            "project": "03-Techniques-01-Create-Load-21-01-Edit.mov",
+            "youtube" : "i3kv_FUsj2I"
         },
         {
             "title" : "Demonstration: SELECT DISTINCT",
