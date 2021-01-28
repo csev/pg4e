@@ -92,6 +92,14 @@
         {
             "title" : "High Contrast / Printable Slides",
             "href" : "{apphome}/lectures/01-Intro-to-SQL-BW.pdf"
+        },
+        {
+            "title" : "Demonstration: Using DBeaver Client to Run SQL",
+            "href" : "https://youtu.be/xFv-TeIroV8"
+        },
+        {
+            "title" : "Download DBeaver Client",
+            "href" : "https://dbeaver.io/"
         }
     ],
     "lti" : [
