@@ -9,7 +9,7 @@ require "nav.php";
 ?>
 <div id="container">
 <div style="margin-left: 10px; float:right">
-<img src="images/Chuck_16x9_SakaiCar_PG4E_flat_1280.png" onclick='window.location.href="https://www.sakaiger.com/sakaicar";' target="_blank" style="padding: 5px; width:400px;">
+<iframe width="400" height="225" src="https://www.youtube.com/embed/gowZgFgYj8o?rel=0" frameborder="0" allowfullscreen></iframe>
 </div>
 <h1>PostgreSQL for Everybody</h1>
 <p>
