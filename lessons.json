@@ -32,6 +32,11 @@
     ],
     "videos" : [
         {
+            "title" : "Welcome to PostgreSQL for Everybody",
+            "clip": "00-Why-PostgreSQL-1080.mov",
+            "youtube" : "gowZgFgYj8o"
+        },
+        {
             "title" : "History of Relational Databases",
             "ai": "mads.sqldatabases.01.032519.mov",
             "youtube" : "4wordgUuF8M"
