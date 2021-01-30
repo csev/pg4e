@@ -281,8 +281,15 @@
     "videos" : [
         {
             "title" : "Tools and Techniques",
+            "todo": "Redo first part - second part is 'Altering...'",
             "ai": "mads.sqldatabases.02.061919v2.mov",
             "youtube" : "r_HbRGHt0Cg"
+        },
+        {
+            "title" : "Altering Table Schema",
+            "edited" : "03-01-After-Create-1080.mov",
+            "formerly": "mads.sqldatabases.02.061919v2.mov",
+            "youtube" : "vUWkiBa9m_A"
         },
         {
             "title" : "Dates",
