@@ -139,32 +139,32 @@ This autograder will run a command equivalent to using the <b>elastictool.py</b>
 $ python3 elastictool.py
 
 Enter command: search <?= htmlentities($word) ?> 
-https://pg4e_86f9be92a2:*****@www.pg4e.com:443/elasticsearch/pg4e_86f9be92a2/_search
-{"query": {"query_string": {"query": "distinct"}}}
+https://pg4e_dca2724d69:*****@www.pg4e.com:443/elasticsearch/pg4e_dca2724d69/_search?pretty
+{"query": {"query_string": {"query": "<?= htmlentities($word) ?>"}}}
 200
 {
-  "took": 5,
+  "took": 1,
   "timed_out": false,
   "_shards": {
-    "total": 5,
-    "successful": 5,
+    "total": 1,
+    "successful": 1,
     "skipped": 0,
     "failed": 0
   },
   "hits": {
     "total": {
-      "value": 1,
+      "value": 5,
       "relation": "eq"
     },
-    "max_score": 2.2903469,
+    "max_score": 5.850847,
     "hits": [
       {
-        "_index": "testing",
+        "_index": "pg4e_dca2724d69",
         "_type": "_doc",
-        "_id": "922addd2c481d64edd8aa17b3b4fb86484b5728409e5e58b9b15a01cc93462c2",
-        "_score": 2.2903469,
+        "_id": "08083e37e9ee35b2e67385ba6dee0de1f704945063c65a22b517185f5df1cf0b",
+        "_score": 5.850847,
         "_source": {
-          "offset": 29,
+          "offset": 1237,
           "content": " is a distinct <?= htmlentities($word) ?> from the ..."
         }
       }

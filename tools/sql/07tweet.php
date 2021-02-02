@@ -131,16 +131,16 @@ This autograder will run a command equivalent to using the <b>elastictool.py</b>
 <pre>
 $ python3 elastictool.py
 
-Enter command: <b>search conversation</b>
-https://pg4e_86f9be92a2:*****@www.pg4e.com:443/elasticsearch/pg4e_86f9be92a2/_search
-{"query": {"query_string": {"query": "conversation"}}}
+Enter command: search bonsai
+https://pg4e_dca2724d69:*****@www.pg4e.com:443/elasticsearch/pg4e_dca2724d69/_search?pretty
+{"query": {"query_string": {"query": "bonsai"}}}
 200
 {
-  "took": 4,
+  "took": 1,
   "timed_out": false,
   "_shards": {
-    "total": 5,
-    "successful": 5,
+    "total": 1,
+    "successful": 1,
     "skipped": 0,
     "failed": 0
   },
@@ -152,21 +152,21 @@ https://pg4e_86f9be92a2:*****@www.pg4e.com:443/elasticsearch/pg4e_86f9be92a2/_se
     "max_score": 0.2876821,
     "hits": [
       {
-        "_index": "testing",
+        "_index": "pg4e_dca2724d69",
         "_type": "_doc",
-        "_id": "4",
+        "_id": "abc",
         "_score": 0.2876821,
         "_source": {
           "author": "kimchy",
-          "text": "The conversation was going so well for a while and then you made the",
-          "timestamp": "2020-02-20T19:32:48.847651"
+          "type": "tweet",
+          "text": "Elasticsearch: cool. bonsai cool.",
+          "timestamp": "2021-02-02T17:18:08.166157"
         }
       }
     ]
   }
 }
 
-Enter command:
 </pre>
 And expect to get at least one hit.
 </p>
