@@ -132,7 +132,7 @@ This autograder will run a command equivalent to using the <b>elastictool.py</b>
 $ python3 elastictool.py
 
 Enter command: <b>search conversation</b>
-https://pg4e_86f9be92a2:*****@es.pg4e.com:9210/v1/basicauth/elasticsearch/pg4e_86f9be92a2/_search
+https://pg4e_86f9be92a2:*****@www.pg4e.com:443/elasticsearch/pg4e_86f9be92a2/_search
 {"query": {"query_string": {"query": "conversation"}}}
 200
 {
