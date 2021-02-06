@@ -124,6 +124,10 @@ function getConfig() {
     $retval->pg_host = U::get($settings, 'pg_host');
     $retval->pg_port = U::get($settings, 'pg_port');
 
+    $retval->readonly_db = U::get($settings, 'readonly_db');
+    $retval->readonly_user = U::get($settings, 'readonly_user');
+    $retval->readonly_password = U::get($settings, 'readonly_password');
+
     $retval->es_source = U::get($settings, 'es_source');
     $retval->es_scheme = U::get($settings, 'es_scheme');
     $retval->es_host = U::get($settings, 'es_host');
@@ -738,3 +742,94 @@ function get_connection($connection, $user, $pass) {
     }
 }
 
+function pg4e_readonly_data() {
+    $cfg = getConfig();
+    $psql = "psql -h $cfg->pg_host -p $cfg->pg_port -U $cfg->readonly_user $cfg->readonly_db";
+?>
+<pre>
+Host: <?= $cfg->pg_host ?>
+
+Port: <?= $cfg->pg_port ?>
+
+Database: <?= $cfg->readonly_db ?>
+
+User: <?= $cfg->readonly_user ?>
+
+Password: <span id="readonly_password" style="display:none"><?= $cfg->readonly_password ?></span> <input type="hidden" name="es_pass" id="es_pass" value="<?= htmlentities($cfg->readonly_password) ?>"/> (<a href="#" onclick="$('#readonly_password').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($cfg->readonly_password) ?>');return false;">copy</a>)
+
+<?= $psql ?>
+
+</pre>
+<?php
+}
+
+function pg4e_get_readonly_connection() {
+    $cfg = getConfig();
+    $pdo_host = $cfg->pg_host;
+    $pdo_port = $cfg->pg_port;
+    $pdo_database = $cfg->readonly_db;
+    $pdo_user = $cfg->readonly_user;
+    $pdo_pass = $cfg->readonly_password;
+    $pdo_connection = "pgsql:host=$pdo_host;port=$pdo_port;dbname=$pdo_database";
+
+    try {
+        $pg_PDO = new PDOX($pdo_connection, $pdo_user, $pdo_pass,
+        array(
+            PDO::ATTR_TIMEOUT => 5, // in seconds
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        )
+    );
+    } catch(Exception $e) {
+        return false;
+    }
+    return $pg_PDO;
+}
+
+function taxdata_schema() {
+?>
+<pre>
+readonly=# \d+ taxdata
+  Column  |          Type          |
+----------+------------------------+
+ id       | integer                |
+ ein      | integer                |
+ name     | character varying(255) |
+ year     | integer                |
+ revenue  | bigint                 |
+ expenses | bigint                 |
+ purpose  | text                   |
+ ptid     | character varying(255) |
+ ptname   | character varying(255) |
+ city     | character varying(255) |
+ state    | character varying(255) |
+ url      | character varying(255) |
+</pre>
+<?php
+}
+
+// Some reasonable checking - it is readonly so it is not the end of the world
+function pg4e_check_user_query($query) {
+    $notallowed = array('insert', 'delete', 'update', 'drop', 'alter', 'union');
+    if ( strlen($query) > 100 ) return "Maximum query length exceeded";
+
+    $query = strtolower(trim($query));
+    $semi = strpos($query, ';');
+    if ( $semi !== false && $semi != strlen($query)-1 ) {
+        return "You can only have a semicolon at the end of a query";
+    }
+    foreach($notallowed as $bad) {
+        if ( strpos($query, $bad) ) {
+            return "Not allowed to use ".strtoupper($bad)." in a query";
+        }
+    }
+
+    if (strpos($query, '--') !== false || strpos($query, '/*') !== false || strpos($query, '*/') !== false ) {
+        return "Comments not allowed in user queries";
+    }
+
+    if (strpos($query, ':') !== false || strpos($query, '?') !== false ) {
+        return "Parameters (:/?) not allowed in user queries";
+    }
+
+    return true;
+}

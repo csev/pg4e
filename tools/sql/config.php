@@ -15,7 +15,7 @@ $unique = getUnique($LAUNCH);
 if ( ! $USER->instructor ) die("Must be instructor");
 
 $redirect = false;
-$postkeys = array('pg_host', 'pg_port', 
+$postkeys = array('pg_host', 'pg_port', 'readonly_db', 'readonly_user', 'readonly_password',
     'es_source', 'es_scheme', 'es_host', 'es_port', 'es_prefix', 'es_password');
 
 if ( U::get($_POST, 'update') ) {
@@ -58,6 +58,9 @@ Fill in these fields if you want to affect what the student sees in their <b>psq
 </p>
 <p>PG_HOST <input type="text" name="pg_host" value="<?= htmlentities(U::get($settings, 'pg_host')) ?>"></p>
 <p>PG_PORT <input type="text" name="pg_port" value="<?= htmlentities(U::get($settings, 'pg_port')) ?>"></p>
+<p>READONLY_DB <input type="text" name="readonly_db" value="<?= htmlentities(U::get($settings, 'readonly_db')) ?>"></p>
+<p>READONLY_USER <input type="text" name="readonly_user" value="<?= htmlentities(U::get($settings, 'readonly_user')) ?>"></p>
+<p>READONLY_PASSWORD <input type="text" name="readonly_password" value="<?= htmlentities(U::get($settings, 'readonly_password')) ?>"></p>
 <p>
 <select name="es_source">
 <option value="">-- Please select elastic server provisioning approach --</option>
