@@ -26,7 +26,7 @@ if ( SettingsForm::handleSettingsPost() ) {
 // All the assignments we support
 $assignments = array(
     '00setup.php' => 'Setup database environment',
-    '00first.php' => 'Add some housekeeping tables',
+    '00first.php' => 'Our first tables',
     '01single.php' => 'Single Table (ages)',
     '01auto.php' => 'Auto Increment / SERIAL (automagic)',
     '01single_track.php' => 'One table CSV (tracks_raw)',
@@ -38,7 +38,7 @@ $assignments = array(
     '03updated.php' => 'Stored Procedure',
     '03alter.php' => 'Alter Table',
     '03distinct.php' => 'Select Distinct',
-    '04bigtext.php' => 'Text Scan',
+    '04bigtext.php' => 'Generating Text',
     '05sqlstring.php' => 'Inverted index using SQL',
     '05sqlstop.php' => 'Inverted index with stop words using SQL',
     '05ginstring.php' => 'Inverted string array index using GIN',
