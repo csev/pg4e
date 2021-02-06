@@ -13,6 +13,10 @@ $sorts = Array('ASC', 'DESC', '');
 $sort = $sorts[$code % 3];
 $columns = array('city', 'state');
 $column = $columns[$code % 2];
+
+$column = 'state';
+$sort = 'ASC';
+
 $sql = "SELECT DISTINCT $column FROM taxdata";
 if ($sort == 'ASC') {
     $sql .= " ORDER BY $column";
@@ -107,7 +111,7 @@ if ( strlen($query) > 0 ) {
 
     for($i=0; $i<count($solution); $i++) {
         if ( $solution[$i] != $student[$i] ) {
-            $_SESSION['error'] = "Expecting ".$solution[$i]." at position ".$i.", received ".$student[$i];
+            $_SESSION['error'] = "Expecting ".$solution[$i]." at position ".($i+1).", received ".$student[$i];
             header('Location: '.addSession('index.php'));
             return;
         }
@@ -135,7 +139,7 @@ if ( $dueDate->message ) {
 <h1>Using SELECT DISTINCT</h1>
 <p>In this assignment you are to find the distinct values
 in the <b><?= $column ?></b> column  of the <b>taxdata</b> table <?= $message ?>.
-Your query should return these rows:
+Your query should only return these five rows (i.e. inclide a LIMIT clause):
 <pre>
 <?php 
 foreach($solution as $city) {
