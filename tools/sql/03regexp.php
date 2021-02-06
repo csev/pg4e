@@ -130,12 +130,13 @@ Write a regular expressions to retrieve that meet the following criteria:
 <b><?= htmlentities($message) ?></b>
 </p>
 <p>
-If you were looking for lines that started with an upper case character you would run
-the following query:
+As an example (not the solution to this assignment), if you were looking for lines where the <i>very first</i>
+character was an upper case character letter you would run the following query:
 <pre>
 SELECT purpose FROM taxdata WHERE purpose ~ '<b>^[A-Z]</b>' LIMIT 3;
 </pre>
-The autograder will add all the SQL - all you need is to enter the appropriate regular expression.
+The autograder will add all the SQL - all you need is to enter the appropriate regular expression
+below.
 <p>
 <form method="post">
 <p>
