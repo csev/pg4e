@@ -87,3 +87,4 @@ that the records are in the table by using <b>psql</b> and running:
 <pre>
 SELECT line FROM pythonfun WHERE line LIKE 'Have a nice%';
 </pre>
+This is the query that the autograder runs and looks for at least one row.
