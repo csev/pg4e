@@ -34,10 +34,16 @@ $offset = ($code % 3) + 2;
 
 $oldgrade = $RESULT->grade;
 
-if ( U::get($_POST,'thing1') && U::get($_POST,'thing2') ) {
+if ( count($_POST) > 0 ) {
 
     $thing1 = U::get($_POST,'thing1');
     $thing2 = U::get($_POST,'thing2');
+
+    if ( strlen($thing1) < 1 || strlen($thing2) < 1 ) {
+        $_SESSION['error'] = "You need non-blank strings";
+        header('Location: '.addSession('index.php'));
+        return;
+    }
 
     if ( $thing1 == $thing2 ) {
         $_SESSION['error'] = "Identical strings *will* result in identical hashes - but do not solve the puzzle";
@@ -71,13 +77,25 @@ if ( U::get($_POST,'thing1') && U::get($_POST,'thing2') ) {
 if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
+
+$tries = U::get($_SESSION, 'tries', 0) + 1;
+$_SESSION['tries'] = $tries;
+if ( $oldgrade < 1 && $tries == 4 ) {
+    echo('<h1 style="color:green;">Keep trying - you can do this.</h1>');
+} else if ( $oldgrade < 1 && $tries == 6 ) {
+    echo('<h1 style="color:green;">Hint: The number '.$offset.' is the key to this puzzle.</h1>');
+} else if ( $oldgrade < 1 && ($tries % 10) == 0 ) {
+    echo('<h1 style="color:green;">You might want to take a break and watch the video below.</h1>');
+} else {
+    echo('<h1>Puzzle: Break a Hashing Function</h1>');
+}
 ?>
-<h1>Puzzle: Break a Hashing Function</h1>
 <p>In this assignment you will write a simple hashing function that uses addition
 and multiplication and then find a pair of strings that will break the hash (i.e.
 return the same hash value for different strings.  We use multiplication based on 
-the position of the hash to avoid a hash collision when two letters are transposed
-like in 'ABCDE' and 'ABDCE'.
+the position of a letter in the hash to avoid a hash collision when two letters
+are transposed like in 'ABCDE' and 'ABDCE'.  Your strings need to be at
+least three characters long.
 </p>
 <p>
 <form method="post">
