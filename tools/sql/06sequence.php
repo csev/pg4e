@@ -85,3 +85,9 @@ for($i=0;$i<$count;$i++) {
 }
 ?>
 </pre>
+<p>
+As a foot note, the value <b>22/7</b> is a fun rational number with a lot
+of digits after the decimal point that is surprisingly close to
+the value for pi (&Pi;).
+</p>
+
