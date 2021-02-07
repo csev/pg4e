@@ -59,8 +59,9 @@ if ( $dueDate->message ) {
 }
 ?>
 <h1>Inserting a sequence of numbers in Python</h1>
-<p>In this assignment, you will write a Python program to insert a sequence of <?= $count ?>
-pseudorandom numbers into a database table named <b>pythonseq</b> with the following schema:
+<p>In this assignment, you will write a Python program to insert a sequence of
+<?= $count ?> pseudorandom numbers into a database table named
+<b>pythonseq</b> with the following schema:
 <pre>
 CREATE TABLE pythonseq (iter INTEGER, val INTEGER);
 </pre>
