@@ -45,6 +45,7 @@ $assignments = array(
     '05ginstring.php' => 'Inverted string array index using GIN',
     '05fulltext.php' => 'Full text GIN using tsvector',
     '06simple.php' => 'Making simple.py work',
+    '06sequence.php' => 'A number sequence',
     '06pokeapi.php' => 'Loading JSON from PokeAPI',
     '07tweet.php' => 'Elasticsearch Tweets',
     '07book.php' => 'Elasticsearch Book Text',
