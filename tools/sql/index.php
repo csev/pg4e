@@ -39,6 +39,7 @@ $assignments = array(
     '03alter.php' => 'Alter Table',
     '03distinct.php' => 'Select Distinct',
     '03regexp.php' => 'Regular Expressions',
+    '04hash.php' => 'Puzzle - Break a hash',
     '04bigtext.php' => 'Generating Text',
     '05sqlstring.php' => 'Inverted index using SQL',
     '05sqlstop.php' => 'Inverted index with stop words using SQL',
