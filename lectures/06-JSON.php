@@ -524,7 +524,7 @@ JSON Functions and Operators</a>
 </h2>
 <p>
 In this sample code walkthrough, we will use the
-<a href="https://swapi.co/" target="_blank">Star Wars API</a>
+<a href="https://swapi.py4e.com/" target="_blank">Star Wars API</a>
 to spider a JSON data source, and pull it into a database and then work
 with the data using SQL.
 </p>
@@ -561,7 +561,7 @@ If you run the program long enough, it finds all of the documents
 available in this API (turns out to be just over 200) and stops.
 As you are only retrieving a few hundred documents, you 
 probablly will not run into the 
-<a href="https://swapi.co/documentation" target="_blank">
+<a href="https://swapi.py4e.com/documentation" target="_blank">
 rate limit</a> of this API.  If you do you will have to wait a bit
 and restart the program.
 </p>
@@ -570,21 +570,21 @@ This is an example of the first run with an empty database:
 <pre>
 python3 swapi.py
 
-INSERT INTO swapi (url) VALUES ( 'https://swapi.co/api/films/1/' )
-INSERT INTO swapi (url) VALUES ( 'https://swapi.co/api/species/1/' )
-INSERT INTO swapi (url) VALUES ( 'https://swapi.co/api/people/1/' )
+INSERT INTO swapi (url) VALUES ( 'https://swapi.py4e.com/api/films/1/' )
+INSERT INTO swapi (url) VALUES ( 'https://swapi.py4e.com/api/species/1/' )
+INSERT INTO swapi (url) VALUES ( 'https://swapi.py4e.com/api/people/1/' )
 Total=3 todo=3 good=0 error=0
 How many documents:10
-200 2201 https://swapi.co/api/films/1/ 2
-200 1883 https://swapi.co/api/species/1/ 34
-200 702 https://swapi.co/api/people/1/ 39
-200 505 https://swapi.co/api/species/5/ 41
-200 661 https://swapi.co/api/species/3/ 40
-200 750 https://swapi.co/api/species/2/ 39
-200 473 https://swapi.co/api/species/4/ 38
-200 478 https://swapi.co/api/vehicles/4/ 37
-200 433 https://swapi.co/api/vehicles/6/ 36
-200 443 https://swapi.co/api/vehicles/7/ 35
+200 2201 https://swapi.py4e.com/api/films/1/ 2
+200 1883 https://swapi.py4e.com/api/species/1/ 34
+200 702 https://swapi.py4e.com/api/people/1/ 39
+200 505 https://swapi.py4e.com/api/species/5/ 41
+200 661 https://swapi.py4e.com/api/species/3/ 40
+200 750 https://swapi.py4e.com/api/species/2/ 39
+200 473 https://swapi.py4e.com/api/species/4/ 38
+200 478 https://swapi.py4e.com/api/vehicles/4/ 37
+200 433 https://swapi.py4e.com/api/vehicles/6/ 36
+200 443 https://swapi.py4e.com/api/vehicles/7/ 35
 How many documents:
 
 Loaded 10 documents, 8529 characters
@@ -614,11 +614,11 @@ python3 swapi.py
 
 Total=45 todo=35 good=10 error=0
 How many documents:5
-200 524 https://swapi.co/api/vehicles/8/ 34
-200 560 https://swapi.co/api/starships/2/ 33
-200 574 https://swapi.co/api/starships/3/ 32
-200 533 https://swapi.co/api/starships/5/ 31
-200 581 https://swapi.co/api/starships/9/ 30
+200 524 https://swapi.py4e.com/api/vehicles/8/ 34
+200 560 https://swapi.py4e.com/api/starships/2/ 33
+200 574 https://swapi.py4e.com/api/starships/3/ 32
+200 533 https://swapi.py4e.com/api/starships/5/ 31
+200 581 https://swapi.py4e.com/api/starships/9/ 30
 How many documents:
 
 Loaded 5 documents, 2772 characters
