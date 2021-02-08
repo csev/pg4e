@@ -7,7 +7,7 @@ if ( ! defined('COOKIE_SESSION') ) define('COOKIE_SESSION', true);
 require_once "../tsugi/config.php";
 
 $legit = array(
-    'https://swapi.co',
+    'https://swapi.py4e.com',
     'https://pokeapi.co',
     'https://mbox.dr-chuck.net',
     'http://mbox.dr-chuck.net',
