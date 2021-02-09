@@ -91,11 +91,11 @@ if ( $oldgrade < 1 && $tries == 4 ) {
 }
 ?>
 <p>In this assignment you will write a simple hashing function that uses addition
-and multiplication and then find a pair of strings that will break the hash (i.e.
-return the same hash value for different strings.  We use multiplication based on 
+and multiplication and then find a pair of strings that will
+return the same hash value for different strings.  The has algorithm uses multiplication based on
 the position of a letter in the hash to avoid a hash collision when two letters
 are transposed like in 'ABCDE' and 'ABDCE'.  Your strings need to be at
-least three characters long.
+least three characters long and no more than 10 characters long.
 </p>
 <p>
 <form method="post">
@@ -136,9 +136,9 @@ $hv = dohash('BACDE', $offset, true);
 <b>Note:</b>
 This is a puzzle assignment.  The answer is ultimately very simple.  All you need to do is <b>completely</b> understand
 two lines of Python code.  It is easy to get the solution from another student
-or perhaps ask StackOverflow.  But if you do that you deprive yourself of the satisfaction of solving the puzzle and 
+or perhaps ask StackOverflow.  But if you do that you deprive yourself of the satisfaction of solving the puzzle and
 the learning moment that happens when you look at something, break it down, figure it out, and solve it on your own.
-If you feel stuck - take a break then come back.  
+If you feel stuck - take a break then come back.
 </p>
 <p>
 Here is a video to watch so you can take a break from working on this.
