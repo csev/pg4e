@@ -16,7 +16,7 @@ $CFG->providekeys = true;  // true
 
 $CFG->context_title = "Postgres for Everybody";
 $CFG->lessons = $CFG->dirroot.'/../lessons.json';
-$CFG->giftquizzes = $CFG->dirroot.'/../pg4e-private/quiz';
+$CFG->giftquizzes = $CFG->dirroot.'/../pg4e-solutions/quiz';
 $CFG->tdiscus = $CFG->apphome . '/mod/tdiscus/';
 
 $CFG->launcherror = $CFG->apphome . "/launcherror";
