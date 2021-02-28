@@ -520,6 +520,17 @@
         ]
         },
         {
+        "title" : "Puzzle: Break a Hashing Function",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_hashpuzzle",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "04hash.php"
+            }
+        ]
+        },
+        {
         "title" : "Autograder: Generating Text",
         "launch" : "tools/sql/",
         "resource_link_id" : "pg4e_04bigtext",
