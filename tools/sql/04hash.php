@@ -92,18 +92,24 @@ if ( $oldgrade < 1 && $tries == 4 ) {
 ?>
 <p>In this assignment you will write a simple hashing function that uses addition
 and multiplication and then find a pair of strings that will
-return the same hash value for different strings.  The has algorithm uses multiplication based on
+return the same hash value for different strings (i.e you will cause a
+<a href="https://en.wikipedia.org/wiki/Collision_(computer_science)" target="_blank">Hash Collision</a>).
+</p>
+<p>
+The algorithm uses multiplication based on
 the position of a letter in the hash to avoid a hash collision when two letters
 are transposed like in 'ABCDE' and 'ABDCE'.  Your strings need to be at
 least three characters long and no more than 10 characters long.
 </p>
+<p>
+Enter your two strings below and check if they cause a collision:
 <p>
 <form method="post">
 <p>
 <input type="text" name="thing1" placeholder="String 1...">
 <input type="text" name="thing2" placeholder="String 2...">
 </p>
-<input type="submit" id="submitbutton" class="btn btn-primary" name="submit" onclick="$('#submitbutton').hide();$('#submitspinner').show();return true;" value="Submit Query">
+<input type="submit" id="submitbutton" class="btn btn-primary" name="submit" onclick="$('#submitbutton').hide();$('#submitspinner').show();return true;" value="Check for Collision">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
 </form>
 </p>
