@@ -89,7 +89,7 @@ if ( $dueDate->message ) {
 ?>
 <h1>Elasticsearch Tweets</h1>
 <p>
-In this assignment you will create an Elasticsearch index 
+In this assignment you will create an Elasticsearch index
 in the following Elasticsearch instance:
 <?php 
 pg4e_user_es_form($LAUNCH); 
@@ -97,7 +97,7 @@ pg4e_user_es_form($LAUNCH);
 </p>
 The index name should be the same as your user name and you should drop the index
 before you insert
-the following tweets (The author and date can be anything):
+the following "tweets" (The author and date can be anything):
 <p>
 <pre>
 <?php 
@@ -106,6 +106,9 @@ foreach($lines as $line) {
 }
 ?>
 </pre>
+Yes, the above lines do not look like tweets :)  They are randomly
+generated and as such pretty bad tweets but they are the text you
+are to use for this assignment.
 </p>
 <p>
 You should download these files:
