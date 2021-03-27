@@ -16,8 +16,9 @@ import sys
 import hidden
 import time
 import myutils
+from email.message import EmailMessage
 
-quota = 50000000
+quota = 60000000
 
 dryrun = True
 if len(sys.argv) == 2 and sys.argv[1] == "delete" :
@@ -73,25 +74,32 @@ while True :
     # If files have been changing
     if tot < quota : continue
     print (db_name, db_folder, count, tot)
-    toolarge.append(db_name)
+    toolarge.append((db_name, db_folder, count, tot))
 
-if dryrun :
-    print("Dry run - this run would delete",len(toolarge))
-
-    print()
-    for db in toolarge:
-        print('DROP DATABASE', db, ';')
-    cur.close()
-    quit()
-
-print("Here we go - going to delete", len(toolarge))
-time.sleep(5)
+if not dryrun :
+    print("Here we go - going to delete", len(toolarge))
+    time.sleep(5)
 
 print()
+actions = list()
 for db in toolarge:
-    sql = 'DROP DATABASE '+db+';'
-    print(sql)
-    time.sleep(1)
-    stmt = cur.execute(sql)
+    sql = 'DROP DATABASE '+db[0]+';'
+    actions.append(sql+' -- count='+str(db[2])+' tot='+str(db[3]))
+    if not dryrun:
+        print(sql)
+        time.sleep(1)
+        stmt = cur.execute(sql)
 
 cur.close()
+
+print(actions)
+
+# Send some email
+if len(actions) > 0 :
+    message = "Subject: Postgres Quota Actions ("+str(len(actions))+")\n\n"
+    if dryrun: message = message + "This is a dry run\n\n";
+    for action in actions:
+        message = message + action + "\n";
+    print(message)
+    myutils.sendMail(message)
+

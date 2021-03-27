@@ -9,6 +9,7 @@ import hidden
 import time
 import myutils
 import sys
+from email.message import EmailMessage
 
 dryrun = True
 if len(sys.argv) == 2 and sys.argv[1] == "delete" : 
@@ -72,25 +73,30 @@ while True :
     if file_mod < 30: continue
     print (db_name, db_folder, folder_days, file_mod)
     print( "last modified: %s" % time.ctime(os.path.getmtime(db_folder)))
-    expired.append(db_name)
+    expired.append((db_name, db_folder, folder_days, file_mod))
 
-if dryrun :
-    print("Dry run - this run would delete",len(expired))
-
-    print()
-    for db in expired:
-        print('DROP DATABASE', db, ';')
-    cur.close()
-    quit()
-
-print("Here we go - going to delete", len(expired))
-time.sleep(5)
+if not dryrun :
+    print("Here we go - going to delete", len(expired))
+    time.sleep(5)
 
 print()
+actions = list()
 for db in expired:
-    sql = 'DROP DATABASE '+db+';'
-    print(sql)
-    time.sleep(1)
-    stmt = cur.execute(sql)
+    sql = 'DROP DATABASE '+db[0]+';'
+    actions.append(sql+' -- days='+str(db[2])+' file_mod='+str(db[3]))
+    if not dryrun:
+        print(sql)
+        time.sleep(1)
+        stmt = cur.execute(sql)
 
 cur.close()
+
+# Send some email
+if len(actions) > 0 :
+    message = "Subject: Postgres Expire Actions ("+str(len(actions))+")\n\n"
+    if dryrun: message = message + "This is a dry run\n\n";
+    for action in actions:
+        message = message + action + "\n";
+    print(message)
+    myutils.sendMail(message)
+
