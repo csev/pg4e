@@ -15,6 +15,8 @@ function endsWith($haystack, $needle) {
 }
 }
 
+$max_quota = 2.5*1000*1000;
+
 $p = $CFG->dbprefix;
 
 $pieces = U::rest_path();
@@ -54,6 +56,40 @@ foreach($request_headers as $key => $val ) {
 $base_url = $CFG->elasticsearch_backend;
 $request_method = $_SERVER['REQUEST_METHOD'];
 $tail = $pieces->controller;
+
+// Check the size of the index to enforce quota
+if ( strcasecmp($request_method, "POST") == 0 || strcasecmp($request_method, "GET") == 0 ) {
+    $request_url = $base_url . '/_stats/store';
+    $data = file_get_contents($request_url);
+    $json = json_decode($data);
+    $indices = $json->indices;
+    $largest = false;
+    $uuid = false;
+    $size_in_bytes = -1;
+    foreach($json->indices as $key => $info ) {
+        $bytes = $info->total->store->size_in_bytes;
+        if ( $bytes > $size_in_bytes ) {
+            $size_in_bytes = $bytes;
+            $uuid = $info->uuid;
+            $largest = $key;
+        }
+    }
+
+    // Delete the largest index - one per transaction
+    // error_log("largest=$largest size=$size_in_bytes quota=$max_quota");
+    if ( $size_in_bytes > $max_quota ) {
+        $request_url = $base_url . '/' . $largest;
+        error_log("QUOTA DELETE size=$size_in_bytes quota=$max_quota $request_url");
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $request_url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+    }
+
+}
+
 if ( $pieces->extra ) $tail .= '/' . $pieces->extra;
 $tail = U::reconstruct_query($tail, $_GET);
 $request_body = file_get_contents('php://input');
