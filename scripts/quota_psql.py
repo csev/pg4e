@@ -12,11 +12,17 @@
 
 import psycopg2
 import os
+import sys
 import hidden
 import time
 import myutils
 
 quota = 50000000
+
+dryrun = True
+if len(sys.argv) == 2 and sys.argv[1] == "delete" :
+    print('This is the real deal!')
+    dryrun = False
 
 # Load the secrets for the readwrite shared DB
 secrets = hidden.master()
@@ -69,9 +75,23 @@ while True :
     print (db_name, db_folder, count, tot)
     toolarge.append(db_name)
 
-print("Dry run - this run would delete",len(toolarge))
-cur.close()
+if dryrun :
+    print("Dry run - this run would delete",len(toolarge))
+
+    print()
+    for db in toolarge:
+        print('DROP DATABASE', db, ';')
+    cur.close()
+    quit()
+
+print("Here we go - going to delete", len(toolarge))
+time.sleep(5)
 
 print()
 for db in toolarge:
-    print('DROP DATABASE', db, ';');
+    sql = 'DROP DATABASE '+db+';'
+    print(sql)
+    time.sleep(1)
+    stmt = cur.execute(sql)
+
+cur.close()
