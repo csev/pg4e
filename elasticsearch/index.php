@@ -58,7 +58,7 @@ $request_method = $_SERVER['REQUEST_METHOD'];
 $tail = $pieces->controller;
 
 // Check the size of the index to enforce quota
-if ( strcasecmp($request_method, "POST") == 0 || strcasecmp($request_method, "GET") == 0 ) {
+if ( strcasecmp($request_method, "POST") == 0 || strcasecmp($request_method, "PUT") == 0 ) {
     $request_url = $base_url . '/_stats/store';
     $data = file_get_contents($request_url);
     $json = json_decode($data);
