@@ -2,6 +2,7 @@ import smtplib, ssl
 import hidden
 import os
 import time
+import math
 
 def queryValue(cur, sql, fields=None, error=None) :
     row = queryRow(cur, sql, fields, error);
@@ -55,19 +56,21 @@ def getBytes(size):
         size = -1
     return size
 
+# Recursively find the most recent modification date in a folder
 def mtime(db_folder):
-    now = time.time()
-    file_mod = None
-    mod_days = -1
+    dayseconds = 24*60*60
+    now = int(time.time()/dayseconds)*dayseconds
+    mod_days = None
     count = 0
     for dirpath, dnames, fnames in os.walk(db_folder):
 
         for fname in fnames:
             fpath = dirpath + '/' + fname
             modified = os.path.getmtime(fpath)
-            mod_days = int((now - modified)/(60*60*24))
-            if file_mod is None or mod_days < file_mod :
-                file_mod = mod_days
-            # print('   ', fpath, mod_days)
+            file_mod = int(math.trunc(now - modified)/(60*60*24))
+            if mod_days is None or file_mod < mod_days :
+                mod_days = file_mod
+            # print('   ', fpath, file_mod, mod_days)
             count = count + 1
+    if mod_days is None : return 60
     return mod_days

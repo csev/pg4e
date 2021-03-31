@@ -9,6 +9,7 @@ import hidden
 import time
 import myutils
 import sys
+import math
 from email.message import EmailMessage
 
 dryrun = True
@@ -49,27 +50,22 @@ while True :
     if db_name.startswith('pg4e_data') : continue
     if not db_name.startswith('pg4e_') : continue
     db_oid = row[1]
-    now = time.time()
+
+    # Time chunked to days
+    dayseconds = 24*60*60
+    now = int(time.time()/dayseconds)*dayseconds
     db_folder = data_directory + '/base/' + str(db_oid)
     modified = os.path.getmtime(db_folder)
-    folder_days = int((now - modified)/(60*60*24))
-
-    # The folder's modification date is its creation date generally
-    if folder_days < 60 : continue
+    folder_days = int(math.trunc(now - modified)/(60*60*24))
 
     # Check the latest file modification date
-    file_mod = None
-    for dirpath, dnames, fnames in os.walk(db_folder):
+    file_mod = myutils.mtime(db_folder)
+    # print( "last modified: %s" % time.ctime(os.path.getmtime(db_folder)))
+    # print((db_name, db_folder, folder_days, file_mod))
 
-        for fname in fnames:
-            fpath = db_folder + '/' + fname
-            modified = os.path.getmtime(fpath)
-            mod_days = int((now - modified)/(60*60*24))
-            if file_mod is None or mod_days < file_mod :
-                file_mod = mod_days
-            # print('   ', fpath, mod_days)
-
-    # If files have been changing
+    # We want to the folder to be at least 60 days old (i.e. creation
+    # date) and no files have been changing for 30 days
+    if folder_days < 60 : continue
     if file_mod < 30: continue
     print (db_name, db_folder, folder_days, file_mod)
     print( "last modified: %s" % time.ctime(os.path.getmtime(db_folder)))
@@ -83,7 +79,7 @@ print()
 actions = list()
 for db in expired:
     sql = 'DROP DATABASE '+db[0]+';'
-    actions.append(sql+' -- days='+str(db[2])+' file_mod='+str(db[3]))
+    actions.append(sql+' -- folder_days='+str(db[2])+' file_mod='+str(db[3]))
     if not dryrun:
         print(sql)
         time.sleep(1)

@@ -26,7 +26,7 @@ secrets = hidden.elastic()
 
 max_quota = 2.5*1000*1000
 # max_quota = 100000
-max_days = 50
+max_days = 30
 
 basepath = '/var/lib/elasticsearch/nodes/0/indices/'
 url = 'http://'+secrets['user']+':'+secrets['pass']+'@'+secrets['host']+':'+str(secrets['port'])
