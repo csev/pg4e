@@ -13,8 +13,12 @@ require "nav.php";
 </div>
 <h1>PostgreSQL for Everybody</h1>
 <p>
-This web site is building a set of free / OER materials to help students
+This web site provides free / OER materials to help you
 learn the <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a> database.
+You can take this course and receive a certificate at:
+<ul>
+<li><a href="https://www.coursera.org/specializations/postgresql-for-everybody" target="_blank">Coursera: PostgreSQL for Everybody Specialization</a> </li>
+</ul>
 </p>
 <p>
 When you take this course we will provide you with a small PostgreSQL server with limited capabilities.
