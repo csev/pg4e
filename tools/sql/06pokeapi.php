@@ -2,6 +2,7 @@
 
 use \Tsugi\Util\U;
 use \Tsugi\Util\Mersenne_Twister;
+use \Tsugi\Grades\GradeUtil;
 
 require_once "names.php";
 require_once "text_util.php";
@@ -57,7 +58,13 @@ if ( $dueDate->message ) {
 <p>In this assignment, you will load the first 100 Pokémon JSON documents from the 
 <a href="https://pokeapi.co/" target="_blank">PokéAPI</a> and store them in a table.
 </p>
-<?php pg4e_user_db_form($LAUNCH); ?>
+<?php
+$endform = false;
+pg4e_user_db_form($LAUNCH, $endform);
+?>
+<p>
+Please enter your Python code in the space below the assignment instructions.
+</p>
 <p>
 Here is the table to create:
 <pre>
@@ -84,4 +91,14 @@ if ( $LAUNCH->user->instructor ) {
     echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");
 }
 ?>
-
+<p>
+Please enter your Python code here:
+<textarea id="code" name="code" style="width:100%; height: 100%; font-family:Courier,fixed;font-size:16px;color:blue;">
+<?php
+if ( U::get($_SESSION, 'lastcode')){
+    echo(htmlentities(U::get($_SESSION, 'lastcode')));
+}
+?>
+</textarea>
+</form>
+</p>

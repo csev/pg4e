@@ -2,6 +2,7 @@
 
 use \Tsugi\Util\U;
 use \Tsugi\Util\Mersenne_Twister;
+use \Tsugi\Grades\GradeUtil;
 
 // https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/quickstart.html
 require_once "names.php";
@@ -30,7 +31,11 @@ if ( U::get($_POST,'check') ) {
     $pg_PDO = false;
     // $client = get_es_connection();
     $client = get_es_local();
-    if ( ! $client ) return;
+    if ( ! $client ) {
+        $_SESSION['error'] = 'Could not connect to autograder ES instance';
+        header( 'Location: '.addSession('index.php') ) ;
+        return;
+    }
 
     $params = [
         'index' => $es_user,
@@ -91,9 +96,13 @@ if ( $dueDate->message ) {
 <p>
 In this assignment you will create an Elasticsearch index
 in the following Elasticsearch instance:
-<?php 
-pg4e_user_es_form($LAUNCH); 
+<?php
+$endform = false;
+pg4e_user_es_form($LAUNCH, $endform);
 ?>
+</p>
+<p>
+Please enter your Python code in the space below the assignment instructions.
 </p>
 The index name should be the same as your user name and you should drop the index
 before you insert
@@ -202,4 +211,15 @@ if ( $LAUNCH->user->instructor ) {
   echo("<p>Note to instructors: Students can view source to see the last Elasticsearch request and response</p>");
 }
 ?>
+<p>
+Please enter your Python code here:
+<textarea id="code" name="code" style="width:100%; height: 100%; font-family:Courier,fixed;font-size:16px;color:blue;">
+<?php
+if ( U::get($_SESSION, 'lastcode')){
+    echo(htmlentities(U::get($_SESSION, 'lastcode')));
+}
+?>
+</textarea>
+</form>
+</p>
 

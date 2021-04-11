@@ -188,6 +188,11 @@ function pg4e_user_db_load($LAUNCH) {
     if ( U::get($_POST,'check') ) {
         $_SESSION['check'] = $_POST['check'];
     }
+
+    if ( U::get($_POST,'code') ) {
+        $_SESSION['lastcode'] = $_POST['code'];
+    }
+
     // Returns true if redirected
     $retval = pg4e_user_db_post($LAUNCH);
     if ( $retval ) return false;
@@ -273,15 +278,15 @@ function pg4e_user_db_data($LAUNCH) {
     $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_NOT_COOKIE, 'pdo_pass', $user_info->pass));
 
     // Store in the database...
-    $json = $LAUNCH->result->getJSON();
-    $new = json_encode(array(
+    $arr = array(
         'pdo_host' => $pdo_host,
         'pdo_port' => $pdo_port,
         'pdo_database' => $pdo_database,
         'pdo_user' => $pdo_user,
         'pdo_pass' => $pdo_pass,
-    ));
-    if ( $new != $json ) $LAUNCH->result->setJSON($new);
+    );
+    if ( U::get($_SESSION, 'lastcode') ) $arr['code'] = U::get($_SESSION, 'lastcode');
+    $LAUNCH->result->setJsonKeys($arr);
 
     // $cookie_expire = 31556926;  // One year
     $cookie_expire = 60 * 60 * 24 * 7;  // 7 days
@@ -302,7 +307,7 @@ function pg4e_user_db_data($LAUNCH) {
     $pdo_connection = "pgsql:host=$pdo_host;port=$pdo_port;dbname=$pdo_database";
 }
 
-function pg4e_user_db_form($LAUNCH, $terminalonly=true) {
+function pg4e_user_db_form($LAUNCH, $endform=true) {
     global $CFG, $OUTPUT, $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     if ( ! $pdo_host && ! $LAUNCH->user->instructor ) {
@@ -343,7 +348,7 @@ function setPGAdminCookies() {
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
 <input type="submit" name="default" value="Reset Values">
-</form>
+<?php if ( $endform) echo("</form>\n"); ?>
 </p>
 <p>
 <?php if ( strlen($pdo_host) < 1 ) return; ?>
@@ -486,6 +491,11 @@ function pg4e_user_es_load($LAUNCH) {
     if ( U::get($_POST,'check') ) {
         $_SESSION['check'] = $_POST['check'];
     }
+
+    if ( U::get($_POST,'code') ) {
+        $_SESSION['lastcode'] = $_POST['code'];
+    }
+
     // Returns true if redirected
     $retval = pg4e_user_es_post($LAUNCH);
     if ( $retval ) return false;
@@ -578,16 +588,17 @@ function pg4e_user_es_data($LAUNCH) {
     }
 
     // Store in the database...
-    $json = $LAUNCH->result->getJSON();
-    $new = json_encode(array(
+    $arr = array(
         'es_host' => $es_host,
         'es_scheme' => $es_scheme,
         'es_prefix' => $es_prefix,
         'es_port' => $es_port,
         'es_user' => $es_user,
         'es_pass' => $es_pass,
-    ));
-    if ( $new != $json ) $LAUNCH->result->setJSON($new);
+    );
+
+    if ( U::get($_SESSION, 'lastcode') ) $arr['code'] = U::get($_SESSION, 'lastcode');
+    $LAUNCH->result->setJsonKeys($arr);
 
     // $cookie_expire = 31556926;  // One year
     $cookie_expire = 60 * 60 * 24 * 7;  // 7 days
@@ -640,7 +651,7 @@ function es_makepw($user, $secret) {
     return($pw);
 }
 
-function pg4e_user_es_form($LAUNCH) {
+function pg4e_user_es_form($LAUNCH, $endform=true) {
     global $OUTPUT, $es_host, $es_scheme, $es_prefix, $es_port, $es_user, $es_pass, $info;
 
     $cfg = getConfig();
@@ -680,7 +691,7 @@ Password: <span id="pass" style="display:none"><?= $es_pass ?></span> <input typ
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
 <!-- If you need to reset values - set the display to block to unlock reset -->
 <input type="submit" name="default" value="Reset Values" style="display:none;">
-</form>
+<?php if ( $endform) echo("</form>\n"); ?>
 </p>
 </p>
 <?php

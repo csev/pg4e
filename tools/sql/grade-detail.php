@@ -61,10 +61,22 @@ if ( isset($row['note']) ) {
 }
 
 if ( strlen($row['json']) > 0 ) {
+    $json = json_decode($row['json']);
+    $code = false;
+    if ( isset($json->code) ) {
+        $code = $json->code;
+        unset($json->code);
+    }
 	echo('<p>JSON: <a href="#" onclick="$(\'#json\').toggle();return false;">hide/show</a></p>');
 	echo("<pre id=\"json\" style=\"display:none;\">\n");
     echo(htmlentities($row['json']));
     echo("</pre>\n");
+    if ( $code ) {
+	    echo('<p>Code: <a href="#" onclick="$(\'#code\').toggle();return false;">hide/show</a></p>');
+	    echo("<pre id=\"code\" style=\"display:none;\">\n");
+        echo(htmlentities($code));
+        echo("</pre>\n");
+    }
 }
 
 $OUTPUT->footer();

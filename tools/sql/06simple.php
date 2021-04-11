@@ -2,6 +2,7 @@
 
 use \Tsugi\Util\U;
 use \Tsugi\Util\Mersenne_Twister;
+use \Tsugi\Grades\GradeUtil;
 
 require_once "names.php";
 require_once "text_util.php";
@@ -14,6 +15,7 @@ $code = getCode($LAUNCH);
 $oldgrade = $RESULT->grade;
 
 if ( U::get($_POST,'check') ) {
+
     $pg_PDO = pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass);
     if ( ! $pg_PDO ) return;
     if ( ! pg4e_check_debug_table($LAUNCH, $pg_PDO) ) return;
@@ -46,7 +48,7 @@ if ( $dueDate->message ) {
 }
 ?>
 <h1>Making a connection from Python</h1>
-<p>In this assignment, you will get the code for 
+<p>In this assignment, you will get the code for
 <a href="https://www.pg4e.com/code/simple.py" target="_blank">https://www.pg4e.com/code/simple.py</a>
 working.  Download these files using <b>wget</b>, <b>curl</b> or your browser.  If you are using a bash shell
 in Linux, these commands might work:
@@ -61,7 +63,13 @@ mv hidden-dist.py hidden.py
 </pre>
 Edit <b>hidden.py</b> and put your conection details in the <b>secrets()</b> function.
 </p>
-<?php pg4e_user_db_form($LAUNCH); ?>
+<?php
+$endform = false;
+pg4e_user_db_form($LAUNCH, $endform);
+?>
+<p>
+Please enter your Python code in the space below the assignment instructions.
+</p>
 <p>
 The <b>simple.py</b> code will load its secrets from <b>hidden.py</b> when you run it.
 Don't worry about fixing the "mistake" it is just there to show how bad SQL
@@ -88,3 +96,15 @@ that the records are in the table by using <b>psql</b> and running:
 SELECT line FROM pythonfun WHERE line LIKE 'Have a nice%';
 </pre>
 This is the query that the autograder runs and looks for at least one row.
+<p>
+Please enter your Python code here:
+<textarea id="code" name="code" style="width:100%; height: 100%; font-family:Courier,fixed;font-size:16px;color:blue;">
+<?php
+if ( U::get($_SESSION, 'lastcode')){
+    echo(htmlentities(U::get($_SESSION, 'lastcode')));
+}
+?>
+</textarea>
+</form>
+</p>
+

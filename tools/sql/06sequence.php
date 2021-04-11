@@ -2,6 +2,7 @@
 
 use \Tsugi\Util\U;
 use \Tsugi\Util\Mersenne_Twister;
+use \Tsugi\Grades\GradeUtil;
 
 require_once "names.php";
 require_once "text_util.php";
@@ -66,7 +67,13 @@ if ( $dueDate->message ) {
 CREATE TABLE pythonseq (iter INTEGER, val INTEGER);
 </pre>
 You should drop and recreate the <b>pythonseq</b> table each time your application runs.
-<?php pg4e_user_db_form($LAUNCH); ?>
+<?php
+$endform = false;
+pg4e_user_db_form($LAUNCH, $endform);
+?>
+<p>
+Please enter your Python code in the space below the assignment instructions.
+</p>
 <p>
 The following Python code will generate your series of pseudo-random numbers:
 <pre>
@@ -89,5 +96,16 @@ for($i=0;$i<$count;$i++) {
 As a foot note, the value <b>22/7</b> is a fun rational number with a lot
 of digits after the decimal point that is surprisingly close to
 the value for pi (&Pi;).
+</p>
+<p>
+Please enter your Python code here:
+<textarea id="code" name="code" style="width:100%; height: 100%; font-family:Courier,fixed;font-size:16px;color:blue;">
+<?php
+if ( U::get($_SESSION, 'lastcode')){
+    echo(htmlentities(U::get($_SESSION, 'lastcode')));
+}
+?>
+</textarea>
+</form>
 </p>
 

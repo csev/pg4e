@@ -2,6 +2,7 @@
 
 use \Tsugi\Util\U;
 use \Tsugi\Util\Mersenne_Twister;
+use \Tsugi\Grades\GradeUtil;
 
 // https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/quickstart.html
 require_once "names.php";
@@ -31,7 +32,11 @@ if ( U::get($_POST,'check') ) {
     $pg_PDO = false;
     // $client = get_es_connection();
     $client = get_es_local();
-    if ( ! $client ) return;
+    if ( ! $client ) {
+        $_SESSION['error'] = 'Could not connect to autograder ES instance';
+        header( 'Location: '.addSession('index.php') ) ;
+        return;
+    }
 
     foreach($words as $word) {
         $params = [
@@ -108,7 +113,13 @@ pip install elasticsearch
 </pre>
 </p>
 <p>
-<?php pg4e_user_es_form($LAUNCH); ?>
+<?php
+$endform = false;
+pg4e_user_es_form($LAUNCH, $endform);
+?>
+</p>
+<p>
+Please enter your Python code in the space below the assignment instructions.
 </p>
 <!--
 <?php
@@ -139,4 +150,15 @@ You must clear out your index and load at least the first 100 messages from
 <a href="http://mbox.dr-chuck.net/sakai.devel/" target="_blank">http://mbox.dr-chuck.net/sakai.devel/</a>
 into the index to complete this assignment.  You should not need to change any code to make this happen.
 This is example code you can refer to in the future of pulling data from an API and pushing it into Elasticsearch.
+</p>
+<p>
+Please enter your Python code here:
+<textarea id="code" name="code" style="width:100%; height: 100%; font-family:Courier,fixed;font-size:16px;color:blue;">
+<?php
+if ( U::get($_SESSION, 'lastcode')){
+    echo(htmlentities(U::get($_SESSION, 'lastcode')));
+}
+?>
+</textarea>
+</form>
 </p>
