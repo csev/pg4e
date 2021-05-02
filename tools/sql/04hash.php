@@ -8,17 +8,22 @@ require_once "text_util.php";
 
 if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
-function dohash($txt, $offset, $print=false)
+function dohash($txt, $offset, $zero, $print=false)
 {
     if ( $print ) echo("\nEnter a string: $txt\n");
     $hv = 0;
-    for($pos=0; $pos<strlen($txt);$pos++) {
-        $let = substr($txt,$pos,1);
+    $pos = 0;
+    for($i=0; $i<strlen($txt);$i++) {
+        $let = substr($txt,$i,1);
+        if ( $zero == 0 ) {
+            $pos = ($pos + 1) % $offset;
+        } else {
+            $pos = ($pos % $offset) + 1;
+        }
         if ( ( $let <= 'Z' && $let >='A' ) || ( $let <= 'z' && $let >='a' ) ) {
-            $pad = $pos % $offset;
             $ord = ord($let);
-            $hv = ($hv + ($pad * $ord)) % 1000000;
-            if ( $print ) echo("$let $pad $ord $hv\n");
+            $hv = ($hv + ($pos * $ord)) % 1000000;
+            if ( $print ) echo("$let $pos $ord $hv\n");
         } else {
             return false;
         }
@@ -31,6 +36,8 @@ function dohash($txt, $offset, $print=false)
 $code = getCode($LAUNCH);
 
 $offset = ($code % 3) + 2;
+$zero = ($code % 6);
+// $zero = 0;
 
 $oldgrade = $RESULT->grade;
 
@@ -51,8 +58,8 @@ if ( count($_POST) > 0 ) {
         return;
     }
 
-    $hv1 = dohash($thing1,$offset, false);
-    $hv2 = dohash($thing2,$offset, false);
+    $hv1 = dohash($thing1,$offset, $zero, false);
+    $hv2 = dohash($thing2,$offset, $zero, false);
 
     if ( $hv1 === false || $hv2 === false ) {
         $_SESSION['error'] = "Found illegal characters in your strings";
@@ -114,6 +121,13 @@ Enter your two strings below and check if they cause a collision:
 </form>
 </p>
 <p>
+<?php
+if ( $zero == 0 ) {
+    $increment = "pos = ( pos + 1 ) % $offset ";
+} else {
+    $increment = "pos = ( pos % $offset ) + 1";
+}
+?>
 Here is the code that computes your hash:
 <pre>
 while True:
@@ -123,8 +137,8 @@ while True:
     hv = 0
     pos = 0
     for let in txt:
+        <?= $increment ?>  
         hv = (hv + (pos * ord(let))) % 1000000
-        pos = (pos + 1) % <?= $offset ?> 
         print(let, pos, ord(let), hv)
 
     print(hv, txt)
@@ -133,8 +147,8 @@ For simplicity we will only use upper and lower case ASCII letters in our
 text strings.
 <pre>
 <?php
-$hv = dohash('ABCDE', $offset, true);
-$hv = dohash('BACDE', $offset, true);
+$hv = dohash('ABCDE', $offset, $zero, true);
+$hv = dohash('BACDE', $offset, $zero, true);
 ?>
 </pre>
 </p>
