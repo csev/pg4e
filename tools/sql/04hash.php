@@ -36,7 +36,7 @@ function dohash($txt, $offset, $zero, $print=false)
 $code = getCode($LAUNCH);
 
 $offset = ($code % 3) + 2;
-$zero = ($code % 6);
+$zero = ($code % 2);
 // $zero = 0;
 
 $oldgrade = $RESULT->grade;
