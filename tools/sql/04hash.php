@@ -123,8 +123,8 @@ while True:
     hv = 0
     pos = 0
     for let in txt:
-        pos = (pos + 1) % <?= $offset ?> 
         hv = (hv + (pos * ord(let))) % 1000000
+        pos = (pos + 1) % <?= $offset ?> 
         print(let, pos, ord(let), hv)
 
     print(hv, txt)
