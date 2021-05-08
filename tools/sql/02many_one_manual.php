@@ -112,7 +112,7 @@ CREATE TABLE model (
 </pre>
 Insert the following data into your database separating it
 appropriately into the <b>make</b> and <b>model</b> tables and
-seting the <b>make_id</b> foreign key to link each model to
+setting the <b>make_id</b> foreign key to link each model to
 its corresponding make.
 <table border="2">
 <tr>
