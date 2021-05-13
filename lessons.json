@@ -520,6 +520,17 @@
         ]
         },
         {
+        "title" : "Autograder: Regular Expressions",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_03regex",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "03regex.php"
+            }
+        ]
+        },
+        {
         "title" : "Autograder: Generating Text",
         "launch" : "tools/sql/",
         "resource_link_id" : "pg4e_04bigtext",
