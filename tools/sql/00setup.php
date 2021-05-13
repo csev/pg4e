@@ -42,7 +42,7 @@ if ( U::get($_POST,'reset') ) {
     $stmt = $admin_PDO->queryReturnError($sql);
     if ( ! $stmt->success ) {
         error_log("Sql Failure:".$stmt->errorImplode." ".$sql);
-        $error = "SQL Query Error: ".$stmt->errorImplode;
+        $error = "Error Dropping Database: ".$stmt->errorImplode;
     }
 
     $sql = "DROP USER $user";
@@ -52,11 +52,11 @@ if ( U::get($_POST,'reset') ) {
         if ( strlen($error) > 0 ) {
             $error .= ' / ' . $stmt->errorImplode;
         } else {
-            $error = "SQL Query Error: ".$stmt->errorImplode;
+            $error = "Error Dropping User: ".$stmt->errorImplode;
         }
     }
     if ( strlen($error) > 0 ) {
-        $_SESSION['error'] = $error;
+        $_SESSION['success'] = $error;
         header('Location: '.addSession('index.php'));
         return;
     }
@@ -122,10 +122,11 @@ if ( $admin_PDO ) {
             "SELECT datname FROM pg_catalog.pg_database WHERE datname = :nam",
             array(":nam" => $db)
         );
-	if ( $row ) {
+	    if ( $row ) {
             echo("<p>Database created.</p>\n");
-	}
+	    }
     }
+
 }
 
 // Get that connection after initial create finishes.
@@ -157,8 +158,17 @@ $debug_log = array();
 
 $retval = LTIX::gradeSend($gradetosend, false, $debug_log);
 
+$size = false;
+
+$stmt = $user_PDO->queryReturnError("SELECT pg_size_pretty( pg_database_size('$db') ) AS size;");
+if ( $stmt->success ) {
+    $size_row = $stmt->fetch(\PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    if ( is_array($size_row) ) $size = $size_row['size'];
+}
+
 ?>
-<h1>Your Database</h1>
+<h1>Initial Database Setup</h1>
 <p>
 You will need access to a database to use for this course.  This tool creates your database and gives
 you an account and password to use to connect to the database.
@@ -174,12 +184,19 @@ Password: <span id="pass" style="display:none"><?= $user_info->pass ?></span> (<
 
 <?= $user_info->psql ?>
 </pre>
+<?php
+   if ( $size ) echo("<p><b>Current database size $size</b></p>\n");
+?>
 <!-- If we have DB credentials no reset should be needed - but if you really want to reset - unhide this form :) -->
 <p>
 <form method="post" style="display:none;">
 <input type="submit" class="btn btn-danger" name="reset" value="Delete and re-create database"
-onclick="return confirm('<?= __('If you have database credentials, usually there is no need to reset your database.  Are you sure?') ?>')">
+onclick="return confirm('<?= __('Resetting your database will delete all your tables and re-create your account and database. If you have database credentials, usually there is no need to reset your database.  Are you sure?') ?>')">
 </form>
+</p>
+<p>
+Your database may be deleted if it gets too large or it has not been used for while.
+If your database is deleted, you can come back to this tool to re-create your database.
 </p>
 <p>You will see a <b>pg4e_meta</b> table in your database that is used
 internally by the autograder to pass

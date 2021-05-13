@@ -100,9 +100,7 @@ function getDbUser($unique) {
     return $dbboth;
 }
 
-// TODO: Same as the db user and db name - remove old
 function getEsUser($unique) {
-    $old = "pg4e_".substr($unique,12,7);
     $new = substr("pg4e_".$unique,0,15);
     return $new;
 }
@@ -256,9 +254,8 @@ function pg4e_user_db_post($LAUNCH) {
     return $retval;
 }
 
-// The instructor precedence with config is SESSION, COOKIE, CONFIG
+// The instructor precedence with config is SESSION, CONFIG
 // The student precedence with config is SESSION, CONFIG
-// Without config, the precedence is SESSION, COOKIE
 function pg4e_user_db_data($LAUNCH) {
     global $CFG;
     global $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
@@ -268,14 +265,12 @@ function pg4e_user_db_data($LAUNCH) {
 
     $user_info = getUserInfo($LAUNCH);
 
-    $_NOT_COOKIE = array(); // TODO: Remove this after  July 2020
-
     // defaults
-    $pdo_database = U::get($_SESSION, 'pdo_database', U::get($_NOT_COOKIE, 'pdo_database', $user_info->db));
-    $pdo_host = U::get($_SESSION, 'pdo_host', U::get($_NOT_COOKIE, 'pdo_host', $user_info->host));
-    $pdo_port = U::get($_SESSION, 'pdo_port', U::get($_NOT_COOKIE, 'pdo_port', $user_info->port));
-    $pdo_user = U::get($_SESSION, 'pdo_user', U::get($_NOT_COOKIE, 'pdo_user', $user_info->user));
-    $pdo_pass = U::get($_SESSION, 'pdo_pass', U::get($_NOT_COOKIE, 'pdo_pass', $user_info->pass));
+    $pdo_database = U::get($_SESSION, 'pdo_database', $user_info->db);
+    $pdo_host = U::get($_SESSION, 'pdo_host', $user_info->host);
+    $pdo_port = U::get($_SESSION, 'pdo_port', $user_info->port);
+    $pdo_user = U::get($_SESSION, 'pdo_user', $user_info->user);
+    $pdo_pass = U::get($_SESSION, 'pdo_pass', $user_info->pass);
 
     // Store in the database...
     $arr = array(
@@ -320,34 +315,21 @@ function pg4e_user_db_form($LAUNCH, $endform=true) {
         echo('<p style="color:red">It appears that your PostgreSQL environment is not yet set up or is not running.</p>'."\n");
     }
 
+    $disabled = ($LAUNCH->user->instructor) ? '' : ' disabled ';
 ?>
 <form name="myform" method="post" >
 <p>
-Host: <input type="text" name="pdo_host" value="<?= htmlentities($pdo_host) ?>" id="pdo_host" onchange="setPGAdminCookies();"><br/>
-Port: <input type="text" name="pdo_port" value="<?= htmlentities($pdo_port) ?>" id="pdo_port" onchange="setPGAdminCookies();"><br/>
-Database: <input type="text" name="pdo_database" value="<?= htmlentities($pdo_database) ?>" id="pdo_database" onchange="setPGAdminCookies();"><br/>
-User: <input type="text" name="pdo_user" value="<?= htmlentities($pdo_user) ?>"><br/>
+Host: <input type="text" name="pdo_host" value="<?= htmlentities($pdo_host) ?>" id="pdo_host" <?= $disabled ?>><br/>
+Port: <input type="text" name="pdo_port" value="<?= htmlentities($pdo_port) ?>" id="pdo_port" <?= $disabled ?>><br/>
+Database: <input type="text" name="pdo_database" value="<?= htmlentities($pdo_database) ?>" id="pdo_database" <?= $disabled ?>><br/>
+User: <input type="text" name="pdo_user" value="<?= htmlentities($pdo_user) ?>" <?= $disabled ?>><br/>
 Password: <span id="pass" style="display:none"><input type="text" name="pdo_pass" id="pdo_pass" value="<?= htmlentities($pdo_pass) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($pdo_pass) ?>');return false;">copy</a>) <br/>
 </pre>
-<script>
-function setPGAdminCookies() {
-    var host = $("#pdo_host").val();
-    var port = $("#pdo_port").val();
-    var database = $("#pdo_database").val();
-    console.log(port, host, database);
-    var now = new Date();
-    var time = now.getTime();
-    var expireTime = time + 1000*36000;
-    now.setTime(expireTime);
-
-    document.cookie = 'pg4e_desc='+database+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
-    document.cookie = 'pg4e_port='+port+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
-    document.cookie = 'pg4e_host='+host+';expires='+now.toGMTString()+';path=/;SameSite=Secure';
-}
-</script>
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
 <img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<?php if ( $LAUNCH->user->instructor ) { ?>
 <input type="submit" name="default" value="Reset Values">
+<?php } ?>
 <?php if ( $endform) echo("</form>\n"); ?>
 </p>
 <p>
@@ -376,7 +358,7 @@ function pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass
     );
     } catch(Exception $e) {
         $_SESSION['error'] = "Could not make database connection to ".$pdo_host." / ".$pdo_user
-            ." | ".$e->getMessage();
+            ." | ".$e->getMessage() . '.  If you need to create (or re-create) your database, you must use initial database setup.';
         header( 'Location: '.addSession('index.php') ) ;
         return false;
     }
@@ -550,9 +532,8 @@ function pg4e_user_es_post($LAUNCH) {
     return $retval;
 }
 
-// The instructor precedence with config is SESSION, COOKIE, CONFIG
+// The instructor precedence with config is SESSION, CONFIG
 // The student precedence with config is SESSION, CONFIG
-// Without config, the precedence is SESSION, COOKIE
 function pg4e_user_es_data($LAUNCH) {
     global $CFG;
     global $pg4e_request_result, $pg4e_request_url;
@@ -563,14 +544,12 @@ function pg4e_user_es_data($LAUNCH) {
 
     $cfg = getConfig();
 
-    $_NOT_COOKIE = array(); // TODO: Remove this after  July 2020
-
-    $es_host = U::get($_SESSION, 'es_host', U::get($_NOT_COOKIE, 'es_host'));
-    $es_scheme = U::get($_SESSION, 'es_scheme', U::get($_NOT_COOKIE, 'es_scheme'));
-    $es_prefix = U::get($_SESSION, 'es_prefix', U::get($_NOT_COOKIE, 'es_prefix'));
-    $es_port = U::get($_SESSION, 'es_port', U::get($_NOT_COOKIE, 'es_port'));
-    $es_user = U::get($_SESSION, 'es_user', U::get($_NOT_COOKIE, 'es_user'));
-    $es_pass = U::get($_SESSION, 'es_pass', U::get($_NOT_COOKIE, 'es_pass'));
+    $es_host = U::get($_SESSION, 'es_host');
+    $es_scheme = U::get($_SESSION, 'es_scheme');
+    $es_prefix = U::get($_SESSION, 'es_prefix');
+    $es_port = U::get($_SESSION, 'es_port');
+    $es_user = U::get($_SESSION, 'es_user');
+    $es_pass = U::get($_SESSION, 'es_pass');
 
     if ( strlen($es_host) < 1 && $cfg && strlen($cfg->es_password) > 1) {
         $es_host = $cfg->es_host;
@@ -730,7 +709,10 @@ CREATE TABLE IF NOT EXISTS pg4e_meta (
     $valstr = md5($date_utc.'::'.$LAUNCH->context->key.'::'.md5($CFG->dbpass).'::42::'.
                 ($LAUNCH->user->id*42).'::'.($LAUNCH->context->id*42));
     pg4e_insert_meta($PDO, "user_id", $LAUNCH->user->id);
+    if ( isset( $LAUNCH->user->email) && is_string($LAUNCH->user->email) ) pg4e_insert_meta($PDO, "user_email", $LAUNCH->user->email);
+    if ( isset( $LAUNCH->user->displayname) && is_string($LAUNCH->user->displayname) ) pg4e_insert_meta($PDO, "user_displayname", $LAUNCH->user->displayname);
     pg4e_insert_meta($PDO, "context_id", $LAUNCH->context->id);
+    if ( isset( $LAUNCH->context->title) && is_string($LAUNCH->context->title) ) pg4e_insert_meta($PDO, "context_title", $LAUNCH->context->title);
     pg4e_insert_meta($PDO, "key", $LAUNCH->context->key);
     pg4e_insert_meta($PDO, "access", $date_utc);
     pg4e_insert_meta($PDO, "code", $valstr);
