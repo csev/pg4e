@@ -22,7 +22,7 @@ $code = getCode($LAUNCH);
 $entry = $problems[($code % count($problems))];
 $regex = $entry[0];
 $message = $entry[1];
-$sql = "SELECT purpose FROM taxdata WHERE purpose ~ '$regex' LIMIT 3";
+$sql = "SELECT purpose FROM taxdata WHERE purpose ~ '$regex' ORDER BY purpose LIMIT 3";
 
 $readonly_pdo = pg4e_get_readonly_connection();
 if ( ! $readonly_pdo ) {
@@ -64,7 +64,7 @@ if ( strlen($query) > 0 ) {
         return;
     }
 
-    $student_sql = "SELECT purpose FROM taxdata WHERE purpose ~ '$query' LIMIT 3";
+    $student_sql = "SELECT purpose FROM taxdata WHERE purpose ~ '$query' ORDER BY purpose LIMIT 3";
 
     $stmt = $readonly_pdo->queryReturnError($student_sql);
     if ( ! $stmt || ! $stmt->success ) {
@@ -133,7 +133,7 @@ Write a regular expressions to retrieve that meet the following criteria:
 As an example (not the solution to this assignment), if you were looking for lines where the <i>very first</i>
 character was an upper case character letter you would run the following query:
 <pre>
-SELECT purpose FROM taxdata WHERE purpose ~ '<b>^[A-Z]</b>' LIMIT 3;
+SELECT purpose FROM taxdata WHERE purpose ~ '<b>^[A-Z]</b>' ORDER BY purpose LIMIT 3;
 </pre>
 The autograder will add all the SQL - all you need is to enter the appropriate regular expression
 below.
