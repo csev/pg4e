@@ -8,7 +8,7 @@
 # edit hidden.py and put in your credentials
 
 # python3 swapi.py
-# Pulls data from the swapi.co API and puts it into our swapi table
+# Pulls data from the swapi.py4e.com API and puts it into our swapi table
 
 import psycopg2
 import hidden
