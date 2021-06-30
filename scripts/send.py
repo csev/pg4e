@@ -7,5 +7,5 @@ Subject: Hi there
 
 This YADA message is sent from Python."""
 
-myutils.sendMail(message)
+myutils.sendMail(message, "csev@umich.edu")
 

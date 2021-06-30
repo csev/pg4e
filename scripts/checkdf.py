@@ -1,7 +1,7 @@
 import os
 import myutils
 
-trigger = 42
+trigger = 55
 size = -1
 dfcommand = "df -Ph | grep '/dev/xvda1' | awk '{ print $5}' | sed 's/%//'"
 zap = os.popen(dfcommand).readlines();

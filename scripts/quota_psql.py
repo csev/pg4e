@@ -17,6 +17,7 @@ import hidden
 import time
 import myutils
 from email.message import EmailMessage
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT # <-- ADD THIS LINE
 
 quota = 60000000
 
@@ -35,6 +36,8 @@ conn = psycopg2.connect(
         user=secrets['user'],
         password=secrets['pass'],
         connect_timeout=3)
+conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+# conn.autocommit = True
 cur = conn.cursor()
 
 sql = "select datname,oid from pg_database where datname='pg4e_025ca';"
@@ -48,9 +51,9 @@ sql = "SELECT datname,oid FROM pg_database ORDER BY oid;"
 stmt = cur.execute(sql)
 
 toolarge = list()
-while True :
-    row = cur.fetchone() 
-    if not row : break
+rows = cur.fetchall()
+cur.close()
+for row in rows:
     db_name = row[0]
     if not db_name.startswith('pg4e_') : continue
     db_oid = row[1]
@@ -73,8 +76,33 @@ while True :
 
     # If files have been changing
     if tot < quota : continue
-    print (db_name, db_folder, count, tot)
-    toolarge.append((db_name, db_folder, count, tot))
+    conn2 = psycopg2.connect(
+        host=secrets['host'],
+        port=secrets['port'],
+        database=db_name,
+        user=secrets['user'],
+        password=secrets['pass'],
+        connect_timeout=3)
+    cur2 = conn2.cursor()
+    sql2 = "SELECT * FROM pg4e_meta LIMIT 100;"
+    user_email = False
+    user_displayname = False
+    try:
+        stmt2 = cur2.execute(sql2)
+        meta = cur2.fetchall()
+        # print(meta)
+        for tup in meta:
+            if tup[1] == 'user_email' :
+                user_email = tup[2]
+            if tup[1] == 'user_displayname' :
+                user_displayname = tup[2]
+    except:
+        pass
+    cur2.close()
+    conn2.close()
+
+    print (db_name, db_folder, count, tot, user_email, user_displayname)
+    toolarge.append((db_name, db_folder, count, tot, user_email, user_displayname))
 
 if not dryrun :
     print("Here we go - going to delete", len(toolarge))
@@ -82,9 +110,13 @@ if not dryrun :
 
 print()
 actions = list()
+emails = list()
+cur = conn.cursor()
 for db in toolarge:
     sql = 'DROP DATABASE '+db[0]+';'
-    actions.append(sql+' -- count='+str(db[2])+' tot='+str(db[3]))
+    actions.append(sql+' -- count='+str(db[2])+' tot='+str(db[3])+' '+str(db[4])+' '+str(db[5]))
+    if db[4] : 
+        emails.append(db[4])
     if not dryrun:
         print(sql)
         time.sleep(1)
@@ -100,6 +132,10 @@ if len(actions) > 0 :
     if dryrun: message = message + "This is a dry run\n\n";
     for action in actions:
         message = message + action + "\n";
+    message = message + "\n";
+    for email in emails:
+        message = message + email + "\n";
+
     print(message)
     myutils.sendMail(message)
 
