@@ -102,6 +102,7 @@ if ( strlen($query) > 0 ) {
     }
 
     $gradetosend = 1.0;
+    $pg_PDO = false;  // Don't store in debug
     pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate);
 
     // Redirect to ourself
