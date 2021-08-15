@@ -53,8 +53,15 @@ $query = U::get($_POST, 'query');
 if ( strlen($query) > 0 ) {
     // Don't trim this - a space might be meaningful
     $query = U::get($_POST, 'query');
-    if ( stripos($query, 'drop table') !== false ) {
+    if ( stripos($query, 'drop table') !== false ||
+         stripos($query, '"') !== false || stripos($query, "'") !== false ) {
         header('Location: https://imgs.xkcd.com/comics/exploits_of_a_mom.png');
+        return;
+    }
+
+    if ( stripos($query, 'select') !== false ) {
+        $_SESSION['error'] = "You don't need to write en entire SQL statement - just the regular expression";
+        header('Location: '.addSession('index.php'));
         return;
     }
 
