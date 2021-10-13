@@ -33,13 +33,14 @@ if ( U::get($_POST,'check') ) {
         // Get one row
         $failure = false;
         $row = $stmt->fetch(\PDO::FETCH_NUM);
-        if ( $row == false ) {
+        if ( ! is_array($row) || $row[0] < 1 ) {
             $_SESSION['error'] = "Unable to retrieve a row with the name '$name'";
             $failure = true;
             header( 'Location: '.addSession('index.php') ) ;
             return;
         }
     }
+
     $stmt->closeCursor();
 
     $gradetosend = 1.0;
