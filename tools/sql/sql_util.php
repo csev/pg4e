@@ -386,6 +386,10 @@ function pg4e_check_debug_table($LAUNCH, $pg_PDO) {
         header( 'Location: '.addSession('index.php') ) ;
         return false;
     }
+    // Leave trail as to last access
+    $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+    $date_utc = $date_utc->format('Y-m-d');
+    pg4e_insert_meta($pg_PDO, "access", $date_utc);
     return true;
 }
 
@@ -714,6 +718,7 @@ CREATE TABLE IF NOT EXISTS pg4e_meta (
     pg4e_insert_meta($PDO, "context_id", $LAUNCH->context->id);
     if ( isset( $LAUNCH->context->title) && is_string($LAUNCH->context->title) ) pg4e_insert_meta($PDO, "context_title", $LAUNCH->context->title);
     pg4e_insert_meta($PDO, "key", $LAUNCH->context->key);
+    pg4e_insert_meta($PDO, "create", $date_utc);
     pg4e_insert_meta($PDO, "access", $date_utc);
     pg4e_insert_meta($PDO, "code", $valstr);
 
