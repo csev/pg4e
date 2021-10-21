@@ -42,6 +42,7 @@ sql = "SELECT setting FROM pg_settings WHERE name = 'data_directory';"
 data_directory = myutils.queryValue(cur, sql)
 print('Data directory', data_directory)
 
+# https://stackoverflow.com/questions/24806122/get-database-creation-date-on-postgresql
 sql = "SELECT datname,oid,(pg_stat_file('base/'||oid ||'/PG_VERSION')).modification FROM pg_database ORDER BY oid;"
 stmt = cur.execute(sql)
 
