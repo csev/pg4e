@@ -34,7 +34,7 @@ conn = psycopg2.connect(
 conn.autocommit = True
 cur = conn.cursor()
 
-sql = "select datname,oid from pg_database where datname='pg4e_025ca';"
+sql = "select datname,oid,(pg_stat_file('base/'||oid ||'/PG_VERSION')).modification from pg_database where datname='pg4e_025ca';"
 sql = "SELECT datname FROM pg_database;"
 # row = cur.execute(sql, fields)
 
@@ -42,7 +42,7 @@ sql = "SELECT setting FROM pg_settings WHERE name = 'data_directory';"
 data_directory = myutils.queryValue(cur, sql)
 print('Data directory', data_directory)
 
-sql = "SELECT datname,oid FROM pg_database ORDER BY oid;"
+sql = "SELECT datname,oid,(pg_stat_file('base/'||oid ||'/PG_VERSION')).modification FROM pg_database ORDER BY oid;"
 stmt = cur.execute(sql)
 
 expired = list()
@@ -57,7 +57,16 @@ while True :
     if db_name.startswith('pg4e_data') : continue
     if not db_name.startswith('pg4e_') : continue
     db_oid = row[1]
-    # time.sleep(1)
+    db_stat = row[2]
+    now_at=datetime.datetime.now().astimezone()
+    ts_diff=now_at-db_stat
+    f_days=int(ts_diff.total_seconds() / (60*60*24))
+    if f_days < 120:
+        keep = keep + 1
+        # print(db_name, 'keep f_days', f_days)
+        continue
+
+    time.sleep(1)
 
     if cur2 is not False:
         try:
