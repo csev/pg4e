@@ -15,7 +15,7 @@ from email.message import EmailMessage
 
 limit = 10
 dryrun = True
-if len(sys.argv) == 2 and sys.argv[1] == "delete" : 
+if len(sys.argv) == 2 and sys.argv[1] == "delete" :
     print('This is the real deal!')
     dryrun = False
 
@@ -52,7 +52,7 @@ cur2 = False
 keep = 0
 while True :
     if len(expired) > limit : break
-    row = cur.fetchone() 
+    row = cur.fetchone()
     if not row : break
     db_name = row[0]
     if db_name.startswith('pg4e_data') : continue
@@ -60,7 +60,12 @@ while True :
     db_oid = row[1]
     db_stat = row[2]
     now_at=datetime.datetime.now().astimezone()
+
+    # https://stackoverflow.com/questions/5476065/how-to-truncate-the-time-on-a-datetime-object
+    now_at = now_at.replace(hour=0, minute=0, second=0, microsecond=0)
+    db_stat = db_stat.replace(hour=0, minute=0, second=0, microsecond=0)
     ts_diff=now_at-db_stat
+
     f_days=int(ts_diff.total_seconds() / (60*60*24))
     if f_days < 120:
         keep = keep + 1
@@ -106,10 +111,13 @@ while True :
         continue
 
     created_at = row[1]
+    if created_at is not None : created_at = created_at.replace(hour=0, minute=0, second=0, microsecond=0)
     updated_at = row[2]
+    if updated_at is not None : updated_at = updated_at.replace(hour=0, minute=0, second=0, microsecond=0)
+    now_at=datetime.datetime.now()
+    now_at = now_at.replace(hour=0, minute=0, second=0, microsecond=0)
 
     # https://stackoverflow.com/questions/1345827/how-do-i-find-the-time-difference-between-two-datetime-objects-in-python
-    now_at=datetime.datetime.now()
     if created_at is None:
         c_days = 999
     else:
@@ -123,11 +131,11 @@ while True :
 
     # print(db_name, c_days, u_days)
 
-    if c_days < 120 : 
+    if c_days < 110 :
         print(db_name, "keep create",c_days,u_days)
         keep = keep + 1
         continue
-    if u_days < 60 : 
+    if u_days < 60 :
         print(db_name, "keep update",c_days,u_days)
         keep = keep + 1
         continue
