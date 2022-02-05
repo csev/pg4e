@@ -137,9 +137,18 @@ If necessary, copy <b>hidden-dist.py</b> to <b>hidden.py</b> and put your Elasti
 into the <b>elastic()</b> method.  You should also put your PostgreSQL secrets into this file as well.
 </p>
 <p>
-You will need to install the Python Elasticsearch library if you have not already done so.
+You will need to install the Python Elasticsearch library (version 7.13.x) if you have not already done so.
 <pre>
-pip install elasticsearch
+pip install 'elasticsearch<7.14.0'
+</pre>
+</p>
+<p>
+If installing elasticsearch locally run <b>pip</b> with the <b>-m</b> flag enabled:
+<pre>
+macOS: python3 -m pip install 'elasticsearch<7.14.0'
+</pre>
+<pre>
+Windows: python -m pip install 'elasticsearch<7.14.0'
 </pre>
 </p>
 <p>

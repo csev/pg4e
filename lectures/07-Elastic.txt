@@ -1,5 +1,5 @@
 
 https://elasticsearch-py.readthedocs.io/en/master/
 
-pip install elasticsearch
+pip install 'elasticsearch<7.14.0'
 
