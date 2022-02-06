@@ -3,7 +3,7 @@
 # Example from:
 # https://elasticsearch-py.readthedocs.io/en/master/
 
-# pip3 install elasticsearch
+# pip install 'elasticsearch<7.14.0'
 
 # (If needed)
 # https://www.pg4e.com/code/hidden-dist.py
