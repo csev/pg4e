@@ -18,6 +18,8 @@ learn the <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a> d
 You can take this course and receive a certificate at:
 <ul>
 <li><a href="https://www.coursera.org/specializations/postgresql-for-everybody" target="_blank">Coursera: PostgreSQL for Everybody Specialization</a> </li>
+<li><a href="https://www.edx.org/professional-certificate/michiganx-postgresql-for-everybody" target="_blank">edX: Professional Certificate in
+PostgreSQL</a> </li>
 </ul>
 </p>
 <p>
