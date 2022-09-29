@@ -12,8 +12,8 @@ $problems = array(
     array('\([A-Z][A-Z][A-Z]\)', "Lines that have three upper case characters in parenthesis like (LTI) - remember to escape certain characters :)"),
     array('^[A-Z ]*$', 'Lines that are all upper case letters and spaces and nothing else'),
     array('[:,;]', 'Lines that include a colon (:), comma, or semicolon (;) anywhere in the line'),
-    array('\?$', "Lines that end with a question mark? (don't forget to escape)"),
-    array('\.$', "Lines that end with a period. (don't forget to escape)"),
+    array('\?$', "Lines that end with a question mark (?) (don't forget to escape)"),
+    array('\.$', "Lines that end with a period (.) (don't forget to escape)"),
     array('^[A-Z][a-z]', "Lines where the first character is upper case and the second character is lower case"),
 );
 
