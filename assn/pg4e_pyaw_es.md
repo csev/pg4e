@@ -17,12 +17,12 @@ Installing the Python Elastic Search Library
 Since PythonAnywhere is a shared environment, using `pip` the normal way will *not* work
 unless you have created a virtual environment.
 
-    pip install elasticsearch
+    pip install 'elasticsearch<7.14.0'
 
 You can set up a virtual environment and then use `pip` or just add the `--user` parameter to pip.
 Also make sure you are doing it for Python 3.
 
-    pip3 install --user elasticsearch
+    pip3 install --user 'elasticsearch<7.14.0'
 
 <center><img src="pg4e_pyaw_es/01-pip.png" width="90%" alt="Using pip --user on PythonAnywhere" style="border: 1px black solid;"></center>
 
