@@ -127,9 +127,8 @@ $endform = false;
 pg4e_user_es_form($LAUNCH, $endform);
 ?>
 </p>
-<p>
-Please enter your Python code in the space below the assignment instructions.
-</p>
+<p>The autograder will run a query that looks for data from the emails has been successfully inserted into rows in the Elasticsearch index.</p>
+<p>Optionally, but not required by the autograder, feel free to paste your Python code in the space below the assignment to share with reviewers.</p>
 <!--
 <?php
   if ( isset($_SESSION['last_parms']) ) {

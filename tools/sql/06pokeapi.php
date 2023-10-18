@@ -64,9 +64,6 @@ $endform = false;
 pg4e_user_db_form($LAUNCH, $endform);
 ?>
 <p>
-Please enter your Python code in the space below the assignment instructions.
-</p>
-<p>
 Here is the table to create:
 <pre>
 CREATE TABLE IF NOT EXISTS pokeapi (id INTEGER, body JSONB);
@@ -83,10 +80,12 @@ application.
 All you need to do is loop through and retrieve
 the JSON data for urls ending in 1..100 and store it in the above table.
 </p>
+<p>The autograder will run a query that looks for data from the API has been successfully inserted into rows in the <code>pokeapi</code> table.</p>
 <p>
-There is no need to have a status field or have a retartable process for this assignment.  
+There is no need to have a status field or have a restartable process for this assignment.  
 Just get the first 100 JSON items and store them in the above table.
 </p>
+<p>Optionally, but not required by the autograder, feel free to paste your Python code in the space below the assignment to share with reviewers.</p>
 <?php
 if ( $LAUNCH->user->instructor ) {
     echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");
