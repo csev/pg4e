@@ -77,8 +77,12 @@ You can look at the code for
 and use it to help you write your application - 
 but your application will be much simpler than the <b>swapi.py</b>
 application.
-All you need to do is loop through and retrieve
-the JSON data for urls ending in 1..100 and store it in the above table.
+</p>
+<p>
+What you need to do is loop through the <a href="https://pokeapi.co/" target="_blank">PokéAPI</a> and retrieve the JSON data for urls ending in 1..100 and store it in the above table.   
+Here is an example URL that ends in <code>1</code>: <code>https://pokeapi.co/api/v2/pokemon/1</code>.  You may find that the Pokemon API supports other 
+URL patterns to retrieve the data, which is fine!  But a simple approach wouuld be to loop through the numbers 1..100 and modify this URL to retrieve 
+the data for that item.
 </p>
 <p>The autograder will run a query that looks for data from the API has been successfully inserted into rows in the <code>pokeapi</code> table.</p>
 <p>
