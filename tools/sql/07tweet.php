@@ -147,8 +147,9 @@ macOS: python3 -m pip install 'elasticsearch<7.14.0'
 Windows: python -m pip install 'elasticsearch<7.14.0'
 </pre>
 </p>
+<p>The goal of this assignment is to loop through the automatically generated tweets above and index them as documents in your Elasticsearch index with tweet text stored in the field <code>text</code>.  See the file <code>elasticbook.py</code> for some hints and inspiration for how to accomplish this.</p>
 <p>
-This autograder will run a command equivalent to using the <b>elastictool.py</b> command as follows:
+This autograder will run a command equivalent to using the <b>elastictool.py</b> command as follows, but will be looking for words or phrases from your automatically generated "tweets" above:
 <pre>
 $ python3 elastictool.py
 

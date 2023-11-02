@@ -24,8 +24,8 @@ import json
 import hashlib
 
 bookfile = input("Enter book file (i.e. pg18866.txt): ")
-if bookfile == '' : bookfile = 'pg18866.txt';
-indexname = bookfile.split('.')[0]
+if bookfile.strip() == '':
+    raise Exception("empty string detected, please try again to enter a book file")
 
 # Make sure we can open the file
 fhand = open(bookfile)
@@ -41,6 +41,8 @@ es = Elasticsearch(
     port=secrets['port'],
     connection_class=RequestsHttpConnection,
 )
+
+# set indexname equal to elasticsearch username
 indexname = secrets['user']
 
 # Start fresh
