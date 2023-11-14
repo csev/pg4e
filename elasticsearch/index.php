@@ -35,6 +35,7 @@ $es_pass = es_makepw($auth_user, $backend_pw);
 
 if ( $es_pass != $auth_pw ) {
     header('HTTP/1.0 403 Forbidden');
+    echo("Password mismatch");
     error_log("403 user=$auth_user pw=$auth_pw backend=$es_pass");
     return;
 }
