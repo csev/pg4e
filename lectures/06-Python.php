@@ -108,7 +108,7 @@ conn = psycopg2.connect(
     user='pg4e_user_42', password='pg4e_pass_42',
     connect_timeout=3)
 </pre>
-The connection makes ure that your account and password are correct and
+The connection makes sure that your account and password are correct and
 there is truly a PostgreSQL server running on the specified host.  If you notice
 in the code for 
 <a href="../code/simple.py" target="_blank">simple.py</a>, we store the actual secrets
