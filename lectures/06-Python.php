@@ -306,14 +306,14 @@ where it left off.
 </p>
 <p>
 Like a web crawler, our goal is to make a complete copy of the data in our
-fast database, and clean it up and so we can releatedly do very fast
+fast database, and clean it up and so we can repeatedly do very fast
 data analysis on our copy of the data.
 </p>
 <p>
 This is a complex bit of sample code and took more than a week of trial and
 error to develop, so as you look at this code, don't feel like somehow
 every trick and technique to clean the data, recover form errors or build
-a restartable process is somwthing you just write from scratch and it works
+a restartable process is something you just write from scratch and it works
 perfectly the first time.  
 </p>
 <p>Code like this evolves based on your data analysis needs and the vagaries
