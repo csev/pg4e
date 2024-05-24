@@ -62,8 +62,8 @@ while True :
     now_at=datetime.datetime.now().astimezone()
 
     # https://stackoverflow.com/questions/5476065/how-to-truncate-the-time-on-a-datetime-object
-    now_at = now_at.replace(hour=0, minute=0, second=0, microsecond=0)
-    db_stat = db_stat.replace(hour=0, minute=0, second=0, microsecond=0)
+    now_at = now_at.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
+    db_stat = db_stat.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
     ts_diff=now_at-db_stat
 
     f_days=int(ts_diff.total_seconds() / (60*60*24))
@@ -111,11 +111,11 @@ while True :
         continue
 
     created_at = row[1]
-    if created_at is not None : created_at = created_at.replace(hour=0, minute=0, second=0, microsecond=0)
+    if created_at is not None : created_at = created_at.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
     updated_at = row[2]
-    if updated_at is not None : updated_at = updated_at.replace(hour=0, minute=0, second=0, microsecond=0)
+    if updated_at is not None : updated_at = updated_at.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
     now_at=datetime.datetime.now()
-    now_at = now_at.replace(hour=0, minute=0, second=0, microsecond=0)
+    now_at = now_at.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
 
     # https://stackoverflow.com/questions/1345827/how-do-i-find-the-time-difference-between-two-datetime-objects-in-python
     if created_at is None:
