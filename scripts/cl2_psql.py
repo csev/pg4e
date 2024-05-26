@@ -1,4 +1,3 @@
-
 # Cleanup unused databases
 
 # python3 cleanup_psql.py
@@ -105,7 +104,7 @@ while True :
         expired.append((db_name, "Schema fail",0,0))
         continue
 
-    if row == False or len(row) != 3 :
+    if row == None or len(row) != 3 :
         print(db_name, "p4e_meta missing")
         expired.append((db_name, "p4e_meta missing",0,0))
         continue
@@ -179,11 +178,12 @@ for db in expired:
 cur.close()
 
 # Send some email
-if len(actions) > 0 :
-    message = "Subject: Postgres Expire Actions ("+str(len(actions))+")\n\n"
-    if dryrun: message = message + "This is a dry run\n\n";
-    for action in actions:
-        message = message + action + "\n";
-    print(message)
-    myutils.sendMail(message)
+## if len(actions) > 0 :
+##     message = "Subject: Postgres Expire Actions ("+str(len(actions))+")\n\n"
+##     if dryrun: message = message + "This is a dry run\n\n";
+##     for action in actions:
+##         message = message + action + "\n";
+##     print(message)
+##     myutils.sendMail(message)
+
 
