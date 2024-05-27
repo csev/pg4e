@@ -1,3 +1,4 @@
+
 # Cleanup unused databases
 
 # python3 cleanup_psql.py
@@ -12,7 +13,7 @@ import sys
 import math
 from email.message import EmailMessage
 
-limit = 10
+limit = 1
 dryrun = True
 if len(sys.argv) == 2 and sys.argv[1] == "delete" :
     print('This is the real deal!')
@@ -100,12 +101,12 @@ while True :
         stmt = cur2.execute(sql)
         row = cur2.fetchone()
     except:
-        print(db_name, "Schema fail")
+        print(db_name, "Schema fail", f_days)
         expired.append((db_name, "Schema fail",0,0))
         continue
 
     if row == None or len(row) != 3 :
-        print(db_name, "p4e_meta missing")
+        print(db_name, "p4e_meta missing", f_days)
         expired.append((db_name, "p4e_meta missing",0,0))
         continue
 
@@ -178,12 +179,12 @@ for db in expired:
 cur.close()
 
 # Send some email
-## if len(actions) > 0 :
-##     message = "Subject: Postgres Expire Actions ("+str(len(actions))+")\n\n"
-##     if dryrun: message = message + "This is a dry run\n\n";
-##     for action in actions:
-##         message = message + action + "\n";
-##     print(message)
-##     myutils.sendMail(message)
-
+if len(actions) > 0 :
+    subject = "PG4E: Postgres Expire Actions ("+str(len(actions))+")"
+    body = '';
+    if dryrun: body = body + "This is a dry run\n\n";
+    for action in actions:
+        body = body + action + "\n";
+    print(body)
+    print(myutils.sendNotification(subject,body))
 

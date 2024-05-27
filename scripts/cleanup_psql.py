@@ -38,6 +38,7 @@ sql = "SELECT datname FROM pg_database;"
 
 sql = "SELECT setting FROM pg_settings WHERE name = 'data_directory';"
 data_directory = myutils.queryValue(cur, sql)
+print('Data directory', data_directory)
 
 sql = "SELECT datname,oid FROM pg_database ORDER BY oid;"
 stmt = cur.execute(sql)
@@ -60,8 +61,8 @@ while True :
 
     # Check the latest file modification date
     file_mod = myutils.mtime(db_folder)
-    # print( "last modified: %s" % time.ctime(os.path.getmtime(db_folder)))
-    # print((db_name, db_folder, folder_days, file_mod))
+    print( "last modified: %s" % time.ctime(os.path.getmtime(db_folder)))
+    print((db_name, db_folder, folder_days, file_mod))
 
     # We want to the folder to be at least 60 days old (i.e. creation
     # date) and no files have been changing for 30 days
@@ -89,10 +90,11 @@ cur.close()
 
 # Send some email
 if len(actions) > 0 :
-    message = "Subject: Postgres Expire Actions ("+str(len(actions))+")\n\n"
+    subject = "Subject: Postgres Expire Actions ("+str(len(actions))+")"
+    message = ''
     if dryrun: message = message + "This is a dry run\n\n";
     for action in actions:
         message = message + action + "\n";
     print(message)
-    myutils.sendMail(message)
+    print(myutils.sendNotification(subject,message))
 

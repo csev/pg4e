@@ -1,9 +1,9 @@
 import os
 import myutils
 
-trigger = 55
+trigger = 57
 size = -1
-dfcommand = "df -Ph | grep '/dev/xvda1' | awk '{ print $5}' | sed 's/%//'"
+dfcommand = "df -Ph | grep '/dev/nvme0n1p1' | awk '{ print $5}' | sed 's/%//'"
 zap = os.popen(dfcommand).readlines();
 
 try:
@@ -16,16 +16,15 @@ if size > 0 and size < trigger:
     quit()
 
 if size > 0 and size >= trigger:
-    message = f"Subject: PG4E Disk Space {size}% Exceeds Threshold of {trigger}%\n\n"
+    subject = f"PG4E: Disk Space {size}% Exceeds Threshold of {trigger}%"
 else:
-    message = f"Subject: PG4E Disk Space Got Incorect Data From df Command\n\n"
+    subject = f"PG4E: Disk Space Got Incorect Data From df Command"
 
-message = message + "command: " + dfcommand + "\n\n";
+message = "command: " + dfcommand + "\n\n";
 message = message + "popen returned "+str(len(zap))+" line(s)\n\n"
 for line in zap:
     message = message + line
 
 print(message)
-myutils.sendMail(message)
-
+print(myutils.sendNotification(subject,message))
 

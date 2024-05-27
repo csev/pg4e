@@ -46,6 +46,7 @@ sql = "SELECT datname FROM pg_database;"
 
 sql = "SELECT setting FROM pg_settings WHERE name = 'data_directory';"
 data_directory = myutils.queryValue(cur, sql)
+print('Data directory', data_directory)
 
 sql = "SELECT datname,oid FROM pg_database ORDER BY oid;"
 stmt = cur.execute(sql)
@@ -128,7 +129,8 @@ print(actions)
 
 # Send some email
 if len(actions) > 0 :
-    message = "Subject: Postgres Quota Actions ("+str(len(actions))+")\n\n"
+    subject = "Subject: Postgres Quota Actions ("+str(len(actions))+")"
+    message = ''
     if dryrun: message = message + "This is a dry run\n\n";
     for action in actions:
         message = message + action + "\n";
@@ -137,5 +139,5 @@ if len(actions) > 0 :
         message = message + email + "\n";
 
     print(message)
-    myutils.sendMail(message)
+    print(myutils.sendNotification(subject,message))
 

@@ -13,7 +13,6 @@ import sys
 import json
 import hidden
 import myutils
-from email.message import EmailMessage
 
 dryrun = True
 if len(sys.argv) == 2 and sys.argv[1] == "delete" :
@@ -39,6 +38,7 @@ prurl = caturl.replace(secrets['pass'],'*****')
 # Get the detail
 response = requests.get(caturl)
 text = response.text
+# print('Debug', text)
 status = response.status_code
 js = json.loads(text)
 
@@ -48,7 +48,9 @@ indices = list()
 for entry in js:
     size = myutils.getBytes(entry['store.size'])
     uuid = entry['uuid']
-    fpath = basepath + uuid 
+    # fpath = basepath + uuid 
+    fpath = basepath + uuid + '/0/index'
+    # print('fpath', fpath);
     days = myutils.mtime(fpath)
     index = entry['index']
     if not index.startswith('pg4e_') : continue
@@ -83,10 +85,12 @@ for index in indices:
 
 # Send some email
 if len(actions) > 0 :
-    message = "Subject: Elastic Search Actions ("+str(len(actions))+")\n\n"
+    subject = "Subject: Elastic Search Actions ("+str(len(actions))+")"
+    message = ''
     if dryrun: message = message + "This is a dry run\n\n";
     for action in actions:
         message = message + action + "\n";
     print(message)
-    myutils.sendMail(message)
+    print(myutils.sendNotification(subject,message))
+
 

@@ -3,6 +3,7 @@ import hidden
 import os
 import time
 import math
+import requests
 
 def queryValue(cur, sql, fields=None, error=None) :
     row = queryRow(cur, sql, fields, error);
@@ -74,3 +75,12 @@ def mtime(db_folder):
             count = count + 1
     if mod_days is None : return 60
     return mod_days
+
+def sendNotification(subject, body) :
+    secrets = hidden.notif()
+    secret = secrets['secret']
+    url = secrets['url']
+    response = requests.post(url,
+        data={"subject": subject, "secret": secret, "body": body},
+    )
+    return response
