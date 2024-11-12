@@ -9,6 +9,7 @@ use \Tsugi\Util\Mersenne_Twister;
 $MAX_UPLOAD_FILE_SIZE = 1024*1024;
 
 require_once "sql_util.php";
+require_once "00block.php";
 
 // echo("<pre>\n");var_dump($_POST);die('zap');
 
@@ -28,6 +29,11 @@ $user_connection = $admin_connection . ";dbname=" . $db;
 
 $admin_PDO = false;
 $user_PDO = false;
+
+if (array_key_exists($user, $BLOCKED_ACCOUNTS) ) {
+	echo("Your database is not functioning: ".$BLOCKED_ACCOUNTS[$user]);
+	return;
+}
 
 if ( U::get($_POST,'reset') ) {
     $admin_PDO = get_connection($admin_connection, $admin_user, $admin_pass);
