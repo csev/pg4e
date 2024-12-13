@@ -13,7 +13,7 @@ import sys
 import math
 from email.message import EmailMessage
 
-limit = 1
+limit = 10
 dryrun = True
 if len(sys.argv) == 2 and sys.argv[1] == "delete" :
     print('This is the real deal!')
@@ -43,7 +43,8 @@ data_directory = myutils.queryValue(cur, sql)
 print('Data directory', data_directory)
 
 # https://stackoverflow.com/questions/24806122/get-database-creation-date-on-postgresql
-sql = "SELECT datname,oid,(pg_stat_file('base/'||oid ||'/PG_VERSION')).modification FROM pg_database ORDER BY oid;"
+sql = "SELECT datname,oid,(pg_stat_file('base/'||oid ||'/PG_VERSION', true)).modification FROM pg_database ORDER BY oid;"
+print(sql)
 stmt = cur.execute(sql)
 
 expired = list()
@@ -51,7 +52,7 @@ conn2 = False
 cur2 = False
 keep = 0
 while True :
-    if len(expired) > limit : break
+    if len(expired) >= limit : break
     row = cur.fetchone()
     if not row : break
     db_name = row[0]
@@ -187,4 +188,5 @@ if len(actions) > 0 :
         body = body + action + "\n";
     print(body)
     print(myutils.sendNotification(subject,body))
+
 
