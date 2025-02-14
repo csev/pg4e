@@ -79,6 +79,14 @@
     ],
     "references" : [
         {
+            "title" : "Using PostgreSQL on PythonAnywhere",
+            "href" : "{apphome}/assn/pg4e_pyaw_psql.md"
+        },
+        {
+            "title" : "Demonstration: Using PostgreSQL on PythonAnywhere",
+            "href" : "https://youtu.be/a6-1bsy9kxw"
+        },
+        {
             "title" : "Sample SQL For Lecture",
             "href" : "{apphome}/lectures/01-Intro-to-SQL.txt"
         },
@@ -945,6 +953,10 @@
         {
             "title" : "High Contrast / Printable Slides",
             "href" : "{apphome}/lectures/07-Elastic-BW.pdf"
+        },
+        {
+            "title" : "Using ElasticSearch on PythonAnywhere",
+            "href" : "{apphome}/assn/pg4e_pyaw_es.md"
         }
     ],
     "lti" : [

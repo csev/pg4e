@@ -13,8 +13,6 @@ function buildMenu() {
         if ( isset($CFG->tdiscus) && $CFG->tdiscus  ) $set->addLeft('Discussions', $R.'discussions');
         if ( isset($_SESSION['id']) ) {
             $set->addLeft('My Progress', $R.'assignments');
-        } else {
-            $set->addLeft('Assignments', $R.'assn');
         }
     }
 
@@ -55,7 +53,6 @@ function buildMenu() {
             $set->addRight(htmlentities($_SESSION['displayname']), $submenu);
         }
     } else {
-        // $set->addLeft('Autograder', $T.'store');
         if ( isset($CFG->google_client_id) && $CFG->google_client_id ) {
             $set->addRight('Login', $T.'login.php');
         }
