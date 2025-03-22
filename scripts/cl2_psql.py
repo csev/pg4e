@@ -14,6 +14,14 @@ import math
 from email.message import EmailMessage
 
 limit = 10
+
+# First we keep it if the folder's modified date is < 50 days old
+expire_days_modified_folder = 60
+
+# If folder modified date is > 60 days old, we check the database dates
+expire_days_created = 90
+expire_days_updated = 50
+
 dryrun = True
 if len(sys.argv) == 2 and sys.argv[1] == "delete" :
     print('This is the real deal!')
@@ -34,9 +42,9 @@ conn = psycopg2.connect(
 conn.autocommit = True
 cur = conn.cursor()
 
-sql = "select datname,oid,(pg_stat_file('base/'||oid ||'/PG_VERSION')).modification from pg_database where datname='pg4e_025ca';"
-sql = "SELECT datname FROM pg_database;"
-# row = cur.execute(sql, fields)
+sql = "SELECT count(*) FROM pg_database;"
+db_count = myutils.queryValue(cur, sql)
+print("Database count ", db_count)
 
 sql = "SELECT setting FROM pg_settings WHERE name = 'data_directory';"
 data_directory = myutils.queryValue(cur, sql)
@@ -51,7 +59,9 @@ expired = list()
 conn2 = False
 cur2 = False
 keep = 0
+scanned = 0
 while True :
+    scanned = scanned + 1
     if len(expired) >= limit : break
     row = cur.fetchone()
     if not row : break
@@ -59,21 +69,28 @@ while True :
     if db_name.startswith('pg4e_data') : continue
     if not db_name.startswith('pg4e_') : continue
     db_oid = row[1]
-    db_stat = row[2]
+    db_stat = row[2] # Modification date of the database
     now_at=datetime.datetime.now().astimezone()
 
     # https://stackoverflow.com/questions/5476065/how-to-truncate-the-time-on-a-datetime-object
     now_at = now_at.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
-    db_stat = db_stat.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
-    ts_diff=now_at-db_stat
+    try:
+        db_stat = db_stat.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
+        ts_diff=now_at-db_stat
 
-    f_days=int(ts_diff.total_seconds() / (60*60*24))
-    if f_days < 120:
+        f_days=int(ts_diff.total_seconds() / (60*60*24))
+    except:
+        # failure to parse a date  pg4e_217c722bf9 00:00:00 None
+        print('failure to parse db_stat', db_name, db_stat)
+        f_days = 999
+
+    if f_days < expire_days_modified_folder:
         keep = keep + 1
         # print(db_name, 'keep f_days', f_days)
         continue
 
-    time.sleep(1)
+    # The fails passes the inexpensive "recent enough" test, lets check the DB itself
+    if (scanned % 10 == 0) : time.sleep(1)
 
     if cur2 is not False:
         try:
@@ -132,17 +149,17 @@ while True :
 
     # print(db_name, c_days, u_days)
 
-    if c_days < 110 :
-        print(db_name, "keep create",c_days,u_days)
+    if c_days < expire_days_created :
+        print(db_name, "keep create",c_days,u_days, f_days)
         keep = keep + 1
         continue
-    if u_days < 60 :
-        print(db_name, "keep update",c_days,u_days)
+    if u_days < expire_days_updated :
+        print(db_name, "keep update",c_days,u_days, f_days)
         keep = keep + 1
         continue
 
-    print(db_name, "expired",c_days,u_days)
-    expired.append((db_name, "expired",c_days,u_days))
+    print(db_name, "expired",c_days,u_days, f_days)
+    expired.append((db_name, "expired",c_days,u_days, f_days))
 
 if cur2 is not False:
     try:
@@ -157,7 +174,7 @@ if conn2 is not False:
         pass
     conn2 = False
 
-print('Keep', keep, 'expire', len(expired))
+print('Scanned', scanned, 'Keep', keep, 'expire', len(expired))
 
 if not dryrun :
     print("Here we go - going to delete", len(expired))
@@ -165,7 +182,10 @@ if not dryrun :
 
 print()
 actions = list()
+first = True
 for db in expired:
+    if ( first ) : actions.append('Scanned '+str(scanned)+ ' Keep '+str(keep)+' expire '+str(len(expired)))
+    first = False
     sql = 'DROP DATABASE '+db[0]+';'
     actions.append(sql+' '+db[1]+' -- create days='+str(db[2])+' update_days='+str(db[3]))
     if not dryrun:
@@ -182,11 +202,10 @@ cur.close()
 # Send some email
 if len(actions) > 0 :
     subject = "PG4E: Postgres Expire Actions ("+str(len(actions))+")"
-    body = '';
-    if dryrun: body = body + "This is a dry run\n\n";
+    body = ''
+    if dryrun: body = body + "This is a dry run\n\n"
     for action in actions:
-        body = body + action + "\n";
+        body = body + action + "\n"
     print(body)
     print(myutils.sendNotification(subject,body))
-
 
