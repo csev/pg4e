@@ -130,7 +130,7 @@ if ( $dueDate->message ) {
 <h1>Unesco Heritage Sites Many-to-One</h1>
 <p>
 In this assignment you will read some
-<a href="https://whc.unesco.org/en/list/" target="_blank">Unesco Heritage Site</a> data
+<a href="https://whc.unesco.org/en/list/" target="_blank" class="btn btn-primary" >Unesco Heritage Site</a> data
 in comma-separated-values (CSV) format
 and produce properly normalized tables as specified below.
 Once you have placed the proper data in the tables, press the button below to
