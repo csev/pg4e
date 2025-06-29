@@ -31,6 +31,10 @@ def readonly():
             "user": "readonly",
             "pass": "readonly_password"}
 
+def denokv():
+    return {"token" : "42",
+            "url": "https://charlesseve-deno-first-10.deno.dev"}
+
 # Return a psycopg2 connection string
 
 # import hidden

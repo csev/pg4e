@@ -13,7 +13,7 @@ def prettyjson(status, text):
         print("Error, status=", status)
 
 def addkey(url, secrets):
-    queryurl = url + "?key=" + secrets['key']
+    queryurl = url + "?token=" + secrets['token']
     return queryurl
 
 def readjson(prompt):
