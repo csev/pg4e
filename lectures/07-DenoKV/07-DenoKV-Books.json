@@ -1,0 +1,68 @@
+[
+  {
+    "Title": "Wisdom of Crowds",
+    "ISBN": "385721706",
+    "Language": "en",
+    "Author": "James Surowiecki"
+  },
+  {
+    "Title": "Introduction to Networking",
+    "ISBN": "9781511654944",
+    "Language": "en",
+    "Author": "Charles Severance"
+  },
+  {
+    "Title": "Introducción a las Redes",
+    "ISBN": "9781523627516",
+    "Language": "es",
+    "Author": "Fernando Tardio"
+  },
+  {
+    "Title": "Raspberry PI",
+    "ISBN": "9781624311390",
+    "Language": "en",
+    "Author": "Kristen Fontichiaro"
+  },
+  {
+    "Title": "Where Wizards Stay Up Late",
+    "ISBN": "0684812010",
+    "Language": "en",
+    "Author": "Katy Hafner"
+  },
+  {
+    "Title": "Innovators Dilemma",
+    "ISBN": "0066620694",
+    "Language": "en",
+    "Author": "Clayton Christensen"
+  },
+  {
+    "Title": "Unlocking the Clubhouse",
+    "ISBN": "0262133989",
+    "Language": "en",
+    "Author": "Ann Margolis"
+  },
+  {
+    "Title": "Mindshift",
+    "ISBN": "9781101982853",
+    "Language": "en",
+    "Author": "Barbara Oakley"
+  },
+  {
+    "Title": "Python for Everybody",
+    "ISBN": "9781530051120",
+    "Language": "en",
+    "Author": "Charles Severance"
+  },
+  {
+    "Title": "Python per tutti",
+    "ISBN": "1730907164",
+    "Language": "it",
+    "Author": "Vittore Zen"
+  },
+  {
+    "Title": "Weaving the Web",
+    "ISBN": "00625187X",
+    "Language": "en",
+    "Author": "Tim Berners-Lee"
+  }
+]

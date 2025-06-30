@@ -7,6 +7,8 @@
 # copy hidden-dist.py to hidden.py
 # edit hidden.py and put in your credentials
 
+# https://docs.deno.com/deploy/kv/manual/operations/
+
 import requests
 import json
 import hidden
@@ -27,7 +29,12 @@ while True:
 
     pieces = cmd.split()
 
-    # https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-delete-index.html
+    if len(pieces) == 1 and pieces[0] == 'sample' :
+        print()
+        print('{"title":"Bob Was Way Fun", "author":"William Shakespeare", "year":1600}');
+        print()
+        continue
+
     if len(pieces) == 2 and (pieces[0] == 'delete' or pieces[0] == 'delete_prefix') :
 
         prurl = secrets['url'] + '/kv/' + pieces[0] + pieces[1]
@@ -40,7 +47,6 @@ while True:
         print(text)
         continue
 
-    # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html
     if len(pieces) == 2 and pieces[0] == 'set' :
         print()
         print('{"title":"Bob Was Way Fun", "author":"William Shakespeare", "year":1600}');
@@ -82,8 +88,9 @@ while True:
     print('Invalid command, please try:')
     print('')
     print('  quit')
+    print('  sample')
     print('  set /books/Hamlet')
     print('  get /books/Hamlet')
     print('  delete /books/Hamlet')
-    print('  delete')
+    print('  delete_prefix /books')
 
