@@ -1,13 +1,11 @@
-# Some Python utility code for deno kv.
+# A Python Deno KV Admin tool using web services
+
+# Download these to a folder:
 
 # https://www.pg4e.com/code/kvadmin.py
+# https://www.pg4e.com/code/kvutil.py
 
-# (If needed)
-# https://www.pg4e.com/code/hidden-dist.py
-# copy hidden-dist.py to hidden.py
-# edit hidden.py and put in your credentials
-
-# https://docs.deno.com/deploy/kv/manual/operations/
+# Follow the installation / configuration instructions in kvutil.py
 
 import requests
 import json
@@ -30,7 +28,7 @@ while True:
     pieces = cmd.split()
 
     # set /books/Hamlet
-    # https://kv-admin-api.pg4e.com/kv/set/books/Hamlet?token=42
+    # https://kv-admin-api.pg4e.com/kv/set/books/Hamlet?token=123
 
     if len(pieces) == 2 and pieces[0] == 'set' :
     # delete_prefix /books
@@ -51,10 +49,10 @@ while True:
         continue
 
     # get /books/Hamlet
-    # https://kv-admin-api.pg4e.com/kv/get/books/Hamlet?token=42
+    # https://kv-admin-api.pg4e.com/kv/get/books/Hamlet?token=123
     # 
     # list /books
-    # https://kv-admin-api.pg4e.com/kv/books?token=42
+    # https://kv-admin-api.pg4e.com/kv/books?token=123
 
     if len(pieces) == 2 and (pieces[0] == 'get' or pieces[0] == 'list') :
         prurl = secrets['url'] + '/kv/' + pieces[0] + pieces[1]
@@ -74,10 +72,10 @@ while True:
         continue
 
     # delete /books/Hamlet
-    # https://kv-admin-api.pg4e.com/kv/delete/books/Hamlet?token=42
+    # https://kv-admin-api.pg4e.com/kv/delete/books/Hamlet?token=123
 
     # delete_prefix /books
-    # https://kv-admin-api.pg4e.com/kv/delete_prefix/books?token=42
+    # https://kv-admin-api.pg4e.com/kv/delete_prefix/books?token=123
 
     if len(pieces) == 2 and (pieces[0] == 'delete' or pieces[0] == 'delete_prefix') :
 
