@@ -33,7 +33,7 @@ def readonly():
 
 def denokv():
     return {"token" : "42",
-            "url": "https://charlesseve-deno-first-10.deno.dev"}
+            "url": "https://kv-admin-api.pg4e.com"}
 
 # Return a psycopg2 connection string
 

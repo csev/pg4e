@@ -12,7 +12,7 @@ def prettyjson(status, text):
         print()
         print("Error, status=", status)
 
-def addkey(url, secrets):
+def addtoken(url, secrets):
     queryurl = url + "?token=" + secrets['token']
     return queryurl
 
