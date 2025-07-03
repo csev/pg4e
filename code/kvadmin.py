@@ -29,28 +29,22 @@ while True:
 
     pieces = cmd.split()
 
-    if len(pieces) == 1 and pieces[0] == 'sample' :
+    if len(pieces) == 1 and pieces[0] == 'samples' :
         print()
-        print('{"title":"Bob Was Way Fun", "author":"William Shakespeare", "year":1600}');
+        print('{"author": "Bill", "title": "Hamlet", "isbn": "42", "lang": "ang"}')
+        print('{"author": "Katie", "title": "Wizards", "isbn": "6848", "lang": "en"}')
+        print('{"author": "Chuck", "title": "PY4E", "isbn": "8513", "lang": "en"}')
+        print('{"author": "Kristen", "title": "PI", "isbn": "8162", "lang": "en"}')
+        print('{"author": "James", "title": "Wisdom", "isbn": "3857", "lang": "en"}')
+        print('{"author": "Barb", "title": "Mind", "isbn": "8110", "lang": "en"}')
+        print('{"author": "Vittore", "title": "Tutti", "isbn": "1730", "lang": "es"}')
+        print('{"author": "Chuck", "title": "Net", "isbn": "8151", "lang": "en"}')
         print()
         continue
 
-    if len(pieces) == 2 and (pieces[0] == 'delete' or pieces[0] == 'delete_prefix') :
-
-        prurl = secrets['url'] + '/kv/' + pieces[0] + pieces[1]
-        print(prurl)
-        queryurl = kvutil.addkey(prurl, secrets)
-        response = requests.delete(queryurl)
-        text = response.text
-        status = response.status_code
-        print('Status:', status)
-        print(text)
-        continue
-
+    # set /books/Hamlet
     if len(pieces) == 2 and pieces[0] == 'set' :
-        print()
-        print('{"title":"Bob Was Way Fun", "author":"William Shakespeare", "year":1600}');
-        print()
+    # delete_prefix /books
         prurl = secrets['url'] + '/kv/' + pieces[0] + pieces[1]
         print(prurl)
         queryurl = kvutil.addkey(prurl, secrets)
@@ -67,6 +61,8 @@ while True:
         kvutil.prettyjson(status, text)
         continue
 
+    # get /books/Hamlet
+    # list /books
     if len(pieces) == 2 and (pieces[0] == 'get' or pieces[0] == 'list') :
         prurl = secrets['url'] + '/kv/' + pieces[0] + pieces[1]
         print(prurl)
@@ -80,15 +76,29 @@ while True:
             data = json.loads(text)
             pretty_json_string = json.dumps(data, indent=4)
             print(pretty_json_string)
-        except e:
+        except Exception as e:
             print(text)
+        continue
+
+    # delete /books/Hamlet
+    # delete_prefix /books
+    if len(pieces) == 2 and (pieces[0] == 'delete' or pieces[0] == 'delete_prefix') :
+
+        prurl = secrets['url'] + '/kv/' + pieces[0] + pieces[1]
+        print(prurl)
+        queryurl = kvutil.addkey(prurl, secrets)
+        response = requests.delete(queryurl)
+        text = response.text
+        status = response.status_code
+        print('Status:', status)
+        print(text)
         continue
 
     print()
     print('Invalid command, please try:')
     print('')
     print('  quit')
-    print('  sample')
+    print('  samples')
     print('  set /books/Hamlet')
     print('  get /books/Hamlet')
     print('  delete /books/Hamlet')
