@@ -3,13 +3,23 @@
 # Download these to a folder:
 
 # https://www.pg4e.com/code/kvadmin.py
+# https://www.pg4e.com/code/kvutil.py
+# https://www.pg4e.com/code/hidden-dist.py (If needed)
 
-# Follow the installation / configuration instructions in kvutil.py
+# (If needed)
+# copy hidden-dist.py to hidden.py
+# edit hidden.py and put in your url and token
 
-import requests
+import urllib3
 import json
 import hidden
 import kvutil
+
+# Disable SSL warnings for development
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# Create a pool manager for HTTP requests
+http = urllib3.PoolManager()
 
 secrets = hidden.denokv()
 showurl = True
@@ -18,10 +28,11 @@ showurl = True
 url = secrets['url'] + '/dump';
 print('Verifying connection to', url)
 try:
-    response = requests.get(url, timeout=30)
-    text = response.text
-    status = response.status_code
+    response = http.request('GET', url, timeout=urllib3.Timeout(connect=30, read=30))
+    text = response.data.decode('utf-8')
+    status = response.status
 except:
+    print()
     print('Unable to communicate with server.  Sometimes it takes a while to start the')
     print('server after it has been idle.  You might want to access this url in a browser')
     print('and then restart kvadmin.');
@@ -53,12 +64,12 @@ while True:
         if data == None : continue
 
         body=json.dumps(data, indent=2)
-        hdict = {'Content-type': 'application/json; charset=UTF-8'}
+        headers = {'Content-type': 'application/json; charset=UTF-8'}
         if ( showurl ) : print(url)
-        response = requests.post(url, headers=hdict, data=body)
+        response = http.request('POST', url, headers=headers, body=body)
 
-        text = response.text
-        status = response.status_code
+        text = response.data.decode('utf-8')
+        status = response.status
         kvutil.prettyjson(status, text)
         continue
 
@@ -73,9 +84,9 @@ while True:
           '?token=' + secrets['token'] )
         if ( showurl ) : print(url)
 
-        response = requests.get(url)
-        text = response.text
-        status = response.status_code
+        response = http.request('GET', url)
+        text = response.data.decode('utf-8')
+        status = response.status
         print(status)
         try:
             data = json.loads(text)
@@ -97,9 +108,9 @@ while True:
           '?token=' + secrets['token'] )
 
         if ( showurl ) : print(url)
-        response = requests.delete(url)
-        text = response.text
-        status = response.status_code
+        response = http.request('DELETE', url)
+        text = response.data.decode('utf-8')
+        status = response.status
         print('Status:', status)
         print(text)
         continue
