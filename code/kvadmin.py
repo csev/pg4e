@@ -3,7 +3,6 @@
 # Download these to a folder:
 
 # https://www.pg4e.com/code/kvadmin.py
-# https://www.pg4e.com/code/kvutil.py
 
 # Follow the installation / configuration instructions in kvutil.py
 
@@ -13,6 +12,22 @@ import hidden
 import kvutil
 
 secrets = hidden.denokv()
+showurl = True
+
+
+url = secrets['url'] + '/dump';
+print('Verifying connection to', url)
+try:
+    response = requests.get(url, timeout=30)
+    text = response.text
+    status = response.status_code
+except:
+    print('Unable to communicate with server.  Sometimes it takes a while to start the')
+    print('server after it has been idle.  You might want to access this url in a browser')
+    print('and then restart kvadmin.');
+    print()
+    print(url)
+    print()
 
 while True:
 
@@ -31,17 +46,16 @@ while True:
     # https://kv-admin-api.pg4e.com/kv/set/books/Hamlet?token=123
 
     if len(pieces) == 2 and pieces[0] == 'set' :
-    # delete_prefix /books
-        prurl = secrets['url'] + '/kv/' + pieces[0] + pieces[1]
-        print(prurl)
-        queryurl = kvutil.addtoken(prurl, secrets)
+        url = (secrets['url'] + '/kv/' + pieces[0] + pieces[1]
+          + '?token=' + secrets['token'] )
         text = kvutil.readjson("Enter json (finish with a blank line:")
         data = kvutil.parsejson(text)
         if data == None : continue
 
         body=json.dumps(data, indent=2)
         hdict = {'Content-type': 'application/json; charset=UTF-8'}
-        response = requests.post(queryurl, headers=hdict, data=body)
+        if ( showurl ) : print(url)
+        response = requests.post(url, headers=hdict, data=body)
 
         text = response.text
         status = response.status_code
@@ -50,16 +64,16 @@ while True:
 
     # get /books/Hamlet
     # https://kv-admin-api.pg4e.com/kv/get/books/Hamlet?token=123
-    # 
+
     # list /books
     # https://kv-admin-api.pg4e.com/kv/books?token=123
 
     if len(pieces) == 2 and (pieces[0] == 'get' or pieces[0] == 'list') :
-        prurl = secrets['url'] + '/kv/' + pieces[0] + pieces[1]
-        print(prurl)
-        queryurl = kvutil.addtoken(prurl, secrets)
+        url = ( secrets['url'] + '/kv/' + pieces[0] + pieces[1] +
+          '?token=' + secrets['token'] )
+        if ( showurl ) : print(url)
 
-        response = requests.get(queryurl)
+        response = requests.get(url)
         text = response.text
         status = response.status_code
         print(status)
@@ -79,14 +93,23 @@ while True:
 
     if len(pieces) == 2 and (pieces[0] == 'delete' or pieces[0] == 'delete_prefix') :
 
-        prurl = secrets['url'] + '/kv/' + pieces[0] + pieces[1]
-        print(prurl)
-        queryurl = kvutil.addtoken(prurl, secrets)
-        response = requests.delete(queryurl)
+        url = ( secrets['url'] + '/kv/' + pieces[0] + pieces[1] +
+          '?token=' + secrets['token'] )
+
+        if ( showurl ) : print(url)
+        response = requests.delete(url)
         text = response.text
         status = response.status_code
         print('Status:', status)
         print(text)
+        continue
+
+    if len(pieces) == 1 and pieces[0] == 'show' :
+        showurl = True
+        continue
+
+    if len(pieces) == 1 and pieces[0] == 'hide' :
+        showurl = False
         continue
 
     if len(pieces) == 1 and pieces[0] == 'samples' :
@@ -109,6 +132,8 @@ while True:
     print('  samples')
     print('  set /books/Hamlet')
     print('  get /books/Hamlet')
+    print('  list /books')
     print('  delete /books/Hamlet')
     print('  delete_prefix /books')
+
 
