@@ -8,7 +8,7 @@ def prettyjson(status, text):
     if status == 200:
         try: 
             print(json.dumps(json.loads(text), indent=2))
-        except e:
+        except Exception as e:
             print(text)
     else :
         print(text)

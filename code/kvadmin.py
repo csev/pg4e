@@ -10,16 +10,12 @@
 # copy hidden-dist.py to hidden.py
 # edit hidden.py and put in your url and token
 
-import urllib3
+import urllib.request
+import urllib.parse
+import urllib.error
 import json
 import hidden
 import kvutil
-
-# Disable SSL warnings for development
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-# Create a pool manager for HTTP requests
-http = urllib3.PoolManager()
 
 secrets = hidden.denokv()
 showurl = True
@@ -28,10 +24,10 @@ showurl = True
 url = secrets['url'] + '/dump';
 print('Verifying connection to', url)
 try:
-    response = http.request('GET', url, timeout=urllib3.Timeout(connect=30, read=30))
-    text = response.data.decode('utf-8')
-    status = response.status
-except:
+    with urllib.request.urlopen(url, timeout=30) as response:
+        text = response.read().decode('utf-8')
+        status = response.status
+except Exception as e:
     print()
     print('Unable to communicate with server.  Sometimes it takes a while to start the')
     print('server after it has been idle.  You might want to access this url in a browser')
@@ -45,7 +41,7 @@ while True:
     print()
     try:
         cmd = input('Enter command: ').strip()
-    except:
+    except Exception as e:
         print()
         break
 
@@ -63,14 +59,16 @@ while True:
         data = kvutil.parsejson(text)
         if data == None : continue
 
-        body=json.dumps(data, indent=2)
+        body = json.dumps(data, indent=2).encode('utf-8')
         headers = {'Content-type': 'application/json; charset=UTF-8'}
+        
         if ( showurl ) : print(url)
-        response = http.request('POST', url, headers=headers, body=body)
-
-        text = response.data.decode('utf-8')
-        status = response.status
-        kvutil.prettyjson(status, text)
+        
+        req = urllib.request.Request(url, data=body, headers=headers, method='POST')
+        with urllib.request.urlopen(req, timeout=30) as response:
+            text = response.read().decode('utf-8')
+            status = response.status
+            kvutil.prettyjson(status, text)
         continue
 
     # get /books/Hamlet
@@ -84,16 +82,16 @@ while True:
           '?token=' + secrets['token'] )
         if ( showurl ) : print(url)
 
-        response = http.request('GET', url)
-        text = response.data.decode('utf-8')
-        status = response.status
-        print(status)
-        try:
-            data = json.loads(text)
-            pretty_json_string = json.dumps(data, indent=4)
-            print(pretty_json_string)
-        except Exception as e:
-            print(text)
+        with urllib.request.urlopen(url, timeout=30) as response:
+            text = response.read().decode('utf-8')
+            status = response.status
+            print(status)
+            try:
+                data = json.loads(text)
+                pretty_json_string = json.dumps(data, indent=4)
+                print(pretty_json_string)
+            except Exception as e:
+                print(text)
         continue
 
     # delete /books/Hamlet
@@ -108,11 +106,13 @@ while True:
           '?token=' + secrets['token'] )
 
         if ( showurl ) : print(url)
-        response = http.request('DELETE', url)
-        text = response.data.decode('utf-8')
-        status = response.status
-        print('Status:', status)
-        print(text)
+        
+        req = urllib.request.Request(url, method='DELETE')
+        with urllib.request.urlopen(req, timeout=30) as response:
+            text = response.read().decode('utf-8')
+            status = response.status
+            print('Status:', status)
+            print(text)
         continue
 
     if len(pieces) == 1 and pieces[0] == 'show' :
