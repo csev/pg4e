@@ -3,7 +3,6 @@
 # Download these to a folder:
 
 # https://www.pg4e.com/code/kvadmin.py
-# https://www.pg4e.com/code/kvutil.py
 # https://www.pg4e.com/code/hidden-dist.py (If needed)
 
 # (If needed)
@@ -15,7 +14,50 @@ import urllib.parse
 import urllib.error
 import json
 import hidden
-import kvutil
+
+def prettyjson(status, text):
+    """Pretty print JSON response with status code handling"""
+    if status == 200:
+        try:
+            print(json.dumps(json.loads(text), indent=2))
+        except Exception as e:
+            print(text)
+    else :
+        print(text)
+        print()
+        print("Error, status=", status)
+
+def addtoken(url, secrets):
+    """Add authentication token to URL"""
+    queryurl = url + "?token=" + secrets['token']
+    return queryurl
+
+def readjson(prompt):
+    """Read multi-line JSON input from user"""
+    print(prompt)
+    inp = None
+    text = ""
+    while inp != "":
+        inp = input().strip()
+        text += inp
+    return text
+
+def parsejson(text):
+    """Parse JSON text with error handling"""
+    try :
+        data = json.loads(text)
+        return data
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+        print(f"Error message: {e.msg}")
+        print(f"Error position: {e.pos}")
+        print(f"Error line number: {e.lineno}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+    return None
+
+# Main program logic
 
 secrets = hidden.denokv()
 showurl = True
@@ -41,7 +83,10 @@ while True:
     print()
     try:
         cmd = input('Enter command: ').strip()
-    except Exception as e:
+    except KeyboardInterrupt:
+        print()
+        break
+    except EOFError:
         print()
         break
 
@@ -55,20 +100,20 @@ while True:
     if len(pieces) == 2 and pieces[0] == 'set' :
         url = (secrets['url'] + '/kv/' + pieces[0] + pieces[1]
           + '?token=' + secrets['token'] )
-        text = kvutil.readjson("Enter json (finish with a blank line:")
-        data = kvutil.parsejson(text)
+        text = readjson("Enter json (finish with a blank line:")
+        data = parsejson(text)
         if data == None : continue
 
         body = json.dumps(data, indent=2).encode('utf-8')
         headers = {'Content-type': 'application/json; charset=UTF-8'}
-        
+
         if ( showurl ) : print(url)
-        
+
         req = urllib.request.Request(url, data=body, headers=headers, method='POST')
         with urllib.request.urlopen(req, timeout=30) as response:
             text = response.read().decode('utf-8')
             status = response.status
-            kvutil.prettyjson(status, text)
+            prettyjson(status, text)
         continue
 
     # get /books/Hamlet
@@ -106,7 +151,7 @@ while True:
           '?token=' + secrets['token'] )
 
         if ( showurl ) : print(url)
-        
+
         req = urllib.request.Request(url, method='DELETE')
         with urllib.request.urlopen(req, timeout=30) as response:
             text = response.read().decode('utf-8')
