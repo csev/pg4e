@@ -71,12 +71,13 @@ try:
         status = response.status
 except Exception as e:
     print()
-    print('Unable to communicate with server.  Sometimes it takes a while to start the')
-    print('server after it has been idle.  You might want to access this url in a browser')
-    print('and then restart kvadmin.');
+    print('Unable to communicate with Deno.  Sometimes it takes a while to start the')
+    print('the Deno instance after it has been idle.  You might want to access the url')
+    print('below in a browser, wait 30 seconds,  and then restart kvadmin.');
     print()
     print(url)
     print()
+    quit()
 
 while True:
 
