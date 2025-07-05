@@ -92,15 +92,19 @@ while True:
 
     if cmd.startswith('quit') : break
 
-    pieces = cmd.split()
+    pieces = cmd.split(' ', 2)
 
     # set /books/Hamlet
+    # set /books/Hamlet {}
     # https://kv-admin-api.pg4e.com/kv/set/books/Hamlet?token=123
 
-    if len(pieces) == 2 and pieces[0] == 'set' :
-        url = (secrets['url'] + '/kv/' + pieces[0] + pieces[1]
+    if len(pieces) >= 2 and pieces[0] == 'set' :
+        url = (secrets['url'] + '/kv/set' + pieces[1]
           + '?token=' + secrets['token'] )
-        text = readjson("Enter json (finish with a blank line:")
+        if len(pieces) == 3 :
+            text = pieces[2]
+        else:
+            text = readjson("Enter json (finish with a blank line:")
         data = parsejson(text)
         if data == None : continue
 
