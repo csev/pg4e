@@ -21,7 +21,7 @@
 {
     "title": "Single Table SQL",
     "anchor": "week1",
-    "icon" : "fa-globe",
+    "icon" : "fa-database",
     "description": "Single Table SQL",
     "slides": "{apphome}/lectures/01-Intro-to-SQL.ppt",
     "discussions" : [
@@ -161,7 +161,7 @@
 {
     "title": "Data Relationships",
     "anchor": "week2",
-    "icon" : "fa-globe",
+    "icon" : "fa-arrows-h",
     "description": "Multi-Table SQL and Relationships.",
     "slides": "{apphome}/lectures/02-Database-Design-Many-to-Many.ppt",
     "discussions" : [
@@ -261,7 +261,7 @@
 {
     "title": "SQL Techniques",
     "anchor": "week3",
-    "icon" : "fa-globe",
+    "icon" : "fa-address-card",
     "description": "Intermediate PostgreSQL techniques.",
     "slides": "{apphome}/lectures/03-Techniques.pptx",
     "discussions" : [
@@ -413,7 +413,7 @@
 {
     "title": "Text in PostgreSQL",
     "anchor": "week4",
-    "icon" : "fa-globe",
+    "icon" : "fa-align-left",
     "description": "Handling text in PostgreSQL (but not Natural Language).",
     "slides": "{apphome}/lectures/04-Text.pptx",
     "discussions" : [
@@ -549,7 +549,7 @@
 {
     "title": "Natural Language",
     "anchor": "week5",
-    "icon" : "fa-globe",
+    "icon" : "fa-volume-up",
     "description": "Handling Natural Language fields and indexes in PostgreSQL.",
     "slides": "{apphome}/lectures/05-FullText.php",
     "discussions" : [
@@ -681,7 +681,7 @@
 {
     "title": "Python and PostgreSQL",
     "anchor": "week6a",
-    "icon" : "fa-globe",
+    "icon" : "fa-stack-overflow",
     "description": "Using PostgreSQL with Python.  Using PostgreSQL to retrieve and store API data.",
     "slides": [
         "{apphome}/lectures/06-Python.php"
@@ -742,7 +742,7 @@
 {
     "title": "JSON and PostgreSQL",
     "anchor": "week6b",
-    "icon" : "fa-globe",
+    "icon" : "fa-suitcase",
     "description": "Handling JSON in PostgreSQL.",
     "slides": [
         "{apphome}/lectures/06-JSON.php"
@@ -819,7 +819,7 @@
 {
     "title": "Database Architectures",
     "anchor": "week7",
-    "icon" : "fa-globe",
+    "icon" : "fa-university",
     "description": "Database architectures, production deplopyment, scalability, and NoSQL.",
     "slides": [
         "{apphome}/lectures/07-Architecture.pptx"
@@ -897,7 +897,7 @@
 {
     "title": "Elastic Search",
     "anchor": "week7a",
-    "icon" : "fa-globe",
+    "icon" : "fa-search",
     "description": "Using ElasticSearch to explore NoSQL.",
     "slides": [
         "{apphome}/lectures/07-Elastic.pptx"
