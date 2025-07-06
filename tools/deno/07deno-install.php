@@ -127,7 +127,7 @@ $listbad = $url .= "/kv/list/trees?token=badleroy";
 
 <div id="grader-output">
 <p>
-<b>(Step 1)</b> Checking server connectivity at:
+<b>(Step 1/3)</b> Checking server connectivity at:
 <pre>
 <?php
 $json = denoGetJSON($dumpurl);
@@ -136,7 +136,7 @@ echo(json_encode($json, JSON_PRETTY_PRINT));
 ?>
 </pre>
 <p>
-<b>(Step 2) </b>Running a KV list operation with the correct token (should return an empty JSON list)
+<b>(Step 2/3) </b>Running a KV list operation with the correct token (should return an empty JSON list)
 <p>
 <pre>
 <?php
@@ -150,7 +150,7 @@ echo(json_encode($json, JSON_PRETTY_PRINT));
 ?>
 </pre>
 <p>
-<b>(Step 3) </b>Running a KV list operation with incorrect token (should fail with Missing or invalid token)
+<b>(Step 3/3) </b>Running a KV list operation with incorrect token (should fail with Missing or invalid token)
 </p>
 <pre>
 <?php
