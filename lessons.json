@@ -982,6 +982,45 @@
         ]
         }
     ]
+},
+{
+    "title": "Deno KV",
+    "anchor": "week7d",
+    "icon" : "fa-space-shuttle",
+    "description": "Using Deno Key-Value to explore NoSQL. (Experimental, under construciton)",
+    "slides": [
+        "{apphome}/lectures/07-DenoKV.pptx"
+    ],
+    "discussions" : [
+        {
+        "title" : "Deno KV",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_10_deno"
+        }
+    ],
+    "references" : [
+        {
+            "title" : "Deno KV Documentation",
+            "href" : "https://docs.deno.com/deploy/kv/manual/"
+        },
+        {
+            "title" : "Deno Deploy Hosting (free account)",
+            "href" : "https://dash.deno.com/"
+        }
+    ],
+    "lti" : [
+        {
+        "title" : "Autograder: DenoKV Install",
+        "launch" : "tools/deno/",
+        "resource_link_id" : "pg4e_07deno_install",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07deno-install.php"
+            }
+        ]
+        }
+    ]
 }
 
 ]
