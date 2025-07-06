@@ -39,6 +39,35 @@ a, a:link, a:visited, a:hover
 {
     text-decoration: underline;
 }
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner-container {
+    display: none;
+}
+
+.loading .spinner-container {
+    display: inline-block;
+}
+
+.loading .check-button {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 </style>
 <h1>Deno Install</h1>
 <p>
@@ -61,9 +90,14 @@ Make sure to set your <b>token</b> value to be <b><?php echo($code); ?></b> in b
 </p>
 <p>
 Please enter the URL of your server with no trailing slash:
-<form>
+<form id="checkForm" onsubmit="showSpinner()">
 <input type="text" style="width: 65%;" name="url" value="<?= htmlentities($url); ?>">
-<input type="submit" value="Check">
+<button type="submit" class="check-button" id="checkButton">
+    <span class="spinner-container">
+        <div class="spinner"></div>
+    </span>
+    <span class="button-text">Check</span>
+</button>
 </form>
 <pre>
 <?php
@@ -86,3 +120,18 @@ echo(json_encode(
 }
 ?>
 </pre>
+
+<script>
+function showSpinner() {
+    const form = document.getElementById('checkForm');
+    const button = document.getElementById('checkButton');
+    
+    // Add loading class to form
+    form.classList.add('loading');
+    
+    // Disable the button
+    button.disabled = true;
+    
+    // The form will submit normally after this
+}
+</script>
