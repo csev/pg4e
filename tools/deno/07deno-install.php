@@ -114,7 +114,9 @@ function showSpinner() {
 <?php 
 if ( strlen($url) < 1 ) return; 
 
+$testrun = false;
 if ( strpos($url,'.pg4e.com') ) {
+    $testrun = true;
     $code = '42';
 }
 
@@ -139,7 +141,11 @@ echo(json_encode($json, JSON_PRETTY_PRINT));
 <pre>
 <?php
 $json = denoGetJSON($listgood);
-if ( ! is_object($json) ) return;
+if ( ! is_object($json) ) {
+    echo("<p>A request with a good token is supposed to return valid JSON</p>\n");
+    echo("<p style=\"color: red;\"><b>Assignment not passed</b></p>");
+    return;
+}
 echo(json_encode($json, JSON_PRETTY_PRINT));
 ?>
 </pre>
@@ -150,13 +156,19 @@ echo(json_encode($json, JSON_PRETTY_PRINT));
 <?php
 $json = denoGetJSON($listbad);
 if ( is_object($json) ) {
-    echo("A bad token is not supposed to return valid JSON\n");
-    echo(json_encode($json, JSON_PRETTY_PRINT));
+    echo("<p>A request with bad token is *not* supposed to return valid JSON</p>\n");
+    echo("<p style=\"color: red;\"><b>Assignment not passed</b></p>");
+    echo("<pre>\n");echo(json_encode($json, JSON_PRETTY_PRINT));echo("\n</pre>\n");
     return;
 }
 ?>
 </pre>
-<b>Congratulations, you have passed this autograder!</b>
+<?php
+if ( $testrun ) {
+    echo("<p>Test run - not graded</p>\n");
+} else {
+?>
+<p><b style=\"color: green;\">Congratulations, you have passed this autograder!</b></p>
 <?php
     $gradetosend = 1.0;
     $debug_log = array();
@@ -164,5 +176,6 @@ if ( is_object($json) ) {
     echo("<?--\n");
     echo(htmlentities(Output::safe_var_dump($debug_log)));
     echo("-->\n");
+}
 ?>
 </div>

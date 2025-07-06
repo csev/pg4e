@@ -10,7 +10,7 @@ require_once "names.php";
 require_once "courses.php";
 
 function denoGetJSON($url) {
-    echo("Retrieving <a href=".htmlentities($url).' target="_blank">'.htmlentities($url)."</a>\n");
+    echo('Retrieving <a href="'.htmlentities($url).' target="_blank">'.htmlentities($url)."</a>\n");
     $header = '';
     $returnval = Net::doGet($url,$header);
     $http_status = Net::getLastHttpResponse();
@@ -22,10 +22,11 @@ function denoGetJSON($url) {
         echo("</pre>\n");
 ?>
 <p>
-<b>Notre:</b> Make sure to launch the dump url in the browser before running the autograder.
+<b>Note:</b> Make sure to launch the dump url in the browser and verify correct operation
+before re-running the autograder.
 Sometimes when a free Deno Deploy instance has not been active for a while, it
 can take 30 seconds or more for it to cold start.   You should access the URL in a browser
-and refresh it until you get a corrct response befomre coming back and re-running
+and refresh it until you get a correct response before coming back and re-running
 the autograder.
 </p>
 <?php
@@ -37,8 +38,8 @@ the autograder.
     if ( ! is_object($json)) {
         echo("JSON Error: " . json_last_error_msg() . "\n");
         echo(substr(htmlentities($returnval), 0, 100)."\n");
-        echo("</div>\n");
         echo("</pre>\n");
+        echo("</div>\n");
         return false;
     } else {
         return $json;
