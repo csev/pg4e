@@ -119,59 +119,22 @@ if ( strpos($url,'.pg4e.com') ) {
 }
 
 $dumpurl = $url . "/dump";
+$listgood = $url .= "/kv/list/trees?token=".$code;
+$listbad = $url .= "/kv/list/trees?token=badleroy";
 ?>
 
 <div id="grader-output">
 <p>
 <b>(Step 1)</b> Checking server connectivity at:
-<a href="<?= htmlentities($dumpurl) ?>" target="_blank"><?= htmlentities($dumpurl) ?></a>
-<p>
 <pre>
 <?php
-
-$header = '';
-$returnval = Net::doGet($dumpurl,$header);
-$http_status = Net::getLastHttpResponse();
-$error = Net::getLastCurlError();
-if ( !is_string($returnval) || strlen($returnval) < 1 ) {
-    echo("No response received.\n");
-    echo("Status: $http_status\n");
-    echo("Error: $error\n");
-    echo("</pre>\n");
-?>
-<p>
-<b>Notre:</b> Make sure to launch the dump url in the browser before running the autograder.
-Sometimes when a free Deno Deploy instance has not been active for a while, it
-can take 30 seconds or more for it to cold start.   You should access the URL in a browser
-and refresh it until you get a corrct response befomre coming back and re-running
-the autograder.
-</p>
-<?php
-    echo("</div>\n");
-    return;
-}
-
-$json = json_decode($returnval);
-if ( ! is_object($json)) {
-    echo("JSON Error: " . json_last_error_msg() . "\n");
-    echo("<!--\n".htmlentities($returnval)."\n-->\n");
-    echo("</div>\n");
-    echo("</pre>\n");
-    return;
-} else {
-    echo(json_encode($json, JSON_PRETTY_PRINT));
-}
-
-// Net::doBody($membershipsurl, "POST", $body,$header) 
+$json = denoGetJSON($dumpurl);
+if ( ! is_object($json) ) return;
+echo(json_encode($json, JSON_PRETTY_PRINT));
 ?>
 </pre>
-<?php
-$listgood = $url .= "/kv/list/trees?token=".$code;
-$listbad = $url .= "/kv/list/trees?token=badleroy";
-?>
 <p>
 <b>(Step 2) </b>Running a KV list operation with the correct token (should return an empty JSON list)
-<a href="<?= htmlentities($listgood) ?>" target="_blank"><?= htmlentities($listgood) ?></a>
 <p>
 <pre>
 <?php
