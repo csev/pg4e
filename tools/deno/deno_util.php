@@ -1,12 +1,50 @@
 <?php
 
 use \Tsugi\Util\U;
+use \Tsugi\Util\Net;
 use \Tsugi\Util\PDOX;
 use \Tsugi\Util\Mersenne_Twister;
 use \Tsugi\Core\LTIX;
 
 require_once "names.php";
 require_once "courses.php";
+
+function denoGetJSON($url) {
+    echo("Retrieving <a href=".htmlentities($url).' target="_blank">'.htmlentities($url)."</a>\n");
+    $header = '';
+    $returnval = Net::doGet($url,$header);
+    $http_status = Net::getLastHttpResponse();
+    $error = Net::getLastCurlError();
+    if ( !is_string($returnval) || strlen($returnval) < 1 ) {
+       echo("No response received.\n");
+        echo("Status: $http_status\n");
+        echo("Error: $error\n");
+        echo("</pre>\n");
+?>
+<p>
+<b>Notre:</b> Make sure to launch the dump url in the browser before running the autograder.
+Sometimes when a free Deno Deploy instance has not been active for a while, it
+can take 30 seconds or more for it to cold start.   You should access the URL in a browser
+and refresh it until you get a corrct response befomre coming back and re-running
+the autograder.
+</p>
+<?php
+        echo("</div>\n");
+        return false;
+    }
+
+    $json = json_decode($returnval);
+    if ( ! is_object($json)) {
+        echo("JSON Error: " . json_last_error_msg() . "\n");
+        echo(substr(htmlentities($returnval), 0, 100)."\n");
+        echo("</div>\n");
+        echo("</pre>\n");
+        return false;
+    } else {
+        return $json;
+        echo(json_encode($json, JSON_PRETTY_PRINT));
+    }
+}
 
 function makeRoster($code,$course_count=false,$name_count=false) {
     global $names, $courses;
