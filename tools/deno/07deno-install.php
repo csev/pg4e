@@ -59,7 +59,7 @@ a, a:link, a:visited, a:hover
     cursor: not-allowed;
 }
 </style>
-<h1>Deno Install</h1>
+<h1>Deno Install <span id="passfail"></span></h1>
 <p>
 In this assignment, you will create a free 
 <a href="https://dash.deno.com/" target="_blank">Deno Deploy</a> account and
@@ -144,6 +144,7 @@ $json = denoGetJSON($listgood);
 if ( ! is_object($json) ) {
     echo("<p>A request with a good token is supposed to return valid JSON</p>\n");
     echo("<p style=\"color: red;\"><b>Assignment not passed</b></p>");
+    echo('<script>document.getElementById("passfail").textContent = "(not passed)";</script>'."\n");
     return;
 }
 echo(json_encode($json, JSON_PRETTY_PRINT));
@@ -159,6 +160,7 @@ if ( is_object($json) ) {
     echo("<p>A request with bad token is *not* supposed to return valid JSON</p>\n");
     echo("<p style=\"color: red;\"><b>Assignment not passed</b></p>");
     echo("<pre>\n");echo(json_encode($json, JSON_PRETTY_PRINT));echo("\n</pre>\n");
+    echo('<script>document.getElementById("passfail").textContent = "(not passed)";</script>'."\n");
     return;
 }
 ?>
@@ -166,9 +168,11 @@ if ( is_object($json) ) {
 <?php
 if ( $testrun ) {
     echo("<p>Test run - not graded</p>\n");
+    echo('<script>document.getElementById("passfail").textContent = "(not passed - test run)";</script>'."\n");
 } else {
 ?>
 <p><b style=\"color: green;\">Congratulations, you have passed this autograder!</b></p>
+<script>document.getElementById("passfail").textContent = '(passed)';</script>
 <?php
     $gradetosend = 1.0;
     $debug_log = array();

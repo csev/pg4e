@@ -10,7 +10,7 @@ require_once "names.php";
 require_once "courses.php";
 
 function denoGetJSON($url) {
-    echo('Retrieving <a href="'.htmlentities($url).' target="_blank">'.htmlentities($url)."</a>\n");
+    echo('Retrieving <a href="'.htmlentities($url).'" target="_blank">'.htmlentities($url)."</a>\n");
     $header = '';
     $returnval = Net::doGet($url,$header);
     $http_status = Net::getLastHttpResponse();
