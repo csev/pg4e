@@ -36,6 +36,11 @@ a, a:link, a:visited, a:hover
     text-decoration: underline;
 }
 
+a[target="_blank"]::after {
+  content: '↗️'; /* Or use a character like '↗' */
+  margin-left: 0.25rem; /* Add spacing */
+}
+
 .spinner {
     display: inline-block;
     width: 20px;
