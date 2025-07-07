@@ -183,7 +183,8 @@ if ( !empty(get_object_vars($value)) ) {
 
 echo("<p><b>Secondary key entry for author has an empty object (correct)</b></p\n");
 ?>
-<b>(Step 4/5) </b>Running a KV get operation to retrieve your title record
+<p>
+<b>(Step 4/5) </b>Running a KV get operation to retrieve your title record</b>
 <p>
 <pre>
 <?php
