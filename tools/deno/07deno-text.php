@@ -12,6 +12,10 @@ require_once "deno_util.php";
 // Compute the stuff for the output
 $code = getUnique($LAUNCH);
 $code = substr($code, 0, 8);
+$codeint = getCode($LAUNCH);
+$textlines = explode("\n", file_get_contents('01-Intro.txt'));
+$textline = $textlines[$codeint % count($textlines)];
+$textkey = "/py4e/chapter01_" . $codeint;
 
 $config = getCourseSettings();
 
@@ -19,6 +23,8 @@ $oldgrade = $RESULT->grade;
 
 $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : "";
 $url = rtrim(trim($url), '/');
+$sampleurl = "https://comfortable-starling-12.deno.dev";
+if ( strlen($url) > 0 ) $sampleurl = $url;
 
 if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
@@ -59,30 +65,39 @@ a, a:link, a:visited, a:hover
     cursor: not-allowed;
 }
 </style>
-<h1>Deno Install <span id="passfail"></span></h1>
+<h1>Deno KVAdmin <span id="passfail"></span></h1>
 <p>
-In this assignment, you will create a free 
-<a href="https://dash.deno.com/" target="_blank">Deno Deploy</a> account and
-install the server side of the <a href="https://www.pg4e.com/code/kvadmin.py" target="_blank">kvadmin.py</a>
-command line KV client in Python.
-Once you have your Deploy account, follow the instructions at:
+In this assignment you will demonstrate that you have correctly installed and configured
+your
+command line KV client in Python and can store data in your 
+<a href="https://dash.deno.com/" target="_blank">Deno Deploy</a> instance.
+You already should have your <b>token</b> value of <b><?php echo($code); ?></b> in both your
+Deno Deploy server and your <b>hidden.py</b> for <b>kvadmin.py</b>.
 </p>
 <p>
-<a href="https://github.com/csev/deno-kv-admin/blob/main/README.md" target="_blank">
-https://github.com/csev/deno-kv-admin/blob/main/README.md</a>
+In your KVAdmin.py UI, run the following sequence:
+<pre>
+python kvadmin.py
+Verifying connection to <?= $sampleurl ?>
+
+
+Enter command: <b>set <?= $textkey ?></b>
+
+Enter json (finish with a blank line):
+<b>{"text": "<?= htmlentities($textline) ?>"}</b>
+
+<?= $sampleurl ?>/kv/set/py4e/<?= $codeint ?>?token=<?= $code ?>
+
+{
+  "ok": true,
+  "versionstamp": "010000000842de400000"
+}
+
+Enter command: quit
+</pre>
 </p>
-<p>
-Make sure to set your <b>token</b> value to be <b><?php echo($code); ?></b> in both these locations:
-<ul>
-<li>On the Deno Playground server <b>checkToken()</b> function</li>
-<li>For the <b>kvadmin.py</b> client in the <b>denokv()</b> method in <b>hidden.py</b></li>
-</ul>
-</p>
-<p>
+Then check your result here in this autograder.
 Please enter the URL of your server with no trailing slash.
-You can test the autograder with the reference implementation by entering
-<a href="https://kv-admin-api.pg4e.com/" target="_blank">https://kv-admin-api.pg4e.com</a>
-<!-- https://kv-admin-api.pg4e.com/ -->
 <form id="checkForm" onsubmit="showSpinner()">
 <input type="text" style="width: 65%;" name="url" value="<?= htmlentities($url); ?>">
 <button type="submit" class="check-button" id="checkButton">
@@ -121,8 +136,8 @@ if ( strpos($url,'.pg4e.com') ) {
 }
 
 $dumpurl = $url . "/dump";
-$listgood = $url .= "/kv/list/trees?token=".$code;
-$listbad = $url .= "/kv/list/trees?token=badleroy";
+$geturl = $url . "/kv/get".$textkey."?token=".$code;
+$getbad = $url . "/kv/get".$textkey."?token=badleroy";
 ?>
 
 <div id="grader-output">
@@ -139,11 +154,11 @@ echo(json_encode($json, JSON_PRETTY_PRINT));
 ?>
 </pre>
 <p>
-<b>(Step 2/3) </b>Running a KV list operation with the correct token (should return an empty JSON list)
+<b>(Step 2/3) </b>Running a KV get operation to retrieve your text data
 <p>
 <pre>
 <?php
-$json = denoGetJSON($listgood);
+$json = denoGetJSON($geturl);
 if ( ! is_object($json) ) {
     echo("<p>A request with a good token is supposed to return valid JSON</p>\n");
     echo("<p style=\"color: red;\"><b>Assignment not passed</b></p>");
@@ -154,12 +169,37 @@ if ( ! is_object($json) ) {
 echo(json_encode($json, JSON_PRETTY_PRINT));
 ?>
 </pre>
+<?php
+$retrievedtext = (isset($json->value) && isset($json->value->text)) ? $json->value->text : null;
+var_dump($retrievedtext);
+if ( ! is_string($retrievedtext) || strlen($retrievedtext) < 1 ) {
+    echo("<p>Could not find the retrieved text under value->text</p>\n");
+    echo("<p>Remember that you can overwrite a Deno KV document by using set again.</p>\n");
+    echo("<p style=\"color: red;\"><b>Assignment not passed</b></p>");
+    echo('<script>document.getElementById("passfail").textContent = "(not passed)";</script>'."\n");
+    echo("</div>\n");
+    return;
+
+} else if ( $retrievedtext == $textline ) {
+    echo("<p><b>Retrieved text matched expected text</b></p\n");
+} else {
+    echo("<p>Mismatch of value->text in retrieved data</p>\n");
+    echo("<p>Expected: ".htmlentities($textline)."</p>\n");
+    echo("<p>Found: ".htmlentities($retrievedtext)."</p>\n");
+    echo("<p>Remember that you can overwrite a Deno KV document by using set again.</p>\n");
+    echo("<p style=\"color: red;\"><b>Assignment not passed</b></p>");
+    echo('<script>document.getElementById("passfail").textContent = "(not passed)";</script>'."\n");
+    echo("</div>\n");
+    return;
+}
+
+?>
 <p>
-<b>(Step 3/3) </b>Running a KV list operation with incorrect token (should fail with Missing or invalid token)
+<b>(Step 3/3) </b>Running a KV get operation with incorrect token (should fail with Missing or invalid token)
 </p>
 <pre>
 <?php
-$json = denoGetJSON($listbad);
+$json = denoGetJSON($getbad);
 if ( is_object($json) ) {
     echo("<p>A request with bad token is *not* supposed to return valid JSON</p>\n");
     echo("<p style=\"color: red;\"><b>Assignment not passed</b></p>");

@@ -1019,6 +1019,17 @@
                 "value": "07deno-install.php"
             }
         ]
+        },
+        {
+        "title" : "Autograder: DenoKV Insert Text",
+        "launch" : "tools/deno/",
+        "resource_link_id" : "pg4e_07deno_text",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07deno-text.php"
+            }
+        ]
         }
     ]
 }

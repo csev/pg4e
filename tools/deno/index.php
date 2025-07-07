@@ -20,6 +20,7 @@ if ( SettingsForm::handleSettingsPost() ) {
 // All the assignments we support
 $assignments = array(
     '07deno-install.php' => 'Install Deno',
+    '07deno-text.php' => 'A single line of text',
 );
 
 $oldsettings = Settings::linkGetAll();

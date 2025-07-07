@@ -30,7 +30,6 @@ and refresh it until you get a correct response before coming back and re-runnin
 the autograder.
 </p>
 <?php
-        echo("</div>\n");
         return false;
     }
 
@@ -39,7 +38,6 @@ the autograder.
         echo("JSON Error: " . json_last_error_msg() . "\n");
         echo(substr(htmlentities($returnval), 0, 100)."\n");
         echo("</pre>\n");
-        echo("</div>\n");
         return false;
     } else {
         return $json;
