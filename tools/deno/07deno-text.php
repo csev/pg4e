@@ -13,7 +13,7 @@ require_once "deno_util.php";
 $code = getUnique($LAUNCH);
 $code = substr($code, 0, 8);
 $codeint = getCode($LAUNCH);
-$textlines = explode("\n", file_get_contents('01-Intro.txt'));
+$textlines = explode("\n", file_get_contents('01-intro.txt'));
 $textline = $textlines[$codeint % count($textlines)];
 $textkey = "/py4e/chapter01_" . $codeint;
 
