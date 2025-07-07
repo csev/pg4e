@@ -21,6 +21,7 @@ if ( SettingsForm::handleSettingsPost() ) {
 $assignments = array(
     '07deno-install.php' => 'Install Deno',
     '07deno-text.php' => 'A single line of text',
+    '07deno-book.php' => 'Book Data Model',
 );
 
 $oldsettings = Settings::linkGetAll();

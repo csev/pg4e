@@ -1030,6 +1030,17 @@
                 "value": "07deno-text.php"
             }
         ]
+        },
+        {
+        "title" : "Autograder: DenoKV Book Data Model",
+        "launch" : "tools/deno/",
+        "resource_link_id" : "pg4e_07deno_book",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07deno-book.php"
+            }
+        ]
         }
     ]
 }
