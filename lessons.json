@@ -1006,6 +1006,10 @@
         {
             "title" : "Deno Deploy Hosting (free account)",
             "href" : "https://dash.deno.com/"
+        },
+        {
+            "title" : "Deno KV Admin Server Install Instructions",
+            "href" : "https://github.com/csev/deno-kv-admin/blob/main/README.md"
         }
     ],
     "lti" : [
