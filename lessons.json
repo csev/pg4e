@@ -987,7 +987,7 @@
     "title": "Deno KV",
     "anchor": "week7d",
     "icon" : "fa-space-shuttle",
-    "description": "Using Deno Key-Value to explore NoSQL. (Experimental, under construciton)",
+    "description": "Using Deno Key-Value to explore NoSQL.",
     "slides": [
         "{apphome}/lectures/07-DenoKV.pptx"
     ],
