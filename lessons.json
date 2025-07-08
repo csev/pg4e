@@ -1008,7 +1008,7 @@
             "href" : "https://dash.deno.com/"
         },
         {
-            "title" : "Deno KV Admin Server Install Instructions",
+            "title" : "KV Admin Install Instructions",
             "href" : "https://github.com/csev/deno-kv-admin/blob/main/README.md"
         }
     ],
