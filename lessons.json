@@ -998,6 +998,13 @@
         "resource_link_id": "discuss_10_deno"
         }
     ],
+    "videos" : [
+        {
+            "title" : "Installing KVAdmin.py Client and Server on Deno Deploy",
+            "project": "pg4e-media/08-Deno/01-2025-07-07-Deno-Install.mov",
+            "youtube" : "nQDSDfI1pYY"
+        }
+    ],
     "references" : [
         {
             "title" : "Deno KV Documentation",
