@@ -1001,8 +1001,13 @@
     "videos" : [
         {
             "title" : "Installing KVAdmin.py Client and Server on Deno Deploy",
-            "project": "pg4e-media/08-Deno/01-2025-07-07-Deno-Install.mov",
+            "project": "pg4e-media/08-Deno/11-2025-07-07-Deno-Install.mov",
             "youtube" : "nQDSDfI1pYY"
+        },
+        {
+            "title" : "KVAdmin.py Client and Server Code Walkthrough",
+            "project": "pg4e-media/08-Deno/12-2025-07-09-Deno-KVAdmin.mov",
+            "youtube" : "gPieHUTw7oo"
         }
     ],
     "references" : [
