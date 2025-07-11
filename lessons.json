@@ -1000,6 +1000,11 @@
     ],
     "videos" : [
         {
+            "title" : "Intro to Deno and Deno KV",
+            "project": "pg4e-media/08-Deno/01-Deno-Intro.m4v",
+            "youtube" : "zYgXMEF9NbA"
+        },
+        {
             "title" : "Installing KVAdmin.py Client and Server on Deno Deploy",
             "project": "pg4e-media/08-Deno/11-2025-07-07-Deno-Install.mov",
             "youtube" : "nQDSDfI1pYY"
