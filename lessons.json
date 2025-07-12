@@ -1015,6 +1015,11 @@
             "youtube" : "i1tWX515M1A"
         },
         {
+            "title" : "Exploring CRUD in Deno KV Using KVAdmin.py",
+            "project": "pg4e-media/09-Deno/04-Deno-CRUD.m4v",
+            "youtube" : "MiNneJNIjbg"
+        },
+        {
             "title" : "Installing KVAdmin.py Client and Server on Deno Deploy",
             "project": "pg4e-media/09-Deno/11-2025-07-07-Deno-Install.mov",
             "youtube" : "nQDSDfI1pYY"
