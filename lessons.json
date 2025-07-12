@@ -1005,6 +1005,11 @@
             "youtube" : "zYgXMEF9NbA"
         },
         {
+            "title" : "Exploring Deno KV Architecture Through B-Trees",
+            "project": "pg4e-media/08-Deno/02-Deno-BTree.m4v",
+            "youtube" : "EahOy1OpdOo"
+        },
+        {
             "title" : "Installing KVAdmin.py Client and Server on Deno Deploy",
             "project": "pg4e-media/08-Deno/11-2025-07-07-Deno-Install.mov",
             "youtube" : "nQDSDfI1pYY"
