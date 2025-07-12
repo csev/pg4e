@@ -1001,22 +1001,22 @@
     "videos" : [
         {
             "title" : "Intro to Deno and Deno KV",
-            "project": "pg4e-media/08-Deno/01-Deno-Intro.m4v",
+            "project": "pg4e-media/09-Deno/01-Deno-Intro.m4v",
             "youtube" : "zYgXMEF9NbA"
         },
         {
             "title" : "Exploring Deno KV Architecture Through B-Trees",
-            "project": "pg4e-media/08-Deno/02-Deno-BTree.m4v",
+            "project": "pg4e-media/09-Deno/02-Deno-BTree.m4v",
             "youtube" : "EahOy1OpdOo"
         },
         {
             "title" : "Installing KVAdmin.py Client and Server on Deno Deploy",
-            "project": "pg4e-media/08-Deno/11-2025-07-07-Deno-Install.mov",
+            "project": "pg4e-media/09-Deno/11-2025-07-07-Deno-Install.mov",
             "youtube" : "nQDSDfI1pYY"
         },
         {
             "title" : "Code Walkthrough - KVAdmin.py Client and Server",
-            "project": "pg4e-media/08-Deno/12-2025-07-09-Deno-KVAdmin.mov",
+            "project": "pg4e-media/09-Deno/12-2025-07-09-Deno-KVAdmin.mov",
             "youtube" : "gPieHUTw7oo"
         }
     ],
