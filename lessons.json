@@ -1028,6 +1028,11 @@
             "title" : "Code Walkthrough - KVAdmin.py Client and Server",
             "project": "pg4e-media/09-Deno/12-2025-07-09-Deno-KVAdmin.mov",
             "youtube" : "gPieHUTw7oo"
+        },
+        {
+            "title" : "Building a Deno KV Model with Secondary Indexes",
+            "project": "pg4e-media/09-Deno/05-Deno-Model.mov",
+            "youtube" : "LFcmd9P9UXU"
         }
     ],
     "references" : [
