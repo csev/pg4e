@@ -1051,6 +1051,11 @@
     ],
     "lti" : [
         {
+            "title" : "Quiz: Deno",
+            "launch" : "mod/gift/?quiz=09-Deno.txt",
+            "resource_link_id" : "pg4e_09_deno"
+        },
+        {
         "title" : "Autograder: DenoKV Install",
         "launch" : "tools/deno/",
         "resource_link_id" : "pg4e_07deno_install",
