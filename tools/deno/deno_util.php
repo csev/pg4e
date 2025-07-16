@@ -59,13 +59,59 @@ function getCourseSettings() {
     return $settings;
 }
 
+/*
+def makepw(user, secret):
+
+    expire = getexpire(date)
+
+    # user_2005
+    index = user + '_' + str(expire)
+
+    # user_2005_asecret
+    base = index + '_' + secret
+
+    m = hashlib.sha256()
+    m.update(base.encode())
+    sig = m.hexdigest()
+
+    # 2005_7cce7423
+    pw = str(expire) + '_' + sig[0:8]
+    return pw
+*/
+
 // 2020-02-23 => 2005
-function es_getexpire() {
+function dn_getexpire() {
     $future = date("Y/m/d", strtotime(" +3 months"));
     $retval = substr($future, 2, 2) . substr($future, 5, 2);
     return $retval;
 }
 
+// ('testing', '12345') => '2005_975c9677'
+function dn_makepw($user, $secret) {
+    $expire = dn_getexpire();
+    $base = $user . '_' . $expire . '_' . $secret;
+    $sig = hash('sha256', $base);
+    $pw = $expire . '_' . substr($sig, 0, 8);
+    return($pw);
+}
+
+/* JavaScript
+// Date three months from now
+// 2025-10-16T03:15:18.917Z
+let d = new Date(new Date().setMonth(new Date().getMonth() + 3));
+console.log(d, typeof d);
+let ds = d.toISOString();
+console.log(ds, typeof ds);
+// 2510 (year / month)
+let expire = ds.substring(2,4) + ds.substring(5,7);
+console.log(expire);
+
+let user = "abc123";
+let secret = "12345";
+
+let plain = user + '_' + expire + '_' + secret;
+console.log(plain);
+*/
 function getBooks () {
     $books =  array(
         '{"author": "Bill", "title": "Hamlet", "isbn": "42"}',
