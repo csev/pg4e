@@ -65,29 +65,61 @@ a[target="_blank"]::after {
 }
 </style>
 <h1>Deno Install <span id="passfail"></span></h1>
+<h2>Option 1: Use pre-installed Deno Server</h2>
 <p>
-In this assignment, you will create a free 
-<a href="https://dash.deno.com/" target="_blank">Deno Deploy</a> account and
-install the server side of the <a href="https://www.pg4e.com/code/kvadmin.py" target="_blank">kvadmin.py</a>
-command line KV client in Python.
-Once you have your Deploy account, follow the instructions at:
+Installing your own instance of Deno is <b>optional</b> for this assignment.   If you don't have a Github account 
+and/or don't want to share your github login information with Deno Deploy, you can simply use a shared
+Deno instance at <a href="https://deno.pg4e.com/" target="_blank">https://deno.pg4e.com</a>.
+Skip down to the "Using kvadmin.py" section of these instructions:
+<p>
+<a href="https://github.com/csev/deno-kv-admin/blob/main/README.md#using-kvadminpy" target="_blank">
+https://github.com/csev/deno-kv-admin/blob/main/README.md</a>
+</p>
+Use the following values in your <b>hidden.py</b> configuration file as part of the installation.
+<pre>
+def denokv():
+    return { "token" : "<?php echo($code); ?>",
+             "url": "https://deno.pg4e.com"}
+</pre>
+<p>
+Follow the instructions to test <b>kvadmin.py</b> to make sure you are ready for the remaining assignments.
+Then to get credit for this assignment enter <a href="https://deno.pg4e.com/" target="_blank">https://deno.pg4e.com</a> in 
+the URL field below and press "Check".
+</p>
+<p>
+<h2>Option 2: Install your Own Deno Server</h2>
+To install your own Deno instance complete this assignment, you will use your Github credentials create a free 
+<a href="https://dash.deno.com/" target="_blank">Deno Deploy</a> account.
+Once you have your Deploy account, follow theese instructions to install both a Deno server and a Python
+client:
 </p>
 <p>
 <a href="https://github.com/csev/deno-kv-admin/blob/main/README.md" target="_blank">
 https://github.com/csev/deno-kv-admin/blob/main/README.md</a>
 </p>
 <p>
-Make sure to set your <b>token</b> value to be <b><?php echo($code); ?></b> in both these locations:
+Make sure to set your <b>token</b> value to be <b><?php echo($code); ?></b> in the 
+<b>checkToken()</b> function in your Deno server.
+</p>
+<p>
+Then when you install <b>kvadmin.py</b> edit the <b>denokv()</b> method in <b>hidden.py</b> to be:
+<pre>
+def denokv():
+    return { "token" : "<?php echo($code); ?>",
+             "url": "https://comfortable-starling-12.deno.dev"}
+</pre>
+Please replace "comfortable-starling-12" with the server name you were assigned by Deno.
+</p>
+<h2>Checking your URL</h2>
+<p>
+Once the software has been installed and configured, you can check the assignment here.
 <ul>
-<li>On the Deno Playground server <b>checkToken()</b> function</li>
-<li>For the <b>kvadmin.py</b> client in the <b>denokv()</b> method in <b>hidden.py</b></li>
+<li>If you created your own Deno server, enter its URL with no trailing slash below.</li>
+<li>If you did not create your own Deno server, enter
+<a href="https://deno.pg4e.com" target="_blank">https://deno.pg4e.com</a> below.</li>
 </ul>
 </p>
 <p>
-Please enter the URL of your server with no trailing slash.
-You can test the autograder with the reference implementation by entering
-<a href="https://kv-admin-api.pg4e.com/" target="_blank">https://kv-admin-api.pg4e.com</a>
-<!-- https://kv-admin-api.pg4e.com/ -->
 <form id="checkForm" onsubmit="showSpinner()">
 <input type="text" style="width: 65%;" name="url" value="<?= htmlentities($url); ?>">
 <button type="submit" class="check-button" id="checkButton">
@@ -118,12 +150,6 @@ function showSpinner() {
 
 <?php 
 if ( strlen($url) < 1 ) return; 
-
-$testrun = false;
-if ( strpos($url,'.pg4e.com') ) {
-    $testrun = true;
-    $code = '42';
-}
 
 $dumpurl = $url . "/dump";
 $listgood = $url .= "/kv/list/trees?token=".$code;
@@ -175,12 +201,6 @@ if ( is_object($json) ) {
 }
 ?>
 </pre>
-<?php
-if ( $testrun ) {
-    echo("<p>Test run - not graded</p>\n");
-    echo('<script>document.getElementById("passfail").textContent = "(not passed - test run)";</script>'."\n");
-} else {
-?>
 <p><b style=\"color: green;\">Congratulations, you have passed this autograder!</b></p>
 <script>document.getElementById("passfail").textContent = '(passed)';</script>
 <?php
@@ -190,6 +210,5 @@ if ( $testrun ) {
     echo("<?--\n");
     echo(htmlentities(Output::safe_var_dump($debug_log)));
     echo("-->\n");
-}
 ?>
 </div>

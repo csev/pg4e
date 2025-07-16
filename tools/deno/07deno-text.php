@@ -75,12 +75,16 @@ a[target="_blank"]::after {
 In this assignment you will demonstrate that you have correctly installed and configured
 your
 command line KV client in Python and can store data in your 
-<a href="https://dash.deno.com/" target="_blank">Deno Deploy</a> instance.
-You already should have your <b>token</b> value of <b><?php echo($code); ?></b> in both your
-Deno Deploy server and your <b>hidden.py</b> for <b>kvadmin.py</b>.
+<a href="https://dash.deno.com/" target="_blank">Deno Deploy</a> instance or the
+shared Deno instance.
 </p>
 <p>
-In your KVAdmin.py UI, run the following sequence:
+You already should have your <b>token</b> value of <b><?php echo($code); ?></b> in both your
+<b>hidden.py</b> for <b>kvadmin.py</b> and (optionally)
+your Deno Deploy server in the <b>checkToken()</b> method.
+</p>
+<p>
+In your <b>kvadmin.py</b> UI, run the following sequence (use python3 on a Macintosh):
 <pre>
 python kvadmin.py
 Verifying connection to <?= $sampleurl ?>
@@ -101,8 +105,13 @@ Enter json (finish with a blank line):
 Enter command: quit
 </pre>
 </p>
-Then check your result here in this autograder.
-Please enter the URL of your server with no trailing slash.
+<p>
+Once the text has been stored, it is time to check it with this autograder.
+<ul>
+<li>If you created your own Deno server, enter its URL with no trailing slash below.</li>
+<li>If you did not create your own Deno server, enter
+<a href="https://deno.pg4e.com" target="_blank">https://deno.pg4e.com</a> below.</li>
+</ul>
 <form id="checkForm" onsubmit="showSpinner()">
 <input type="text" style="width: 65%;" name="url" value="<?= htmlentities($url); ?>">
 <button type="submit" class="check-button" id="checkButton">
@@ -133,12 +142,6 @@ function showSpinner() {
 
 <?php 
 if ( strlen($url) < 1 ) return; 
-
-$testrun = false;
-if ( strpos($url,'.pg4e.com') ) {
-    $testrun = true;
-    $code = '42';
-}
 
 $dumpurl = $url . "/dump";
 $geturl = $url . "/kv/get".$textkey."?token=".$code;
@@ -176,7 +179,6 @@ echo(json_encode($json, JSON_PRETTY_PRINT));
 </pre>
 <?php
 $retrievedtext = (isset($json->value) && isset($json->value->text)) ? $json->value->text : null;
-var_dump($retrievedtext);
 if ( ! is_string($retrievedtext) || strlen($retrievedtext) < 1 ) {
     echo("<p>Could not find the retrieved text under value->text</p>\n");
     echo("<p>Remember that you can overwrite a Deno KV document by using set again.</p>\n");
@@ -216,10 +218,6 @@ if ( is_object($json) ) {
 ?>
 </pre>
 <?php
-if ( $testrun ) {
-    echo("<p>Test run - not graded</p>\n");
-    echo('<script>document.getElementById("passfail").textContent = "(not passed - test run)";</script>'."\n");
-} else {
 ?>
 <p><b style=\"color: green;\">Congratulations, you have passed this autograder!</b></p>
 <script>document.getElementById("passfail").textContent = '(passed)';</script>
@@ -230,6 +228,5 @@ if ( $testrun ) {
     echo("<?--\n");
     echo(htmlentities(Output::safe_var_dump($debug_log)));
     echo("-->\n");
-}
 ?>
 </div>

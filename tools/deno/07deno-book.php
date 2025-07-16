@@ -45,7 +45,8 @@ using your installed
 <a href="https://www.pg4e.com/code/kvadmin.py" target="_blank">kvadmin.py</a>
 web services client.
 You already should have your <b>token</b> value of <b><?php echo($code); ?></b> in both your
-Deno Deploy server and your <b>hidden.py</b> for <b>kvadmin.py</b>.
+<b>hidden.py</b> for <b>kvadmin.py</b> and (optional)
+Deno Deploy server.
 </p>
 <p>
 The lecture proposes a data model for a primary logical key based on <b>isbn</b>
@@ -56,8 +57,13 @@ in your Deno KV instance:
 <?= htmlentities($book) ?>
 </pre>
 </p>
-Then check your result here in this autograder.
-Please enter the URL of your server with no trailing slash.
+<p>
+Once the document and the alternate index entries have been stored, it is time to check it with this autograder.
+<ul>
+<li>If you created your own Deno server, enter its URL with no trailing slash below.</li>
+<li>If you did not create your own Deno server, enter
+<a href="https://deno.pg4e.com" target="_blank">https://deno.pg4e.com</a> below.</li>
+</ul>
 <form id="checkForm" onsubmit="showSpinner()">
 <input type="text" style="width: 65%;" name="url" value="<?= htmlentities($url); ?>">
 <button type="submit" class="check-button" id="checkButton">
@@ -70,12 +76,6 @@ Please enter the URL of your server with no trailing slash.
 <hr/>
 <?php 
 if ( strlen($url) < 1 ) return; 
-
-$testrun = false;
-if ( strpos($url,'.pg4e.com') ) {
-    $testrun = true;
-    $code = '42';
-}
 
 $dumpurl = $url . "/dump";
 $geturl = $url . "/kv/get".$textkey."?token=".$code;
@@ -238,10 +238,6 @@ if ( is_object($json) ) {
 ?>
 </pre>
 <?php
-if ( $testrun ) {
-    echo("<p>Test run - not graded</p>\n");
-    echo('<script>document.getElementById("passfail").textContent = "(not passed - test run)";</script>'."\n");
-} else {
 ?>
 <p><b style=\"color: green;\">Congratulations, you have passed this autograder!</b></p>
 <script>document.getElementById("passfail").textContent = '(passed)';</script>
@@ -252,6 +248,5 @@ if ( $testrun ) {
     echo("<?--\n");
     echo(htmlentities(Output::safe_var_dump($debug_log)));
     echo("-->\n");
-}
 ?>
 </div>
