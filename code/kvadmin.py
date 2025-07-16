@@ -79,6 +79,21 @@ except Exception as e:
     print()
     quit()
 
+def urlerror(e):
+    if isinstance(e, urllib.error.HTTPError) :
+        print('HTTP Error:', e.code)
+        if e.code == 401 :
+            print("You might have an incorrect token value")
+        if e.code == 500 :
+            print("The code in the server is failing somehow")
+    elif isinstance(e, urllib.error.URLError) :
+        if isinstance(e.reason, socket.timeout):
+            print('Socket timed out')
+        else:
+            print('URL Error:', error.reason)
+    else:
+        print(e, type(e))
+
 while True:
 
     print()
@@ -115,10 +130,13 @@ while True:
         if ( showurl ) : print(url)
 
         req = urllib.request.Request(url, data=body, headers=headers, method='POST')
-        with urllib.request.urlopen(req, timeout=30) as response:
-            text = response.read().decode('utf-8')
-            status = response.status
-            prettyjson(status, text)
+        try:
+            with urllib.request.urlopen(req, timeout=30) as response:
+                text = response.read().decode('utf-8')
+                status = response.status
+                prettyjson(status, text)
+        except Exception as error:
+            urlerror(error)
         continue
 
     # get /books/Hamlet
@@ -132,16 +150,19 @@ while True:
           '?token=' + secrets['token'] )
         if ( showurl ) : print(url)
 
-        with urllib.request.urlopen(url, timeout=30) as response:
-            text = response.read().decode('utf-8')
-            status = response.status
-            print(status)
-            try:
-                data = json.loads(text)
-                pretty_json_string = json.dumps(data, indent=4)
-                print(pretty_json_string)
-            except Exception as e:
-                print(text)
+        try:
+            with urllib.request.urlopen(url, timeout=30) as response:
+                text = response.read().decode('utf-8')
+                status = response.status
+                print(status)
+                try:
+                    data = json.loads(text)
+                    pretty_json_string = json.dumps(data, indent=4)
+                    print(pretty_json_string)
+                except Exception as e:
+                    print(text)
+        except Exception as error:
+            urlerror(error)
         continue
 
     # delete /books/Hamlet
@@ -158,11 +179,14 @@ while True:
         if ( showurl ) : print(url)
 
         req = urllib.request.Request(url, method='DELETE')
-        with urllib.request.urlopen(req, timeout=30) as response:
-            text = response.read().decode('utf-8')
-            status = response.status
-            print('Status:', status)
-            print(text)
+        try:
+            with urllib.request.urlopen(req, timeout=30) as response:
+                text = response.read().decode('utf-8')
+                status = response.status
+                print('Status:', status)
+                print(text)
+        except Exception as error:
+            urlerror(error)
         continue
 
     if len(pieces) == 1 and pieces[0] == 'show' :
