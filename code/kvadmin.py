@@ -14,6 +14,7 @@ import urllib.parse
 import urllib.error
 import json
 import hidden
+import socket
 
 def prettyjson(status, text):
     """Pretty print JSON response with status code handling"""

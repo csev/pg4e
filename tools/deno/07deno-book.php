@@ -11,7 +11,7 @@ require_once "deno_util.php";
 
 // Compute the stuff for the output
 $code = getUnique($LAUNCH);
-$code = substr($code, 0, 8);
+$code = dn_maketoken($code, "42");
 $codeint = getCode($LAUNCH);
 
 $books = getBooks();
