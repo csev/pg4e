@@ -44,9 +44,20 @@ In this assignment you will insert a book into your
 using your installed 
 <a href="https://www.pg4e.com/code/kvadmin.py" target="_blank">kvadmin.py</a>
 web services client.
-You already should have your <b>token</b> value of <b><?php echo($code); ?></b> in both your
-<b>hidden.py</b> for <b>kvadmin.py</b> and (optional)
-Deno Deploy server.
+</p>
+<p>
+<?php if ( $shared_server ) { ?>
+Your <b>hidden.py</b> should have the following in its <b>denokv()</b> method:
+<pre>
+def denokv():
+    return { "token" : "<?php echo($code); ?>",
+             "url": "<?php echo($sampleurl); ?>"}
+</pre>
+<?php } else { ?>
+You should also have your <b>token</b> value of <b><?php echo($code); ?></b> both in 
+the <b>checkToken()</b> function in your Deno server instance
+and in the <b>denokv()</b> method in your <b>hidden.py</b> for <b>kvadmin.py</b>.
+<?php } ?>
 </p>
 <p>
 The lecture proposes a data model for a primary logical key based on <b>isbn</b>
@@ -57,13 +68,14 @@ in your Deno KV instance:
 <?= htmlentities($book) ?>
 </pre>
 </p>
-<p>
-Once the document and the alternate index entries have been stored, it is time to check it with this autograder.
-<ul>
-<li>If you created your own Deno server, enter its URL with no trailing slash below.</li>
-<li>If you did not create your own Deno server, enter
-<a href="https://deno.pg4e.com" target="_blank">https://deno.pg4e.com</a> below.</li>
-</ul>
+Then check your result here in this autograder.
+Please enter 
+<?php if ( $shared_server ) { ?>
+<b>https://deno.pg4e.com</b>
+<?php } else { ?>
+the URL of your server
+<?php } ?>
+with no trailing slash and press "Check".
 <form id="checkForm" onsubmit="showSpinner()">
 <input type="text" style="width: 65%;" name="url" value="<?= htmlentities($url); ?>">
 <button type="submit" class="check-button" id="checkButton">
@@ -237,8 +249,6 @@ if ( is_object($json) ) {
 }
 ?>
 </pre>
-<?php
-?>
 <p><b style=\"color: green;\">Congratulations, you have passed this autograder!</b></p>
 <script>document.getElementById("passfail").textContent = '(passed)';</script>
 <?php

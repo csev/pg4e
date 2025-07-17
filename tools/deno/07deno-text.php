@@ -70,21 +70,40 @@ a[target="_blank"]::after {
     cursor: not-allowed;
 }
 </style>
-<h1>Deno KVAdmin <span id="passfail"></span></h1>
+<h1>Testing Deno KVAdmin <span id="passfail"></span></h1>
+<?php if ( $shared_server ) { ?>
+<?php
+$sampleurl = "https://deno.pg4e.com";
+$url = "https://deno.pg4e.com";
+?>
+<p>
+If you have not already done so you need to download the following files into a folder on your 
+computer:
+<ul>
+<li><a href="https://www.py4e.com/code/kvadmin.py" target="_blank">https://www.py4e.com/code/kvadmin.py</a></li>
+<li><a href="https://www.py4e.com/code/hidden-dist.py" target="_blank">https://www.py4e.com/code/hidden-dist.py</a> and copy it
+to <b>hidden.py</b>.
+</ul>
+</p>
+<p>
+Edit the <b>hidden.py</b>, find the <b>denokv()</b> function and edit it as follows:
+<pre>
+def denokv():
+    return { "token" : "<?php echo($code); ?>",
+             "url": "<?php echo($sampleurl); ?>"}
+</pre>
+<?php } else { ?>
 <p>
 In this assignment you will demonstrate that you have correctly installed and configured
 your
 command line KV client in Python and can store data in your 
-<a href="https://dash.deno.com/" target="_blank">Deno Deploy</a> instance or the
-shared Deno instance.
-</p>
-<p>
+<a href="https://dash.deno.com/" target="_blank">Deno Deploy</a> instance.
 You already should have your <b>token</b> value of <b><?php echo($code); ?></b> in both your
-<b>hidden.py</b> for <b>kvadmin.py</b> and (optionally)
-your Deno Deploy server in the <b>checkToken()</b> method.
+Deno Deploy server and your <b>hidden.py</b> for <b>kvadmin.py</b>.
 </p>
+<?php } ?>
 <p>
-In your <b>kvadmin.py</b> UI, run the following sequence (use python3 on a Macintosh):
+Then run <b>kvadmin.py</b> as follows:
 <pre>
 python kvadmin.py
 Verifying connection to <?= $sampleurl ?>
@@ -105,13 +124,8 @@ Enter json (finish with a blank line):
 Enter command: quit
 </pre>
 </p>
-<p>
-Once the text has been stored, it is time to check it with this autograder.
-<ul>
-<li>If you created your own Deno server, enter its URL with no trailing slash below.</li>
-<li>If you did not create your own Deno server, enter
-<a href="https://deno.pg4e.com" target="_blank">https://deno.pg4e.com</a> below.</li>
-</ul>
+Then check your result here in this autograder.
+Please enter the URL of your server with no trailing slash.
 <form id="checkForm" onsubmit="showSpinner()">
 <input type="text" style="width: 65%;" name="url" value="<?= htmlentities($url); ?>">
 <button type="submit" class="check-button" id="checkButton">
@@ -179,6 +193,7 @@ echo(json_encode($json, JSON_PRETTY_PRINT));
 </pre>
 <?php
 $retrievedtext = (isset($json->value) && isset($json->value->text)) ? $json->value->text : null;
+var_dump($retrievedtext);
 if ( ! is_string($retrievedtext) || strlen($retrievedtext) < 1 ) {
     echo("<p>Could not find the retrieved text under value->text</p>\n");
     echo("<p>Remember that you can overwrite a Deno KV document by using set again.</p>\n");

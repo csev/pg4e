@@ -27,6 +27,7 @@ $assignments = array(
 $oldsettings = Settings::linkGetAll();
 
 $assn = Settings::linkGet('exercise');
+$shared_server = Settings::linkGet('shared');
 
 $custom = LTIX::ltiCustomGet('exercise');
 
@@ -75,6 +76,7 @@ $OUTPUT->topNav($menu);
 
 SettingsForm::start();
 SettingsForm::select("exercise", __('Please select an assignment'),$assignments);
+SettingsForm::checkbox("shared", __('Use shared server (if supported)'));
 SettingsForm::dueDate();
 SettingsForm::done();
 SettingsForm::end();
