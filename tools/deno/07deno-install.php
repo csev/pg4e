@@ -20,6 +20,10 @@ $oldgrade = $RESULT->grade;
 $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : "";
 $url = rtrim(trim($url), '/');
 
+// Wake up the sleeping Deno if it is sleeping
+$command = 'nohup curl https://kv-admin-api.pg4e.com/dump > /tmp/deno-ping 2>&1 &';
+exec($command);
+
 if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
 }
