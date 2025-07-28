@@ -1056,7 +1056,7 @@
             "resource_link_id" : "pg4e_09_deno"
         },
         {
-        "title" : "Autograder: DenoKV Install",
+        "title" : "Autograder: DenoKV and KVAdmin Install",
         "launch" : "tools/deno/",
         "resource_link_id" : "pg4e_07deno_install",
         "custom" : [
@@ -1067,7 +1067,7 @@
         ]
         },
         {
-        "title" : "Autograder: DenoKV Insert Text",
+        "title" : "Autograder: DenoKV Insert Text (install required)",
         "launch" : "tools/deno/",
         "resource_link_id" : "pg4e_07deno_text",
         "custom" : [
@@ -1078,13 +1078,35 @@
         ]
         },
         {
-        "title" : "Autograder: DenoKV Book Data Model",
+        "title" : "Autograder: DenoKV Book Data Model (install required)",
         "launch" : "tools/deno/",
         "resource_link_id" : "pg4e_07deno_book",
         "custom" : [
             {
                 "key": "exercise",
                 "value": "07deno-book.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Configuring Deno KVAdmin (shared server - no install required)",
+        "launch" : "tools/deno/",
+        "resource_link_id" : "pg4e_07deno_text_shared",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07deno-text-shared.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: DenoKV Book Data Model (shared server - no install required)",
+        "launch" : "tools/deno/",
+        "resource_link_id" : "pg4e_07deno_book_shared",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07deno-book-shared.php"
             }
         ]
         }

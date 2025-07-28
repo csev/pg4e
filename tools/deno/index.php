@@ -22,12 +22,13 @@ $assignments = array(
     '07deno-install.php' => 'Install Deno',
     '07deno-text.php' => 'A single line of text',
     '07deno-book.php' => 'Book Data Model',
+    '07deno-text-shared.php' => 'A single line of text (shared server - no install needed)',
+    '07deno-book-shared.php' => 'Book Data Model (shared server - no install needed)',
 );
 
 $oldsettings = Settings::linkGetAll();
 
 $assn = Settings::linkGet('exercise');
-$shared_server = Settings::linkGet('shared');
 
 $custom = LTIX::ltiCustomGet('exercise');
 
@@ -76,7 +77,6 @@ $OUTPUT->topNav($menu);
 
 SettingsForm::start();
 SettingsForm::select("exercise", __('Please select an assignment'),$assignments);
-SettingsForm::checkbox("shared", __('Use shared server (if supported)'));
 SettingsForm::dueDate();
 SettingsForm::done();
 SettingsForm::end();

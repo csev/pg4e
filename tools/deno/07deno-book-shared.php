@@ -29,7 +29,12 @@ $oldgrade = $RESULT->grade;
 $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : "";
 $url = rtrim(trim($url), '/');
 $sampleurl = "https://comfortable-starling-12.deno.dev";
+
 if ( strlen($url) > 0 ) $sampleurl = $url;
+
+// Wake up the sleeping Deno if it is sleeping
+$command = 'nohup curl https://deno.pg4e.com/dump > /tmp/deno-ping 2>&1 &';
+exec($command);
 
 if ( $dueDate->message ) {
     echo('<p style="color:red;">'.$dueDate->message.'</p>'."\n");
@@ -39,16 +44,19 @@ denoCSSandJS(); // Print out the CSS
 ?>
 <h1>Deno Book Data Model <span id="passfail"></span></h1>
 <p>
-In this assignment you will insert a book into your 
-<a href="https://dash.deno.com/" target="_blank">Deno Deploy</a> instance
+In this assignment you will insert a book into a shared 
+Deno Deploy instance
 using your installed 
 <a href="https://www.pg4e.com/code/kvadmin.py" target="_blank">kvadmin.py</a>
-web services client.
+web services client from the previous assignment.
 </p>
 <p>
-You should also have your <b>token</b> value of <b><?php echo($code); ?></b> both in 
-the <b>checkToken()</b> function in your Deno server instance
-and in the <b>denokv()</b> method in your <b>hidden.py</b> for <b>kvadmin.py</b>.
+Your <b>hidden.py</b> should have the following in its <b>denokv()</b> method:
+<pre>
+def denokv():
+    return { "token" : "<?php echo($code); ?>",
+             "url": "<?php echo($sampleurl); ?>"}
+</pre>
 </p>
 <p>
 The lecture proposes a data model for a primary logical key based on <b>isbn</b>
@@ -60,11 +68,8 @@ in your Deno KV instance:
 </pre>
 </p>
 Then check your result here in this autograder.
-Please enter 
-the URL of your server
-with no trailing slash and press "Check".
 <form id="checkForm" onsubmit="showSpinner()">
-<input type="text" style="width: 65%;" name="url" value="<?= htmlentities($url); ?>">
+<input type="hidden" name="url" value="https://deno.pg4e.com">
 <button type="submit" class="check-button" id="checkButton">
     <span class="spinner-container">
         <div class="spinner"></div>
