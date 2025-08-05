@@ -23,6 +23,11 @@ PostgreSQL</a> </li>
 </ul>
 </p>
 <p>
+<b>Note:</b> As of Fall 2025, this course is transistioning its NoSQL / Advanced Archivecture Lesson from ElasticSeach to Deno.
+ElasticSearch is no longer an active open source project.  Deno is a fresh approach to distributed hosting and a NoSQL database
+and so it is a modern replacement for the topics we historically covered using ElasticSearch.
+</p>
+<p>
 When you take this course we will provide you with a small PostgreSQL server with limited capabilities.
 You will need a PostgreSQL client to run your SQL commands and send them to your PostgreSQL server.
 All the examples in the course use the simple "least common demoninator" command line client called <b>psql</b>.

@@ -895,95 +895,6 @@
     ]
 },
 {
-    "title": "Elastic Search",
-    "anchor": "week7a",
-    "icon" : "fa-search",
-    "description": "Using ElasticSearch to explore NoSQL.",
-    "slides": [
-        "{apphome}/lectures/07-Elastic.pptx"
-    ],
-    "discussions" : [
-        {
-        "title" : "Elastic Search",
-        "launch" : "mod/tdiscus/",
-        "resource_link_id": "discuss_09_elastic"
-        }
-    ],
-    "videos" : [
-        {
-            "title" : "Elastic Search Overview (7.x)",
-            "project": "Elastic Search Overview (7.x)",
-            "youtube" : "T5LzslZid9s"
-        },
-        {
-            "title" : "Elastic Search 7.x Python Code",
-            "project": "Elastic Search 7.x Python Code",
-            "youtube" : "oy49afXmvtY"
-        },
-        {
-            "title" : "Demonstration: Loading a book into Elastic Search",
-            "project": "Demonstration: Loading a book into Elastic Search",
-            "youtube" : "xdjXB6RutQU"
-        },
-        {
-            "title" : "Demonstration: Using Elastic Search's REST API",
-            "project": "Demonstration: Using Elastic Search's REST API",
-            "youtube" : "933wuij1-_I"
-        },
-        {
-            "title" : "Demonstration: Scraping an Email API and Loading it into Elastic Search",
-            "project": "Demonstration: Scraping an Email API and Loading it into Elastic Search",
-            "youtube" : "dBQ7eP-U7YE"
-        },
-        {
-            "title" : "Demonstration: Loading A Tweet into Elastic Search",
-            "project": "Demonstration: Loading A Tweet into Elastic Search",
-            "youtube" : "h3_pPEXuWx8"
-        }
-    ],
-    "references" : [
-        {
-            "title" : "High Contrast / Printable Slides",
-            "href" : "{apphome}/lectures/07-Elastic-BW.pdf"
-        }
-    ],
-    "lti" : [
-        {
-        "title" : "Autograder: Elasticsearch Book Load",
-        "launch" : "tools/sql/",
-        "resource_link_id" : "pg4e_07book",
-        "custom" : [
-            {
-                "key": "exercise",
-                "value": "07book.php"
-            }
-        ]
-        },
-        {
-        "title" : "Autograder: Elasticsearch Email Load",
-        "launch" : "tools/sql/",
-        "resource_link_id" : "pg4e_07gmane",
-        "custom" : [
-            {
-                "key": "exercise",
-                "value": "07gmane.php"
-            }
-        ]
-        },
-        {
-        "title" : "Autograder: Elasticsearch Tweets",
-        "launch" : "tools/sql/",
-        "resource_link_id" : "pg4e_07tweet",
-        "custom" : [
-            {
-                "key": "exercise",
-                "value": "07tweet.php"
-            }
-        ]
-        }
-    ]
-},
-{
     "title": "Deno KV",
     "anchor": "week7d",
     "icon" : "fa-space-shuttle",
@@ -1107,6 +1018,95 @@
             {
                 "key": "exercise",
                 "value": "07deno-book-shared.php"
+            }
+        ]
+        }
+    ]
+},
+{
+    "title": "Elastic Search (deprecated)",
+    "anchor": "week7a",
+    "icon" : "fa-ban",
+    "description": "As of Fall 2025, the ElasticSearch module for this course is derecated and will eventually be removed.  The Deno module is the replacement for ElasticSearch.",
+    "slides": [
+        "{apphome}/lectures/07-Elastic.pptx"
+    ],
+    "discussions" : [
+        {
+        "title" : "Elastic Search",
+        "launch" : "mod/tdiscus/",
+        "resource_link_id": "discuss_09_elastic"
+        }
+    ],
+    "videos" : [
+        {
+            "title" : "Elastic Search Overview (7.x)",
+            "project": "Elastic Search Overview (7.x)",
+            "youtube" : "T5LzslZid9s"
+        },
+        {
+            "title" : "Elastic Search 7.x Python Code",
+            "project": "Elastic Search 7.x Python Code",
+            "youtube" : "oy49afXmvtY"
+        },
+        {
+            "title" : "Demonstration: Loading a book into Elastic Search",
+            "project": "Demonstration: Loading a book into Elastic Search",
+            "youtube" : "xdjXB6RutQU"
+        },
+        {
+            "title" : "Demonstration: Using Elastic Search's REST API",
+            "project": "Demonstration: Using Elastic Search's REST API",
+            "youtube" : "933wuij1-_I"
+        },
+        {
+            "title" : "Demonstration: Scraping an Email API and Loading it into Elastic Search",
+            "project": "Demonstration: Scraping an Email API and Loading it into Elastic Search",
+            "youtube" : "dBQ7eP-U7YE"
+        },
+        {
+            "title" : "Demonstration: Loading A Tweet into Elastic Search",
+            "project": "Demonstration: Loading A Tweet into Elastic Search",
+            "youtube" : "h3_pPEXuWx8"
+        }
+    ],
+    "references" : [
+        {
+            "title" : "High Contrast / Printable Slides",
+            "href" : "{apphome}/lectures/07-Elastic-BW.pdf"
+        }
+    ],
+    "lti" : [
+        {
+        "title" : "Autograder: Elasticsearch Book Load",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_07book",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07book.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Elasticsearch Email Load",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_07gmane",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07gmane.php"
+            }
+        ]
+        },
+        {
+        "title" : "Autograder: Elasticsearch Tweets",
+        "launch" : "tools/sql/",
+        "resource_link_id" : "pg4e_07tweet",
+        "custom" : [
+            {
+                "key": "exercise",
+                "value": "07tweet.php"
             }
         ]
         }
