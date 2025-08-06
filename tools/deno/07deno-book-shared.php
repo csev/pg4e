@@ -28,7 +28,7 @@ $oldgrade = $RESULT->grade;
 
 $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : "";
 $url = rtrim(trim($url), '/');
-$sampleurl = "https://comfortable-starling-12.deno.dev";
+$sharedurl = "https://deno.pg4e.com";
 
 if ( strlen($url) > 0 ) $sampleurl = $url;
 
@@ -55,7 +55,7 @@ Your <b>hidden.py</b> should have the following in its <b>denokv()</b> method:
 <pre>
 def denokv():
     return { "token" : "<?php echo($code); ?>",
-             "url": "<?php echo($sampleurl); ?>"}
+             "url": "<?php echo($sharedurl); ?>"}
 </pre>
 </p>
 <p>
