@@ -125,7 +125,7 @@ If you run the program multiple times in testing or with different files,
 make sure to empty out the data before each run.
 <p>
 Load this
-<a href=library.csv" target="_blank">
+<a href=library.csv" download="track_raw.csv">
 CSV data
 </a> 
 file into the <b>track_raw</b> table using the <b>\copy</b> command.
