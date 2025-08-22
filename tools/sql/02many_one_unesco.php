@@ -156,7 +156,7 @@ CREATE TABLE category (
 ... More tables needed
 </pre>
 To load
-<a href=whc-sites-2018-small.csv" target="_blank">
+<a href=whc-sites-2018-small.csv" download>
 the CSV data for this assignment
 </a>
 use the following <b>copy</b> command.  Adding <b>HEADER</b> causes the CSV loader
