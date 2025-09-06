@@ -79,8 +79,8 @@ a[target="_blank"]::after {
 If you have not already done so you need to download the following files into a folder on your 
 computer:
 <ul>
-<li><a href="https://www.py4e.com/code/kvadmin.py" target="_blank">https://www.py4e.com/code/kvadmin.py</a></li>
-<li><a href="https://www.py4e.com/code/hidden-dist.py" target="_blank">https://www.py4e.com/code/hidden-dist.py</a> and copy it
+<li><a href="https://www.pg4e.com/code/kvadmin.py" target="_blank">https://www.pg4e.com/code/kvadmin.py</a></li>
+<li><a href="https://www.pg4e.com/code/hidden-dist.py" target="_blank">https://www.pg4e.com/code/hidden-dist.py</a> and copy it
 to <b>hidden.py</b> unless you already have <b>hidden.py</b> from previous assignments.
 </ul>
 </p>
@@ -103,7 +103,7 @@ Enter command: <b>set <?= $textkey ?></b>
 Enter json (finish with a blank line):
 <b>{"text": "<?= htmlentities($textline) ?>"}</b>
 
-<?= $sampleurl ?>/kv/set/py4e/<?= $codeint ?>?token=<?= $code ?>
+<?= $sampleurl ?>/kv/set/pg4e/<?= $codeint ?>?token=<?= $code ?>
 
 {
   "ok": true,
