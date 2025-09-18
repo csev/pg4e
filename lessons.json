@@ -911,39 +911,39 @@
     ],
     "videos" : [
         {
-            "title" : "Intro to Deno and Deno KV",
+            "title" : "Intro to Deno and Deno KV (22:02)",
             "project": "pg4e-media/09-Deno/01-Deno-Intro.m4v",
             "youtube" : "zYgXMEF9NbA"
         },
         {
-            "title" : "Exploring Deno KV Architecture Through B-Trees",
+            "title" : "Exploring Deno KV Architecture Through B-Trees (13:14)",
             "project": "pg4e-media/09-Deno/02-Deno-BTree.m4v",
             "youtube" : "EahOy1OpdOo"
         },
         {
-            "title" : "JavaScript in Three Slides (For Python Developers)",
+            "title" : "JavaScript in Three Slides (For Python Developers) (6:20)",
             "project": "pg4e-media/09-Deno/03-Deno-JavaScript.m4v",
             "youtube" : "v5kWjIzdwCc"
         },
         {
-            "title" : "Exploring CRUD in Deno KV Using KVAdmin.py",
+            "title" : "Exploring CRUD in Deno KV Using KVAdmin.py (11:45)",
             "project": "pg4e-media/09-Deno/04-Deno-CRUD.m4v",
             "youtube" : "MiNneJNIjbg"
         },
         {
-            "title" : "Code Walkthrough: Installing KVAdmin.py Client and Server on Deno Deploy",
+            "title" : "Building a Deno KV Model with Secondary Indexes (10:38)",
+            "project": "pg4e-media/09-Deno/05-Deno-Model.mov",
+            "youtube" : "LFcmd9P9UXU"
+        },
+        {
+            "title" : "Code Walkthrough: Installing KVAdmin.py Client and Server on Deno Deploy (9:17)",
             "project": "pg4e-media/09-Deno/11-2025-07-07-Deno-Install.mov",
             "youtube" : "nQDSDfI1pYY"
         },
         {
-            "title" : "Code Walkthrough - KVAdmin.py Client and Server",
+            "title" : "Code Walkthrough - KVAdmin.py Client and Server (23:17)",
             "project": "pg4e-media/09-Deno/12-2025-07-09-Deno-KVAdmin.mov",
             "youtube" : "gPieHUTw7oo"
-        },
-        {
-            "title" : "Building a Deno KV Model with Secondary Indexes",
-            "project": "pg4e-media/09-Deno/05-Deno-Model.mov",
-            "youtube" : "LFcmd9P9UXU"
         }
     ],
     "references" : [
