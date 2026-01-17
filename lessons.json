@@ -1027,6 +1027,7 @@
     "title": "Elastic Search (deprecated)",
     "anchor": "week7a",
     "icon" : "fa-ban",
+    "hidden": true,
     "description": "As of Fall 2025, the ElasticSearch module for this course is deprecated and will eventually be removed.  The Deno module is the replacement for ElasticSearch.",
     "slides": [
         "{apphome}/lectures/07-Elastic.pptx"
