@@ -16,6 +16,101 @@ import json
 import hidden
 import socket
 
+def urlerror(e, url=None, quit_on_error=False):
+    """Handle URL errors with detailed diagnostics"""
+    if isinstance(e, urllib.error.HTTPError):
+        print()
+        print('HTTP Error:', e.code, '-', e.reason)
+        if url:
+            print('URL:', url)
+        if e.code == 404:
+            print('Error: The endpoint was not found (404).')
+            print('This might indicate the Deno service is running but the endpoint is missing.')
+        elif e.code == 401:
+            print('Error: Authentication failed (401).')
+            print('You might have an incorrect token value')
+            if url and '/dump' in url:
+                print('Check your token in the hidden.py file.')
+        elif e.code == 500:
+            print('Error: Server error (500).')
+            print('The Deno service is running but encountered an internal error.')
+            print('The code in the server is failing somehow')
+        elif e.code >= 500:
+            print(f'Error: Server error ({e.code}).')
+            print('The Deno service may be starting up or experiencing issues.')
+        else:
+            print(f'Error: Unexpected HTTP status code {e.code}.')
+        try:
+            error_body = e.read().decode('utf-8')
+            if error_body:
+                print('Server response:', error_body[:500])  # Limit to first 500 chars
+        except:
+            pass
+    elif isinstance(e, urllib.error.URLError):
+        print()
+        print('URL Error:', str(e))
+        if url:
+            print('URL:', url)
+        if isinstance(e.reason, socket.timeout):
+            print('Error: Connection timed out after 30 seconds.')
+            print('Socket timed out')
+            print('This usually means:')
+            print('  1. The Deno service is starting up but taking too long to respond')
+            print('  2. The service is overloaded or unresponsive')
+            print('  3. There is a network connectivity issue')
+            print()
+            print('The service might be coming up - try accessing the URL in a browser')
+            print('and wait for it to respond, then restart kvadmin.')
+        elif isinstance(e.reason, ConnectionRefusedError):
+            print('Error: Connection refused.')
+            print('This usually means:')
+            print('  1. The Deno service is not running')
+            print('  2. The service is running on a different port')
+            print('  3. A firewall is blocking the connection')
+        elif isinstance(e.reason, socket.gaierror):
+            print('Error: DNS resolution failed.')
+            print('This usually means:')
+            print('  1. The hostname in the URL cannot be resolved')
+            print('  2. There is a network connectivity issue')
+            print('  3. The URL is incorrect')
+        else:
+            print('Error type:', type(e.reason).__name__)
+            print('Error details:', str(e.reason))
+            print('URL Error:', e.reason)
+    elif isinstance(e, socket.timeout):
+        print()
+        print('Error: Socket timeout - the connection took longer than 30 seconds.')
+        if url:
+            print('URL:', url)
+        print('This usually means the Deno service is starting up but not ready yet.')
+        print('Try accessing the URL in a browser and wait for it to respond,')
+        print('then restart kvadmin.')
+    else:
+        print()
+        print('Unexpected error:', type(e).__name__, '-', str(e))
+        if url:
+            print('URL:', url)
+        print('Unable to communicate with Deno.')
+    
+    if quit_on_error:
+        print()
+        print('Sometimes it takes a while to start the Deno instance after it has been idle.')
+        print('You might want to access the url above in a browser, wait 30 seconds,')
+        print('and then restart kvadmin.')
+        print()
+        quit()
+
+def verifyconnection(url):
+    """Verify connection to Deno service with detailed error reporting"""
+    print('Verifying connection to', url)
+    try:
+        with urllib.request.urlopen(url, timeout=30) as response:
+            text = response.read().decode('utf-8')
+            status = response.status
+            return True
+    except Exception as e:
+        urlerror(e, url=url, quit_on_error=True)
+
 def prettyjson(status, text):
     """Pretty print JSON response with status code handling"""
     if status == 200:
@@ -63,37 +158,8 @@ def parsejson(text):
 secrets = hidden.denokv()
 showurl = True
 
-
-url = secrets['url'] + '/dump';
-print('Verifying connection to', url)
-try:
-    with urllib.request.urlopen(url, timeout=30) as response:
-        text = response.read().decode('utf-8')
-        status = response.status
-except Exception as e:
-    print()
-    print('Unable to communicate with Deno.  Sometimes it takes a while to start the')
-    print('the Deno instance after it has been idle.  You might want to access the url')
-    print('below in a browser, wait 30 seconds,  and then restart kvadmin.');
-    print()
-    print(url)
-    print()
-    quit()
-
-def urlerror(e):
-    if isinstance(e, urllib.error.HTTPError) :
-        print('HTTP Error:', e.code)
-        if e.code == 401 :
-            print("You might have an incorrect token value")
-        if e.code == 500 :
-            print("The code in the server is failing somehow")
-    elif isinstance(e, urllib.error.URLError) :
-        if isinstance(e.reason, socket.timeout):
-            print('Socket timed out')
-        else:
-            print('URL Error:', error.reason)
-    else:
-        print(e, type(e))
+url = secrets['url'] + '/dump'
+verifyconnection(url)
 
 while True:
 
@@ -137,7 +203,7 @@ while True:
                 status = response.status
                 prettyjson(status, text)
         except Exception as error:
-            urlerror(error)
+            urlerror(error, url=url)
         continue
 
     # get /books/Hamlet
@@ -163,7 +229,7 @@ while True:
                 except Exception as e:
                     print(text)
         except Exception as error:
-            urlerror(error)
+            urlerror(error, url=url)
         continue
 
     # delete /books/Hamlet
@@ -187,7 +253,7 @@ while True:
                 print('Status:', status)
                 print(text)
         except Exception as error:
-            urlerror(error)
+            urlerror(error, url=url)
         continue
 
     if len(pieces) == 1 and pieces[0] == 'show' :
