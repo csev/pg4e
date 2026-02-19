@@ -16,6 +16,8 @@ $CFG->providekeys = true;  // true
 
 $CFG->context_title = "Postgres for Everybody";
 $CFG->lessons = $CFG->dirroot.'/../lessons.json';
+$CFG->youtube_playlist = 'PLlRFEj9H3Oj7Oj3ndXmNS1FFOUyQP-gEa';
+
 $CFG->giftquizzes = $CFG->dirroot.'/../pg4e-solutions/quiz';
 $CFG->tdiscus = $CFG->apphome . '/mod/tdiscus/';
 
