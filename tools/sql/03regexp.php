@@ -156,7 +156,7 @@ below.
 <input type="text" name="query" style="width:95%;" value="<?= htmlentities($query) ?>" placeholder="Enter a regular expression like ^[A-Z]...">
 </p>
 <input type="submit" id="submitbutton" class="btn btn-primary" name="submit" onclick="$('#submitbutton').hide();$('#submitspinner').show();return true;" value="Submit Query">
-<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="" style="display:none" aria-hidden="true">
 </form>
 </p>
 <p>

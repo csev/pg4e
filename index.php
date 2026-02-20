@@ -9,7 +9,7 @@ require "nav.php";
 ?>
 <div id="container">
 <div style="margin-left: 10px; float:right">
-<iframe width="400" height="225" src="https://www.youtube.com/embed/flRUuodVPq0?rel=0" frameborder="0" allowfullscreen></iframe>
+<iframe width="400" height="225" src="https://www.youtube.com/embed/flRUuodVPq0?rel=0" frameborder="0" allowfullscreen title="Welcome to PostgreSQL for Everybody - Introduction video"></iframe>
 </div>
 <h1>PostgreSQL for Everybody</h1>
 <p>
@@ -39,7 +39,7 @@ give you for this course.
 </p>
 <p>
 <b>Note:</b> As of Fall 2025, this course is transistioning its NoSQL / Advanced Architecture lesson from ElasticSeach to 
-<a href="https://www.deno.com/" targt="_blank">Deno</a>.
+<a href="https://www.deno.com/" target="_blank">Deno</a>.
 ElasticSearch is no longer an active open source project.  Deno is a fresh approach to distributed hosting and a NoSQL database
 and so it is a modern replacement for the topics we historically covered using ElasticSearch.
 </p>
@@ -54,7 +54,7 @@ to build these kinds of sites for yourself, please see the
 <h3>Copyright</h3>
 <p>
 The material produced specifically for this site is by Charles Severance and others
-and is Copyright Creative Commons Attribution 3.0 
+and is Copyright Creative Commons Attribution 4.0 
 unless otherwise indicated.  
 </p>
 <!--

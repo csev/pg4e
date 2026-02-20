@@ -326,7 +326,7 @@ User: <input type="text" name="pdo_user" value="<?= htmlentities($pdo_user) ?>" 
 Password: <span id="pass" style="display:none"><input type="text" name="pdo_pass" id="pdo_pass" value="<?= htmlentities($pdo_pass) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($pdo_pass) ?>');return false;">copy</a>) <br/>
 </pre>
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
-<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="" style="display:none" aria-hidden="true">
 <?php if ( $LAUNCH->user->instructor ) { ?>
 <input type="submit" name="default" value="Reset Values">
 <?php } ?>
@@ -671,7 +671,7 @@ Password: <span id="pass" style="display:none"><?= $es_pass ?></span> <input typ
 </p>
 <?php } ?>
 <input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
-<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="" style="display:none" aria-hidden="true">
 <!-- If you need to reset values - set the display to block to unlock reset -->
 <input type="submit" name="default" value="Reset Values" style="display:none;">
 <?php if ( $endform) echo("</form>\n"); ?>

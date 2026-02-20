@@ -158,7 +158,7 @@ foreach($solution as $city) {
 <input type="text" name="query" style="width:95%;" placeholder="Enter SQL here...">
 </p>
 <input type="submit" id="submitbutton" class="btn btn-primary" name="submit" onclick="$('#submitbutton').hide();$('#submitspinner').show();return true;" value="Submit Query">
-<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="" style="display:none" aria-hidden="true">
 </form>
 </p>
 <p>Here are access details for a readonly database:</p>

@@ -142,7 +142,7 @@ when expressed in XML, makeing the XML hard to read and a good bit of effort to 
 <h2 id="json">JSON - JavaScript Object Notation
 <?php doNav('json'); ?>
 </h2>
-<iframe width="400" height="240" src="https://www.youtube.com/embed/kc8BAR7SHJI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="float:right;" alt="Video interview of Douglas Crockford"></iframe>
+<iframe width="400" height="240" src="https://www.youtube.com/embed/kc8BAR7SHJI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="float:right;" title="Video interview of Douglas Crockford"></iframe>
 <p>
 Given the shortcomings of XML to represent linear and key/value structures, as more and more applications,
 started to transfer data between JavaScript on the browser and the databases on the back-end,

@@ -118,7 +118,7 @@ Enter your two strings below and check if they cause a collision:
 <input type="text" name="thing2" placeholder="String 2...">
 </p>
 <input type="submit" id="submitbutton" class="btn btn-primary" name="submit" onclick="$('#submitbutton').hide();$('#submitspinner').show();return true;" value="Check for Collision">
-<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="" style="display:none" aria-hidden="true">
 </form>
 </p>
 <p>
