@@ -9,7 +9,7 @@ require "nav.php";
 ?>
 <div id="container">
 <div style="margin-left: 10px; float:right">
-<iframe width="400" height="225" src="https://www.youtube.com/embed/flRUuodVPq0?rel=0" frameborder="0" allowfullscreen title="Welcome to PostgreSQL for Everybody - Introduction video"></iframe>
+<iframe width="400" height="225" src="https://www.youtube.com/embed/flRUuodVPq0?list=PLlRFEj9H3Oj7Oj3ndXmNS1FFOUyQP-gEa&rel=0" frameborder="0" allowfullscreen title="Welcome to PostgreSQL for Everybody - Introduction video"></iframe>
 </div>
 <h1>PostgreSQL for Everybody</h1>
 <p>
