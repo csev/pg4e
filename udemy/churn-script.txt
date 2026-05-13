@@ -1,0 +1,203 @@
+
+
+
+
+
+
+
+
+
+One of the challenges
+of teaching software development
+is that the technology
+never stops moving.
+
+New frameworks appear.
+
+New libraries appear.
+
+New databases appear.
+
+And every few years,
+the entire ecosystem changes direction.
+
+Sometimes that change is wonderful.
+
+Sometimes it is exhausting.
+
+And often,
+it is both.
+
+This course itself
+is a good example of that.
+
+When I first built
+parts of this course,
+I used Elasticsearch
+as an example of a NoSQL
+system.
+
+At the time,
+Elasticsearch was exciting,
+fast growing,
+and rapidly evolving and
+I was using it daily.
+
+And honestly,
+it was fun.
+
+Then over time,
+the Elastic ecosystem
+changed.
+
+Licenses changed.
+
+Architectures changed.
+
+Cloud vendors changed.
+
+The surrounding tooling changed.
+
+And eventually,
+the course itself evolved
+in a different direction.
+
+The same thing happened
+with Deno.
+
+I started working with Deno
+when it was brand new.
+
+Back when Deno 1.0
+felt fresh,
+experimental,
+and full of promise.
+
+And now,
+suddenly,
+we are talking about Deno 2.0.
+
+That is the nature
+of modern software development.
+
+Today’s exciting new framework
+becomes tomorrow’s legacy system.
+
+Today’s revolutionary startup
+becomes tomorrow’s infrastructure company.
+
+And eventually,
+every exciting new technology
+becomes…
+
+a Denosaur.
+
+Now,
+this does not mean
+that innovation is bad.
+
+Far from it.
+
+Innovation is wonderful.
+
+Experimentation is wonderful.
+
+But high-velocity ecosystems
+come with costs.
+
+Documentation changes.
+
+APIs change.
+
+Dependencies disappear.
+
+Tutorials stop working.
+
+Build systems break.
+
+And developers spend
+a surprising amount of time
+just keeping systems alive.
+
+One of the reasons
+that relational databases
+continue to survive,
+decade after decade,
+is that their churn rate
+is relatively low.
+
+SQL from 20 years ago
+still mostly works.
+
+PostgreSQL evolves carefully.
+
+MySQL evolves carefully.
+
+And stability matters.
+
+Especially for systems
+that hold important data.
+
+Especially for software
+that needs to survive
+for years or decades.
+
+So one of the key lessons
+I want you to take away
+from this section
+is not that one technology wins forever.
+
+They do not.
+
+Instead,
+you should learn to evaluate
+the velocity,
+stability,
+and long-term sustainability
+of the systems you choose.
+
+Sometimes the newest technology
+is exactly the right answer.
+
+Sometimes boring technology
+is the right answer.
+
+And part of becoming
+a master programmer
+is learning the difference.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Dependency Churn / Technology Velocity (Simple Live-Riff Outline)
+Technology never stops moving
+Framework churn
+Dependency churn
+New shiny things
+Elasticsearch originally in course
+Ecosystem drift
+Licensing / tooling / cloud changes
+Deno 1.0 → Deno 2.0
+“Denosaur” joke
+High velocity ecosystems
+Tutorials rot
+APIs change
+Build systems break
+Relational DBs evolve slower
+PostgreSQL stability
+SQL longevity
+Stability matters
+Important systems need durability
+No technology wins forever
+Master programmers evaluate tradeoffs
+Sometimes boring is good
+

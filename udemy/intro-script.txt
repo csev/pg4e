@@ -1,0 +1,151 @@
+
+
+
+
+
+
+
+
+
+
+
+
+Welcome to
+Database Architecture.
+
+My name is Charles Severance,
+and I am a faculty member
+at the University of Michigan
+School of Information.
+
+In this course,
+we are going to step back
+from programming syntax
+and frameworks
+and look at something deeper.
+
+How modern data systems
+actually work.
+
+Most programmers learn SQL.
+
+Some programmers learn NoSQL.
+
+But very few programmers
+understand why these systems
+exist in the first place.
+
+Why Google built new kinds
+of databases.
+
+How Facebook changed
+database scaling forever.
+
+Why cloud computing forced
+new architectural tradeoffs.
+
+And why modern systems
+blend ideas from both
+traditional relational databases
+and distributed NoSQL systems.
+
+This course is about
+those ideas.
+
+We will talk about:
+
+ACID and BASE architectures.
+
+Replication and sharding.
+
+Consistency and scalability.
+
+We will look at how systems evolved
+from centralized SQL servers
+to globally distributed cloud systems.
+
+And we will study
+the engineering decisions
+that shaped modern Internet
+applications.
+
+This is not a vendor course.
+
+This is not a certification course.
+
+This is an architecture course.
+
+The goal is to help you become
+a master programmer.
+
+A programmer who understands
+not just code,
+but the systems,
+tradeoffs,
+and historical forces
+behind modern software.
+
+Along the way,
+we will explore systems
+like PostgreSQL,
+MongoDB,
+FoundationDB,
+Deno KV,
+and cloud-scale architectures
+inspired by companies
+like Google,
+Amazon,
+and Facebook.
+
+We will connect history,
+engineering,
+and practical design.
+
+And by the end of the course,
+you will have a much clearer picture
+of why modern systems
+are designed the way they are.
+
+So welcome to the course.
+
+I am glad you are here.
+
+Let’s get started.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Intro / Sales Pitch (Simple Live-Riff Outline)
+Welcome to Database Architecture
+Not syntax
+Not frameworks
+Understanding systems and tradeoffs
+Why SQL happened
+Why NoSQL happened
+Google / Facebook / cloud scale
+ACID vs BASE
+Replication
+Sharding
+Eventual consistency
+Distributed systems
+Modern PostgreSQL + JSON
+Deno KV / FoundationDB ideas
+Becoming a “master programmer”
+Architecture intuition
+History + engineering + practice
+Let’s get started
+

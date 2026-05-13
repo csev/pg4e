@@ -1,0 +1,120 @@
+
+
+
+
+
+
+
+
+
+
+
+Congratulations.
+
+You have completed
+Database Architecture.
+
+I hope that this course
+changed the way you think
+about software systems.
+
+One of the most important lessons
+in modern computing
+is that architecture matters.
+
+Programming languages change.
+
+Frameworks change.
+
+Cloud providers change.
+
+But the underlying tradeoffs
+remain remarkably consistent.
+
+Consistency versus scalability.
+
+Centralized versus distributed.
+
+Simplicity versus flexibility.
+
+The systems we studied
+throughout this course
+all reflect those tradeoffs.
+
+From traditional SQL databases
+to distributed NoSQL systems,
+from ACID transactions
+to eventually consistent architectures,
+modern applications
+are built on engineering compromises.
+
+And understanding those compromises
+is one of the things
+that separates a programmer
+from a master programmer.
+
+My hope is that after this course,
+when you hear terms like:
+
+replication,
+
+sharding,
+
+distributed consensus,
+
+eventual consistency,
+
+or edge computing,
+
+you have a deeper understanding
+of what those ideas really mean.
+
+Not as marketing language.
+
+But as engineering decisions.
+
+Technology will continue to evolve.
+
+The tools will change.
+
+But if you understand
+the historical forces
+and architectural principles
+behind these systems,
+you will be able to adapt
+for decades to come.
+
+Thank you for taking this course.
+
+Thank you for spending your time
+learning with me.
+
+And I hope I see you soon
+in another master programmer
+course.
+
+
+
+
+
+
+
+
+
+
+Wrap-Up Video (Simple Live-Riff Outline)
+Congratulations
+Architecture matters
+Frameworks come and go
+Tradeoffs remain
+ACID vs BASE
+Replication / sharding / scaling
+Distributed systems are compromises
+Engineering decisions vs marketing
+Master programmers understand context
+History helps predict the future
+Technology changes
+Principles remain
+Thanks for taking the course
+See you in another course soon
+
