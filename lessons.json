@@ -937,12 +937,12 @@
             "href" : "https://docs.deno.com/deploy/kv/manual/"
         },
         {
-            "title" : "Deno Deploy Hosting (free account)",
-            "href" : "https://dash.deno.com/"
+            "title" : "Deno Hosting",
+            "href" : "https://dash.console.com/"
         },
         {
-            "title" : "KV Admin Install Instructions",
-            "href" : "https://github.com/csev/deno-kv-admin/blob/main/README.md"
+            "title" : "Hello World Deno App",
+            "href" : "https://hono.pg4e.com/hello"
         }
     ],
     "lti" : [
