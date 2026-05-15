@@ -926,24 +926,9 @@
             "youtube" : "v5kWjIzdwCc"
         },
         {
-            "title" : "Exploring CRUD in Deno KV Using KVAdmin.py (11:45)",
-            "project": "pg4e-media/09-Deno/04-Deno-CRUD.m4v",
-            "youtube" : "MiNneJNIjbg"
-        },
-        {
             "title" : "Building a Deno KV Model with Secondary Indexes (10:38)",
             "project": "pg4e-media/09-Deno/05-Deno-Model.mov",
             "youtube" : "LFcmd9P9UXU"
-        },
-        {
-            "title" : "Code Walkthrough: Installing KVAdmin.py Client and Server on Deno Deploy (9:17)",
-            "project": "pg4e-media/09-Deno/11-2025-07-07-Deno-Install.mov",
-            "youtube" : "nQDSDfI1pYY"
-        },
-        {
-            "title" : "Code Walkthrough - KVAdmin.py Client and Server (23:17)",
-            "project": "pg4e-media/09-Deno/12-2025-07-09-Deno-KVAdmin.mov",
-            "youtube" : "gPieHUTw7oo"
         }
     ],
     "references" : [
