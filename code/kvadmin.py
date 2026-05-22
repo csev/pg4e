@@ -238,6 +238,28 @@ while True:
     # delete_prefix /books
     # https://kv-admin-api.pg4e.com/kv/delete_prefix/books?token=123
 
+    # stats
+    # https://kv-admin-api.pg4e.com/stats?token=123
+
+    if len(pieces) == 1 and pieces[0] == 'stats' :
+        url = secrets['url'] + '/stats?token=' + secrets['token']
+        if ( showurl ) : print(url)
+
+        try:
+            with urllib.request.urlopen(url, timeout=30) as response:
+                text = response.read().decode('utf-8')
+                status = response.status
+                print(status)
+                try:
+                    data = json.loads(text)
+                    pretty_json_string = json.dumps(data, indent=4)
+                    print(pretty_json_string)
+                except Exception as e:
+                    print(text)
+        except Exception as error:
+            urlerror(error, url=url)
+        continue
+
     if len(pieces) == 2 and (pieces[0] == 'delete' or pieces[0] == 'delete_prefix') :
 
         url = ( secrets['url'] + '/kv/' + pieces[0] + pieces[1] +
@@ -282,6 +304,7 @@ while True:
     print('')
     print('  quit')
     print('  samples')
+    print('  stats')
     print('  set /books/Hamlet')
     print('  get /books/Hamlet')
     print('  list /books')
