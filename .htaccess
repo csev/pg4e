@@ -16,6 +16,8 @@
 
 <IfModule mod_rewrite.c>
     RewriteEngine on
+    # config.php stubs / secrets; FileRouter also maps /config and /config-dist
+    RewriteRule ^config(-dist)?(\.php)?(/.*)?$ - [R=404,L,NS]
     RewriteRule ^ - [E=protossl]
     RewriteCond %{HTTPS} on
     RewriteRule ^ - [E=protossl:s]
