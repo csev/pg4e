@@ -16,8 +16,6 @@ try {
     $PDOX = false;  // sanity-db-will re-check this below
 }
 
-if ( $PDOX !== false ) LTIX::loginSecureCookie();
-
 $OUTPUT->header();
 ?>
 <style>
