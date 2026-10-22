@@ -15,7 +15,7 @@ if ( ! pg4e_user_db_load($LAUNCH) ) return;
 $file = fopen("library.csv","r");
 $library = array();
 $answer = array();
-while ( $pieces = fgetcsv($file) ) {
+while ( $pieces = fgetcsv($file, null, ',', '"', '\\') ) {
     $library[] = $pieces;
     $answer[] = array($pieces[0], $pieces[2]);
 }

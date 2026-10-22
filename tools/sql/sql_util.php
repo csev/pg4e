@@ -473,7 +473,7 @@ function pg4e_grade_send($LAUNCH, $pg_PDO, $oldgrade, $gradetosend, $dueDate) {
 function pg4e_load_csv($filename) {
     $file = fopen($filename,"r");
     $retval = array();
-    while ( $pieces = fgetcsv($file) ) {
+    while ( $pieces = fgetcsv($file, null, ',', '"', '\\') ) {
         $retval[] = $pieces;
     }
     fclose($file);

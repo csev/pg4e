@@ -31,7 +31,7 @@ $order_pos = $order_fields[$code % count($order_fields)][1];
 $file = fopen("whc-sites-2018-small.csv","r");
 $answer = array();
 $first = true;
-while ( $pieces = fgetcsv($file) ) {
+while ( $pieces = fgetcsv($file, null, ',', '"', '\\') ) {
     if ( $first ) {
         $first = false;
         continue;
