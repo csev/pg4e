@@ -9,7 +9,7 @@ require "nav.php";
 ?>
 <div id="container">
 <div class="alert alert-warning" role="alert">
-This server is being upgraded. Not all features are working. Please be patient. -- Chuck 22-Oct-2026
+This server has been upgraded. If you see anything broken, let me know. -- Chuck 22-Oct-26
 </div>
 <div style="margin-left: 10px; float:right">
 <iframe width="400" height="225" src="https://www.youtube.com/embed/flRUuodVPq0?list=PLlRFEj9H3Oj7Oj3ndXmNS1FFOUyQP-gEa&rel=0" frameborder="0" allowfullscreen title="Welcome to PostgreSQL for Everybody - Introduction video"></iframe>
