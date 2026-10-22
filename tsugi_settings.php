@@ -31,10 +31,16 @@ $CFG->theme = array(
     "font-size" => "14px", // This is the base font size used for body copy. Headers,etc. are scaled off this value
 );
 
-$buildmenu = $CFG->dirroot.'/../buildmenu.php';
-if ( file_exists($buildmenu) ) {
+$CFG->google_login_redirect = $CFG->apphome . "/login";
+
+$CFG->top_menu_callback = function() {
+    global $CFG;
+    $buildmenu = $CFG->dirroot.'/../buildmenu.php';
+    if ( ! file_exists($buildmenu) ) {
+        return false;
+    }
     require_once $buildmenu;
-    $CFG->defaultmenu = buildMenu();
-}
+    return buildMenu();
+};
 
 

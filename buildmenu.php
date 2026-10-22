@@ -1,28 +1,56 @@
 <?php
 
+use \Tsugi\Util\U;
+
 function buildMenu() {
-    global $CFG;
-    $R = $CFG->apphome . '/';
+    global $CFG, $USER;
+    // Normally Output::topNav() already restored the Google-login course
+    // before this callback. Call it again so a leftover sandbox cannot
+    // leak into site chrome if someone invokes buildMenu() directly.
+    \Tsugi\Controllers\Courses::restoreSiteLoginContext();
+    $home = rtrim($CFG->apphome, '/');
+    $R = $home . '/';
     $T = $CFG->wwwroot . '/';
+
     $adminmenu = isset($_COOKIE['adminmenu']) && $_COOKIE['adminmenu'] == "true";
+    $isInstructor = (isset($USER) && $USER && isset($USER->instructor) && $USER->instructor)
+        || (isset($_SESSION['instructor']) && $_SESSION['instructor']);
+    $showCalendarDueUi = isset($_SESSION['id'])
+        && U::isNotEmpty($CFG->lessons)
+        && \Tsugi\Grades\GradeUtil::showDueDates(U::get($_SESSION, 'context_id', 0));
+
     $set = new \Tsugi\UI\MenuSet();
     $set->setHome($CFG->servicename, $CFG->apphome);
 
     if ( isset($CFG->lessons) ) {
         $set->addLeft('Lessons', $R.'lessons');
-        if ( isset($CFG->tdiscus) && $CFG->tdiscus  ) $set->addLeft('Discussions', $R.'discussions');
-        if ( isset($_SESSION['id']) ) {
-            $set->addLeft('My Progress', $R.'assignments');
-        }
+    }
+    if ( isset($_SESSION['id']) ) {
+        $set->addLeft('My Progress', $R.'assignments');
     }
 
     if ( isset($_SESSION['id']) ) {
         $submenu = new \Tsugi\UI\Menu();
-        $submenu->addLink('Profile', $R.'profile');
+        $submenu->addLink('Announcements', $R.'announcements');
+        $submenu->addLink('Grades', $R.'grades');
+        $submenu->addLink('Pages', $R.'pages');
+        $submenu->addLink('Files', $R.'files');
+        $submenu->addLink('Discussions', $R.'discussions');
+        if ( $isInstructor ) {
+            $submenu->addLink('Notifications', $R.'notifications');
+        }
+        if ( \Tsugi\Controllers\Settings::showInMenu() ) {
+            $submenu->addLink('Settings', $R.'settings');
+        }
+        $submenu->addLink('Courses', $R.'coursesredirect.php');
         if ( isset($CFG->google_map_api_key) ) {
             $submenu->addLink('Map', $R.'map');
         }
-        if ( isset($CFG->badge_path)  ) {
+        $submenu->addLink('Profile', $R.'profile');
+        if ( $showCalendarDueUi ) {
+            $submenu->addLink('Calendar', $R.'calendar');
+        }
+        if ( isset($CFG->badge_path) ) {
             $submenu->addLink('Badges', $R.'badges');
         }
         if ( file_exists('materials.php') ) {
@@ -31,33 +59,63 @@ function buildMenu() {
         if ( file_exists('privacy.php') ) {
             $submenu->addLink('Privacy', $R.'privacy');
         }
-        if ( $CFG->providekeys ) {
+        if ( ! empty($CFG->providekeys) ) {
             $submenu->addLink('LMS Integration', $T . 'settings');
         }
         if ( isset($CFG->google_classroom_secret) ) {
             $submenu->addLink('Google Classroom', $T.'gclass/login');
         }
         $submenu->addLink('Free App Store', 'https://www.tsugicloud.org');
-        if ( $CFG->DEVELOPER ) {
+        if ( ! empty($CFG->DEVELOPER) ) {
             $submenu->addLink('Test LTI Tools', $T . 'dev');
         }
         $submenu->addLink('Test Tools', $T.'store');
-        if ( isset($_COOKIE['adminmenu']) && $_COOKIE['adminmenu'] == "true" ) {
+        if ( $adminmenu ) {
             $submenu->addLink('Administer', $T . 'admin/');
         }
         $submenu->addLink('Logout', $R.'logout');
         if ( isset($_SESSION['avatar']) ) {
-            $set->addRight('<img src="'.$_SESSION['avatar'].'" alt="'.htmlentities(__('User Profile Menu - Includes logout')).'" title="'.htmlentities(__('User Profile Menu - Includes logout')).'" style="height: 2em;"/>', $submenu);
-            // htmlentities($_SESSION['displayname']), $submenu);
+            $set->addRight('<img src="'.$_SESSION['avatar'].'" alt="'.htmlentities(__('User Profile Menu - Includes logout')).'" title="'.htmlentities(__('User Profile Menu - Includes logout')).'" style="height: 2em;" referrerpolicy="no-referrer" loading="lazy"/>', $submenu);
         } else {
             $set->addRight(htmlentities($_SESSION['displayname']), $submenu);
         }
     } else {
-        if ( isset($CFG->google_client_id) && $CFG->google_client_id ) {
-            $set->addRight('Login', $T.'login.php');
+        $set->addRight('Login', $R.'login');
+        $set->addRight('Courses', $R.'coursesredirect.php');
+    }
+
+    if ( isset($_SESSION['id']) ) {
+        $set->addRight(
+            '<tsugi-notifications api-url="'. htmlspecialchars($T . 'api/notifications.php') . '" notifications-view-url="'. htmlspecialchars($R . 'notifications') . '" announcements-view-url="'. htmlspecialchars($R . 'announcements') . '"></tsugi-notifications>',
+            false,
+            true,
+            'hidden-xs tsugi-wc-nav-item'
+        );
+        if ( $showCalendarDueUi ) {
+            $set->addRight(
+                '<tsugi-calendar-due api-url="'. htmlspecialchars($R . 'calendar/json') . '" lessons-url="'. htmlspecialchars($R . 'calendar') . '" calendar-url="'. htmlspecialchars($R . 'calendar') . '"></tsugi-calendar-due>',
+                false,
+                true,
+                'hidden-xs tsugi-wc-nav-item'
+            );
+        }
+        if ( isset($CFG->tdiscus) && $CFG->tdiscus ) {
+            $set->addRight(
+                '<tsugi-discussions api-url="'. htmlspecialchars($R . 'discussions/json') . '" discussions-url="'. htmlspecialchars($R . 'discussions') . '"></tsugi-discussions>',
+                false,
+                true,
+                'hidden-xs tsugi-wc-nav-item'
+            );
+        }
+        if ( \Tsugi\Controllers\Courses::showCoursesWidget() ) {
+            $set->addRight(
+                '<tsugi-courses api-url="'. htmlspecialchars($T . 'courses/json') . '" all-url="'. htmlspecialchars($T . 'courses') . '" enter-url="'. htmlspecialchars($T . 'courses') . '"></tsugi-courses>',
+                false,
+                true,
+                'hidden-xs tsugi-wc-nav-item'
+            );
         }
     }
-    $set->addRight('Courses', $R.'coursesredirect.php');
 
     return $set;
 }
