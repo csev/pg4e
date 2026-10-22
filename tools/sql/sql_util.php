@@ -100,11 +100,6 @@ function getDbUser($unique) {
     return $dbboth;
 }
 
-function getEsUser($unique) {
-    $new = substr("pg4e_".$unique,0,15);
-    return $new;
-}
-
 function getCourseSettings() {
     global $TSUGI_LAUNCH;
 
@@ -125,13 +120,6 @@ function getConfig() {
     $retval->readonly_db = U::get($settings, 'readonly_db');
     $retval->readonly_user = U::get($settings, 'readonly_user');
     $retval->readonly_password = U::get($settings, 'readonly_password');
-
-    $retval->es_source = U::get($settings, 'es_source');
-    $retval->es_scheme = U::get($settings, 'es_scheme');
-    $retval->es_host = U::get($settings, 'es_host');
-    $retval->es_prefix = U::get($settings, 'es_prefix');
-    $retval->es_port = U::get($settings, 'es_port');
-    $retval->es_password = U::get($settings, 'es_password');
     return $retval;
 }
 
@@ -470,216 +458,6 @@ function pg4e_load_csv($filename) {
     return $retval;
 }
 
-// TODO: Remove
-function pg4e_user_es_load($LAUNCH) {
-
-    // Transport the request to check past the redirect :)
-    if ( U::get($_POST,'check') ) {
-        $_SESSION['check'] = $_POST['check'];
-    }
-
-    if ( U::get($_POST,'code') ) {
-        $_SESSION['lastcode'] = $_POST['code'];
-    }
-
-    // Returns true if redirected
-    $retval = pg4e_user_es_post($LAUNCH);
-    if ( $retval ) return false;
-
-    // Restore check after redirect if one happens
-    if ( U::get($_SESSION,'check') ) {
-        $_POST['check'] = $_SESSION['check'];
-        unset($_SESSION['check']);
-    }
-
-    // Set global values and cookies, etc.
-    pg4e_user_es_data($LAUNCH);
-
-    return true;
-}
-
-// Handle incoming POST request, redirecting if necessary
-function pg4e_user_es_post($LAUNCH) {
-    global $CFG;
-    global $pg4e_request_result, $pg4e_request_url;
-    global $es_host, $es_scheme, $es_port, $es_prefix, $es_user, $es_pass, $info;
-
-    // $cookie_expire = 31556926;  // One year
-    $cookie_expire = 60 * 60 * 24 * 7;  // 7 days
-    if ( U::get($_POST,'default') ) {
-        unset($_SESSION['es_host']);
-        unset($_SESSION['es_scheme']);
-        unset($_SESSION['es_prefix']);
-        unset($_SESSION['es_port']);
-        unset($_SESSION['es_user']);
-        unset($_SESSION['es_pass']);
-        setcookie("es_host", '', time()+$cookie_expire ,'/');
-        setcookie("es_scheme", '', time()+$cookie_expire ,'/');
-        setcookie("es_prefix", '', time()+$cookie_expire ,'/');
-        setcookie("es_port", '', time()+$cookie_expire ,'/');
-        setcookie("es_user", '', time()+$cookie_expire ,'/');
-        setcookie("es_pass", '', time()+$cookie_expire ,'/');
-        // header( 'Location: '.addSession('index.php') ) ;
-        redirect_200(addSession('index.php'));
-        return true;
-    }
-
-    // If we have new values... copy them into SESSION
-    $retval = false;
-    foreach(array('es_host', 'es_scheme', 'es_prefix', 'es_port', 'es_user', 'es_pass') as $key) {
-        $value = U::get($_POST, $key);
-        if ( ! $value ) continue;
-        $_SESSION[$key] = $value;
-        $retval = true;
-    }
-    if ( $retval ) header( 'Location: '.addSession('index.php') ) ;
-    return $retval;
-}
-
-// The instructor precedence with config is SESSION, CONFIG
-// The student precedence with config is SESSION, CONFIG
-function pg4e_user_es_data($LAUNCH) {
-    global $CFG;
-    global $pg4e_request_result, $pg4e_request_url;
-    global $es_host, $es_scheme, $es_port, $es_prefix, $es_user, $es_pass, $info;
-
-    $unique = getUnique($LAUNCH);
-    $project = getDbName($unique);
-
-    $cfg = getConfig();
-
-    $es_host = U::get($_SESSION, 'es_host');
-    $es_scheme = U::get($_SESSION, 'es_scheme');
-    $es_prefix = U::get($_SESSION, 'es_prefix');
-    $es_port = U::get($_SESSION, 'es_port');
-    $es_user = U::get($_SESSION, 'es_user');
-    $es_pass = U::get($_SESSION, 'es_pass');
-
-    if ( strlen($es_host) < 1 && $cfg && strlen($cfg->es_password) > 1) {
-        $es_host = $cfg->es_host;
-        $es_scheme = $cfg->es_scheme;
-        $es_port = $cfg->es_port;
-        $es_prefix = $cfg->es_prefix;
-        $es_user = getEsUser($unique);
-        $es_pass = es_makepw($es_user, $cfg->es_password);
-        $_SESSION['es_host'] = $es_host;
-        $_SESSION['es_scheme'] = $es_scheme;
-        $_SESSION['es_prefix'] = $es_prefix;
-        $_SESSION['es_port'] = $es_port;
-        $_SESSION['es_user'] = $es_user;
-        $_SESSION['es_pass'] = $es_pass;
-    }
-
-    // Store in the database...
-    $arr = array(
-        'es_host' => $es_host,
-        'es_scheme' => $es_scheme,
-        'es_prefix' => $es_prefix,
-        'es_port' => $es_port,
-        'es_user' => $es_user,
-        'es_pass' => $es_pass,
-    );
-
-    if ( U::get($_SESSION, 'lastcode') ) $arr['code'] = U::get($_SESSION, 'lastcode');
-    $LAUNCH->result->setJsonKeys($arr);
-
-    // $cookie_expire = 31556926;  // One year
-    $cookie_expire = 60 * 60 * 24 * 7;  // 7 days
-    // If we have a full set - store the cookies for good measure
-    if ( $es_host && $es_scheme &&  $es_port && $es_user && $es_pass ) {
-        setcookie("es_host", $es_host, time()+$cookie_expire ,'/');
-        setcookie("es_scheme", $es_scheme, time()+$cookie_expire ,'/');
-        setcookie("es_prefix", $es_prefix, time()+$cookie_expire ,'/');
-        setcookie("es_port", $es_port, time()+$cookie_expire ,'/');
-        setcookie("es_user", $es_user, time()+$cookie_expire ,'/');
-        setcookie("es_pass", $es_pass, time()+$cookie_expire ,'/');
-    }
-
-    return true;
-}
-
-/*
-def makepw(user, secret):
-
-    expire = getexpire(date)
-
-    # user_2005
-    index = user + '_' + str(expire)
-
-    # user_2005_asecret
-    base = index + '_' + secret
-
-    m = hashlib.sha256()
-    m.update(base.encode())
-    sig = m.hexdigest()
-
-    # 2005_7cce7423
-    pw = str(expire) + '_' + sig[0:8]
-    return pw
-*/
-
-// 2020-02-23 => 2005
-function es_getexpire() {
-    $future = date("Y/m/d", strtotime(" +3 months"));
-    $retval = substr($future, 2, 2) . substr($future, 5, 2);
-    return $retval;
-}
-
-// ('testing', '12345') => '2005_975c9677'
-function es_makepw($user, $secret) {
-    $expire = es_getexpire();
-    $base = $user . '_' . $expire . '_' . $secret;
-    $sig = hash('sha256', $base);
-    $pw = $expire . '_' . substr($sig, 0, 8);
-    return($pw);
-}
-
-function pg4e_user_es_form($LAUNCH, $endform=true) {
-    global $OUTPUT, $es_host, $es_scheme, $es_prefix, $es_port, $es_user, $es_pass, $info;
-
-    $cfg = getConfig();
-
-    if ( ! $es_host || strlen($es_host) < 1 ) {
-       echo('<p style="color:red">It appears that your Elasticsearch environment is not yet set up or is not running.</p>'."\n");
-    }
-?>
-<form name="myform" method="post" >
-<p>
-<?php if ( $LAUNCH->user->instructor || ! $cfg ) { ?>
-Host: <input type="text" name="es_host" value="<?= htmlentities($es_host) ?>" id="es_host"><br/>
-Scheme: <input type="text" name="es_scheme" value="<?= htmlentities($es_scheme) ?>" id="es_scheme"> (http / https)<br/>
-Prefix: <input type="text" name="es_prefix" value="<?= htmlentities($es_prefix) ?>" id="es_prefix"><br/>
-Port: <input type="text" name="es_port" value="<?= htmlentities($es_port) ?>" id="es_port"><br/>
-User/Index: <input type="text" name="es_user" value="<?= htmlentities($es_user) ?>"><br/>
-Password: <span id="pass" style="display:none"><input type="text" name="es_pass" id="es_pass" value="<?= htmlentities($es_pass) ?>"/></span> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($es_pass) ?>');return false;">copy</a>) <br/>
-</pre>
-<?php } else { ?>
-<p>
-<pre>
-Host: <?= $es_host ?>
-
-Scheme: <?= $es_scheme ?>
-
-Prefix: <?= $es_prefix ?>
-
-Port: <?= $es_port ?>
-
-Account: <?= $es_user ?>
-
-Password: <span id="pass" style="display:none"><?= $es_pass ?></span> <input type="hidden" name="es_pass" id="es_pass" value="<?= htmlentities($es_pass) ?>"/> (<a href="#" onclick="$('#pass').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($es_pass) ?>');return false;">copy</a>)
-</pre>
-</p>
-<?php } ?>
-<input type="submit" name="check" onclick="$('#submitspinner').show();return true;" value="Check Answer">
-<img id="submitspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="" style="display:none" aria-hidden="true">
-<!-- If you need to reset values - set the display to block to unlock reset -->
-<input type="submit" name="default" value="Reset Values" style="display:none;">
-<?php if ( $endform) echo("</form>\n"); ?>
-</p>
-</p>
-<?php
-}
-
 function pg4e_insert_meta($PDO, $keystr, $valstr) {
     $PDO->queryDie(
         "INSERT INTO pg4e_meta (keystr, valstr) VALUES (:keystr, :valstr)
@@ -753,7 +531,7 @@ Database: <?= $cfg->readonly_db ?>
 
 User: <?= $cfg->readonly_user ?>
 
-Password: <span id="readonly_password" style="display:none"><?= $cfg->readonly_password ?></span> <input type="hidden" name="es_pass" id="es_pass" value="<?= htmlentities($cfg->readonly_password) ?>"/> (<a href="#" onclick="$('#readonly_password').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($cfg->readonly_password) ?>');return false;">copy</a>)
+Password: <span id="readonly_password" style="display:none"><?= $cfg->readonly_password ?></span> <input type="hidden" name="readonly_password" id="readonly_password_value" value="<?= htmlentities($cfg->readonly_password) ?>"/> (<a href="#" onclick="$('#readonly_password').toggle();return false;">hide/show</a> <a href="#" onclick="copyToClipboard(this, '<?= htmlentities($cfg->readonly_password) ?>');return false;">copy</a>)
 
 <?= $psql ?>
 

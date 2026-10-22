@@ -40,12 +40,6 @@ You can install a wide range of
 for your system if you like.  Some will work better than others with the limited database that we
 give you for this course.
 </p>
-<p>
-<b>Note:</b> As of Fall 2025, this course is transistioning its NoSQL / Advanced Architecture lesson from ElasticSeach to 
-<a href="https://www.deno.com/" target="_blank">Deno</a>.
-ElasticSearch is no longer an active open source project.  Deno is a fresh approach to distributed hosting and a NoSQL database
-and so it is a modern replacement for the topics we historically covered using ElasticSearch.
-</p>
 <h2>Technology</h2>
 <p>
 This site uses <a href="http://www.tsugi.org" target="_blank">Tsugi</a> 
