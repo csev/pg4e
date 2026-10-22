@@ -40,6 +40,30 @@ function getUnique($LAUNCH) {
         '::'.$LAUNCH->user->id.'::'.$LAUNCH->context->id);
 }
 
+function pg4e_admin_db() {
+    global $CFG;
+
+    $server = array();
+    if ( isset($CFG) && is_object($CFG) && method_exists($CFG, 'getExtension') ) {
+        $ext = $CFG->getExtension('pg_server', array());
+        if ( is_array($ext) ) $server = $ext;
+    }
+
+    $host = $server['host'] ?? 'pg.pg4e.com';
+    $port = $server['port'] ?? '5432';
+    $user = $CFG->psql_root_user ?? ($server['user'] ?? 'postgres');
+    $pass = $CFG->psql_root_password ?? ($server['password'] ?? false);
+    if ( ! is_string($user) || $user === '' ) $user = 'postgres';
+
+    $info = new \stdClass();
+    $info->host = $host;
+    $info->port = (string) $port;
+    $info->user = $user;
+    $info->pass = $pass;
+    $info->dsn = 'pgsql:host='.$host.';port='.$port;
+    return $info;
+}
+
 function getUserInfo($LAUNCH) {
     global $CFG;
 
@@ -49,8 +73,9 @@ function getUserInfo($LAUNCH) {
     $retval->user = getDbUser($unique);
     $retval->pass = getDbPass($unique);
 
-    $default_host = 'pg.pg4e.com';
-    $default_port = '5432';
+    $admin = pg4e_admin_db();
+    $default_host = $admin->host;
+    $default_port = $admin->port;
 
     $cfg = getConfig();
     if ( $cfg && isset($cfg->pg_host) && strlen($cfg->pg_host) > 0 ) $default_host = $cfg->pg_host;
@@ -62,17 +87,14 @@ function getUserInfo($LAUNCH) {
     $retval->psql = "psql -h $retval->host -p $retval->port -U $retval->user $retval->db";
 
     $retval->connection = "pgsql:host=$retval->host;port=$retval->port;dbname=$retval->db";
-    $retval->local_connection = "pgsql:host=localhost;port=5432;dbname=$retval->db";
+    $retval->local_connection = $admin->dsn.";dbname=$retval->db";
 
     return $retval;
 }
 
 function checkForDB($dbname) {
-    global $CFG;
-    $admin_user = 'postgres';
-    $admin_pass = $CFG->psql_root_password ?? false;
-    $admin_connection = "pgsql:host=localhost;port=5432";
-    $admin_PDO = get_connection($admin_connection, $admin_user, $admin_pass);
+    $admin = pg4e_admin_db();
+    $admin_PDO = get_connection($admin->dsn, $admin->user, $admin->pass);
     if ( ! $admin_PDO ) {
 	return false;
     }

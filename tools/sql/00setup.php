@@ -17,9 +17,10 @@ if ( ! pg4e_user_db_load($LAUNCH) ) return;
 
 $oldgrade = $RESULT->grade;
 
-$admin_user = 'postgres';
-$admin_pass = $CFG->psql_root_password ?? false;
-$admin_connection = "pgsql:host=localhost;port=5432";
+$admin = pg4e_admin_db();
+$admin_user = $admin->user;
+$admin_pass = $admin->pass;
+$admin_connection = $admin->dsn;
 
 $unique = getUnique($LAUNCH);
 $db = getDbName($unique);
