@@ -53,11 +53,11 @@ affects all of the links in a course.  So be careful.
 <p>The PostgreSQL server is internally provisioned but the host and port shown to the student may be different.
 Fill in these fields if you want to affect what the student sees in their <b>psql</b> commands.
 </p>
-<p>PG_HOST <input type="text" name="pg_host" value="<?= htmlentities(U::get($settings, 'pg_host')) ?>"></p>
-<p>PG_PORT <input type="text" name="pg_port" value="<?= htmlentities(U::get($settings, 'pg_port')) ?>"></p>
-<p>READONLY_DB <input type="text" name="readonly_db" value="<?= htmlentities(U::get($settings, 'readonly_db')) ?>"></p>
-<p>READONLY_USER <input type="text" name="readonly_user" value="<?= htmlentities(U::get($settings, 'readonly_user')) ?>"></p>
-<p>READONLY_PASSWORD <input type="text" name="readonly_password" value="<?= htmlentities(U::get($settings, 'readonly_password')) ?>"></p>
+<p>PG_HOST <input type="text" name="pg_host" value="<?= htmlentities(U::get($settings, 'pg_host', '')) ?>"></p>
+<p>PG_PORT <input type="text" name="pg_port" value="<?= htmlentities(U::get($settings, 'pg_port', '')) ?>"></p>
+<p>READONLY_DB <input type="text" name="readonly_db" value="<?= htmlentities(U::get($settings, 'readonly_db', '')) ?>"></p>
+<p>READONLY_USER <input type="text" name="readonly_user" value="<?= htmlentities(U::get($settings, 'readonly_user', '')) ?>"></p>
+<p>READONLY_PASSWORD <input type="text" name="readonly_password" value="<?= htmlentities(U::get($settings, 'readonly_password', '')) ?>"></p>
 <input type="submit" name="update">
 </form>
 

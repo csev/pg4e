@@ -17,7 +17,7 @@ $OUTPUT->flashMessages();
 // Show the basic info for this user
 GradeUtil::gradeShowInfo($row);
 
-if ( strlen($row['json']) > 0 ) {
+if ( isset($row['json']) && strlen($row['json']) > 0 ) {
 	$json = json_decode($row['json']);
 	if ( is_object($json) ) {
 		if ( isset($json->port) && isset($json->ip) ) {
@@ -60,7 +60,7 @@ if ( isset($row['note']) ) {
     echo("</pre>\n");
 }
 
-if ( strlen($row['json']) > 0 ) {
+if ( isset($row['json']) && strlen($row['json']) > 0 ) {
     $json = json_decode($row['json']);
     $code = false;
     if ( isset($json->code) ) {

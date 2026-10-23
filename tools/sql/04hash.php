@@ -43,8 +43,8 @@ $oldgrade = $RESULT->grade;
 
 if ( count($_POST) > 0 ) {
 
-    $thing1 = U::get($_POST,'thing1');
-    $thing2 = U::get($_POST,'thing2');
+    $thing1 = U::get($_POST,'thing1', '');
+    $thing2 = U::get($_POST,'thing2', '');
 
     if ( strlen($thing1) < 1 || strlen($thing2) < 1 ) {
         $_SESSION['error'] = "You need non-blank strings";

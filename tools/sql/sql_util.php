@@ -136,12 +136,12 @@ function getConfig() {
 
     $retval = new \stdclass();
 
-    $retval->pg_host = U::get($settings, 'pg_host');
-    $retval->pg_port = U::get($settings, 'pg_port');
+    $retval->pg_host = U::get($settings, 'pg_host', '');
+    $retval->pg_port = U::get($settings, 'pg_port', '');
 
-    $retval->readonly_db = U::get($settings, 'readonly_db');
-    $retval->readonly_user = U::get($settings, 'readonly_user');
-    $retval->readonly_password = U::get($settings, 'readonly_password');
+    $retval->readonly_db = U::get($settings, 'readonly_db', '');
+    $retval->readonly_user = U::get($settings, 'readonly_user', '');
+    $retval->readonly_password = U::get($settings, 'readonly_password', '');
     return $retval;
 }
 

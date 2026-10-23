@@ -77,7 +77,7 @@ if ( $output === false) {
     return;
 }
 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
+unset($ch);
 
 http_response_code($httpcode);
 
