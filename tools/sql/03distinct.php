@@ -161,9 +161,9 @@ foreach($solution as $city) {
 </form>
 </p>
 <p>Here are access details for a readonly database:</p>
-<?php pg4e_readonly_data($LAUNCH); ?>
+<?php pg4e_readonly_data(); ?>
 <p>Here is the schema for the <b>taxdata</b> table:</p>
-<?php taxdata_schema($LAUNCH); ?>
+<?php taxdata_schema(); ?>
 <?php
 if ( $LAUNCH->user->instructor ) {
     echo("\n<p>Instructor cheat code: ".htmlentities($sql).";</p>\n");

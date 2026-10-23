@@ -316,6 +316,7 @@ function pg4e_user_db_form($LAUNCH, $endform=true) {
     global $CFG, $OUTPUT, $pdo_database, $pdo_host, $pdo_port, $pdo_user, $pdo_pass, $info, $pdo_connection;
 
     if ( ! $pdo_host && ! $LAUNCH->user->instructor ) {
+        $project = getDbName(getUnique($LAUNCH));
         echo("<p>You have not yet set up your database server for project <b>".htmlentities($project)."</b></p>\n");
         echo("<p>Make sure to run the setup process before attempting this assignment.</p>\n");
         return false;
@@ -367,7 +368,7 @@ function pg4e_get_user_connection($LAUNCH, $pdo_connection, $pdo_user, $pdo_pass
         )
     );
     } catch(Exception $e) {
-        $_SESSION['error'] = "Could not make database connection to ".$pdo_host." / ".$pdo_user
+        $_SESSION['error'] = "Could not make database connection to ".$pdo_connection." / ".$pdo_user
             ." | ".$e->getMessage() . '.  If you need to create (or re-create) your database, you must use initial database setup.';
         header( 'Location: '.addSession('index.php') ) ;
         return false;
