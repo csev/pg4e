@@ -19,6 +19,9 @@ jobs:
           repository: tsugiproject/tsugi
           path: tsugi
 
+      - name: Provide Tsugi config
+        run: cp tsugi/config-dist.php tsugi/config.php
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
