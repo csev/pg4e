@@ -200,5 +200,3 @@ Monitoring Progress of Index Construction in PostgreSQL</a></p></li>
 if ( $LAUNCH->user->instructor ) {
     echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");
 }
-?>
-

@@ -181,5 +181,3 @@ foreach($gin as $word => $docs) {
 if ( $LAUNCH->user->instructor ) {
     echo("<p><b>Note for Instructors:</b> There is a solution to this assignment in pg4e-solutions/assn</p>\n");
 }
-?>
-
