@@ -49,9 +49,8 @@ foreach($rows as $row ) {
 }
 
 $oldgrade = $RESULT->grade;
-$query = U::get($_POST, 'query');
+$query = U::get($_POST, 'query', '');
 if ( strlen($query) > 0 ) {
-    $query = U::get($_POST, 'query');
     if ( stripos($query, 'drop table') !== false ) {
         header('Location: https://imgs.xkcd.com/comics/exploits_of_a_mom.png');
         return;
